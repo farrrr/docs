@@ -443,53 +443,57 @@ The field under validation must have a size matching the given _value_. For stri
 #### timezone
 
 The field under validation must be a valid timezone identifier according to the `timezone_identifiers_list` PHP function.
+這個欄位必需是個正確的時區並且通過`date_parse_from_format`這個PHP函式
 
 <a name="rule-unique"></a>
 #### unique:_table_,_column_,_except_,_idColumn_
 
 The field under validation must be unique on a given database table. If the `column` option is not specified, the field name will be used.
+這個欄位必需是在資料表中唯一的值，假如 `column` 沒有指定就會用欄位名稱來替代 `column` 
 
-#### Basic Usage Of Unique Rule
+#### Unique 規則的基本用法
 
 	'email' => 'unique:users'
 
-#### Specifying A Custom Column Name
+#### 指定一個自訂的欄位名稱
 
 	'email' => 'unique:users,email_address'
 
-#### Forcing A Unique Rule To Ignore A Given ID
+#### 強制一個Unique規則去忽略一個ID
 
 	'email' => 'unique:users,email_address,10'
 
-#### Adding Additional Where Clauses
+#### 新增一個額外的 Where語法
 
-You may also specify more conditions that will be added as "where" clauses to the query:
+你也可以指定更多條件而這些條件將會新增到查詢的Where語法
 
 	'email' => 'unique:users,email_address,NULL,id,account_id,1'
 
-In the rule above, only rows with an `account_id` of `1` would be included in the unique check.
+以上的規則是在說明 只有`account_id`為`1`的列會被加入唯一值的檢驗
 
 <a name="rule-url"></a>
 #### url
 
-The field under validation must be formatted as an URL.
+這個欄位必需符合URL的格式驗證
 
-> **Note:** This function uses PHP's `filter_var` method.
+> **註記:** 這個函式使用PHP的`filter_var`方法
 
 <a name="conditionally-adding-rules"></a>
-## Conditionally Adding Rules
+## 有條件的新增規則
 
+在某些狀況，假如這個欄位是輸入一個陣列，你會希望針對特定欄位執行驗證，為了快速完成這個驗證，你可以在你的規則語法中使用`sometimes`參數
 In some situations, you may wish to run validation checks against a field **only** if that field is present in the input array. To quickly accomplish this, add the `sometimes` rule to your rule list:
 
 	$v = Validator::make($data, array(
 		'email' => 'sometimes|required|email',
 	));
 
-In the example above, the `email` field will only be validated if it is present in the `$data` array.
+在以上的例子中，將只會驗證`$data`陣列中的`email`欄位
 
-#### Complex Conditional Validation
+#### 複雜的條件驗證
 
 Sometimes you may wish to require a given field only if another field has a greater value than 100. Or you may need two fields to have a given value only when another field is present. Adding these validation rules doesn't have to be a pain. First, create a `Validator` instance with your _static rules_ that never change:
+有時你會希望驗證一個必要的欄位，只有在另一個欄位大於100的時後，或是你也會需要一個欄位有一個值當另外的欄位也有值的時後，新增這些驗證規則並不會很痛苦，首先新增一個`Validator`實例並且使用_static rules_且不要改變：
 
 	$v = Validator::make($data, array(
 		'email' => 'required|email',
@@ -497,6 +501,7 @@ Sometimes you may wish to require a given field only if another field has a grea
 	));
 
 Let's assume our web application is for game collectors. If a game collector registers with our application and they own more than 100 games, we want them to explain why they own so many games. For example, perhaps they run a game re-sell shop, or maybe they just enjoy collecting. To conditionally add this requirement, we can use the `sometimes` method on the `Validator` instance.
+讓我們假設我們的網頁程式是一個遊戲收納器，當一個遊戲收納器的註冊者使用我們的應用程式且他們擁有大於100個遊戲，我們希望他們解釋為什麼他們擁有這麼多遊戲，舉列來說他們也許執行一個遊戲二手商店或是他們可能只是喜歡收藏，有條件的新增這些需求，我們可以使用`sometimes`這個方法。
 
 	$v->sometimes('reason', 'required|max:500', function($input)
 	{
@@ -504,20 +509,21 @@ Let's assume our web application is for game collectors. If a game collector reg
 	});
 
 The first argument passed to the `sometimes` method is the name of the field we are conditionally validating. The second argument is the rules we want to add. If the `Closure` passed as the third argument returns `true`, the rules will be added. This method makes it a breeze to build complex conditional validations. You may even add conditional validations for several fields at once:
+`sometimes`這個方法的第一個參數是欄位的名稱，說明哪些欄位需要有條件式的驗證，第二個參數是我們想增加的規則，假如`Closure`也就是第三個參數回傳`true`，這個額外的規則就會變新增，這個方法讓我們輕易的建立一個複雜且有條件式的驗證，你甚至可以一次為多個欄位新增條件式驗證：
 
 	$v->sometimes(array('reason', 'cost'), 'required', function($input)
 	{
 		return $input->games >= 100;
 	});
 
-> **Note:** The `$input` parameter passed to your `Closure` will be an instance of `Illuminate\Support\Fluent` and may be used as an object to access your input and files.
+> **註記:** `$input`參數傳遞到你的`Closure`將會是一個`Illuminate\Support\Fluent`實例且他會是一個物件來存取你的輸入欄位
 
 <a name="custom-error-messages"></a>
-## Custom Error Messages
+## 自定錯誤訊息Custom Error Messages
 
-If needed, you may use custom error messages for validation instead of the defaults. There are several ways to specify custom messages.
+如果有需要你也許會在一個驗證中使用預設的自定錯誤訊息，這裡有幾個方法去指定自定訊息
 
-#### Passing Custom Messages Into Validator
+#### 透過驗證器傳遞自定參數
 
 	$messages = array(
 		'required' => 'The :attribute field is required.',
@@ -525,9 +531,10 @@ If needed, you may use custom error messages for validation instead of the defau
 
 	$validator = Validator::make($input, $rules, $messages);
 
-> *Note:* The `:attribute` place-holder will be replaced by the actual name of the field under validation. You may also utilize other place-holders in validation messages.
+> *註記:* `:attribute`我們稱為place-holders將會在驗證時用欄位的名稱取代，你也可以在驗證訊息中使用其他的place-holders
 
-#### Other Validation Place-Holders
+
+#### 其他驗證 Place-Holders
 
 	$messages = array(
 		'same'    => 'The :attribute and :other must match.',
@@ -536,18 +543,19 @@ If needed, you may use custom error messages for validation instead of the defau
 		'in'      => 'The :attribute must be one of the following types: :values',
 	);
 
-#### Specifying A Custom Message For A Given Attribute
+#### 指定一個自定訊息給一個屬性
 
-Sometimes you may wish to specify a custom error messages only for a specific field:
+你也許希望去指定一個自定錯誤訊息針對特定的欄位：
 
 	$messages = array(
 		'email.required' => 'We need to know your e-mail address!',
 	);
 
 <a name="localization"></a>
-#### Specifying Custom Messages In Language Files
+#### 多語系檔案中宣告自定訊息
 
 In some cases, you may wish to specify your custom messages in a language file instead of passing them directly to the `Validator`. To do so, add your messages to `custom` array in the `app/lang/xx/validation.php` language file.
+在有些案例中，你也許希望指定你的自定訊息在一個語系檔直接的替代`Validator`中的自定訊息，所以請新增你的訊息到`app/lang/xx/validation.php`語系統的`custom`陣列中
 
 	'custom' => array(
 		'email' => array(
@@ -556,11 +564,13 @@ In some cases, you may wish to specify your custom messages in a language file i
 	),
 
 <a name="custom-validation-rules"></a>
-## Custom Validation Rules
+## 自定驗證規則
 
-#### Registering A Custom Validation Rule
+#### 註冊一個自定驗證規則
 
 Laravel provides a variety of helpful validation rules; however, you may wish to specify some of your own. One method of registering custom validation rules is using the `Validator::extend` method:
+
+Laravel提供一個方法幫助你改變驗證規則;然而你也許希望指定一些屬於你自已的驗證規則，這個時後可以使用`Validator::extend`註冊一個自定的驗證規則：
 
 	Validator::extend('foo', function($attribute, $value, $parameters)
 	{
@@ -568,17 +578,24 @@ Laravel provides a variety of helpful validation rules; however, you may wish to
 	});
 
 The custom validator Closure receives three arguments: the name of the `$attribute` being validated, the `$value` of the attribute, and an array of `$parameters` passed to the rule.
+自定的驗證Closure接收三個參數：
 
-You may also pass a class and method to the `extend` method instead of a Closure:
+`$attribute`->驗證規則的名稱
+`$value`->屬性
+`$parameters`->一個陣列傳到驗證規則
+
+你也可以透過一個類別的方法來替代`extend` 的Closure：
 
 	Validator::extend('foo', 'FooValidator@validate');
 
+記註你也將會需要為你的自定規則定義一個錯誤訊息，你可以這麼做或直接寫一個自定訊息陣列或新增一個驗證的語系檔
 Note that you will also need to define an error message for your custom rules. You can do so either using an inline custom message array or by adding an entry in the validation language file.
 
-#### Extending The Validator Class
+#### 擴充Validator Class
 
 Instead of using Closure callbacks to extend the Validator, you may also extend the Validator class itself. To do so, write a Validator class that extends `Illuminate\Validation\Validator`. You may add validation methods to the class by prefixing them with `validate`:
 
+使用一個Closure繼承Validator來替代原本的Validator，你也可以繼承Validator類別，在你的類別中繼承`Illuminate\Validation\Validator`. 你就可以新增驗證方法在類別中
 	<?php
 
 	class CustomValidator extends Illuminate\Validation\Validator {
