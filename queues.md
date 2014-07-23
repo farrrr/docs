@@ -1,38 +1,38 @@
-# Queues
+# 佇列
 
-- [Configuration](#configuration)
-- [Basic Usage](#basic-usage)
-- [Queueing Closures](#queueing-closures)
-- [Running The Queue Listener](#running-the-queue-listener)
-- [Daemon Queue Worker](#daemon-queue-worker)
-- [Push Queues](#push-queues)
-- [Failed Jobs](#failed-jobs)
+- [設定](#configuration)
+- [基本用法](#basic-usage)
+- [佇列閉包](#queueing-closures)
+- [起動佇列監聽](#running-the-queue-listener)
+- [常駐佇列工作](#daemon-queue-worker)
+- [推送佇列](#push-queues)
+- [失敗的工作](#failed-jobs)
 
 <a name="configuration"></a>
-## Configuration
+## 設定
 
-The Laravel Queue component provides a unified API across a variety of different queue services. Queues allow you to defer the processing of a time consuming task, such as sending an e-mail, until a later time, thus drastically speeding up the web requests to your application.
+Laravel 佇列元件提供一個統一的API整合了許多不同的佇列服務，佇列允許你將一個執行任務延後執行，例如寄送郵件延後至你指定的時間，進而大幅的加快你的網站應用程式的速度。
 
-The queue configuration file is stored in `app/config/queue.php`. In this file you will find connection configurations for each of the queue drivers that are included with the framework, which includes a [Beanstalkd](http://kr.github.com/beanstalkd), [IronMQ](http://iron.io), [Amazon SQS](http://aws.amazon.com/sqs), [Redis](http://redis.io), and synchronous (for local use) driver.
+佇列的設定檔在`app/config/queue.php`，在這個檔案你將可以找到框架中每種不同的佇列服務的連線設定，其中包含了[Beanstalkd](http://kr.github.com/beanstalkd), [IronMQ](http://iron.io), [Amazon SQS](http://aws.amazon.com/sqs), [Redis](http://redis.io),以及同步(本地端使用)驅動設定.
 
-The following dependencies are needed for the listed queue drivers:
+下列的composer.json設定可以依照你使用的佇列服務必需在使用前安裝：
 
 - Beanstalkd: `pda/pheanstalk ~2.0`
 - Amazon SQS: `aws/aws-sdk-php`
 - IronMQ: `iron-io/iron_mq`
 
 <a name="basic-usage"></a>
-## Basic Usage
+## 基本用法
 
-#### Pushing A Job Onto The Queue
+#### 推送一個工作至佇列
 
-To push a new job onto the queue, use the `Queue::push` method:
+要推送一個新的工作至佇列，請使用`Queue::push`方法：
 
 	Queue::push('SendEmail', array('message' => $message));
 
-#### Defining A Job Handler
+#### 宣告一個工作處理程序
 
-The first argument given to the `push` method is the name of the class that should be used to process the job. The second argument is an array of data that should be passed to the handler. A job handler should be defined like so:
+`push`方法的第一個參數為應該處理這個工作的類別方法名稱，第二個參數是一個要傳遞至處理程序的資料陣列，一個工作處理程序應該參照下列宣告：
 
 	class SendEmail {
 
@@ -43,15 +43,15 @@ The first argument given to the `push` method is the name of the class that shou
 
 	}
 
-Notice the only method that is required is `fire`, which receives a `Job` instance as well as the array of `data` that was pushed onto the queue.
+注意如果你未在第一個參數指定工作處理的類別及方法(如SendEmail@process)，那`fire`為類別中預設必需的方法用來接收被推送至佇列`Job`實例以及`data`。
 
-#### Specifying A Custom Handler Method
+#### 指定一個特定的處理程序方法
 
-If you want the job to use a method other than `fire`, you may specify the method when you push the job:
+假如你想要用一個`fire`以外的方法處理工作，你可以在推送工作時指定方法如下：
 
 	Queue::push('SendEmail@send', array('message' => $message));
 
-#### Specifying The Queue / Tube For A Job
+#### 指定佇列使用的Queue
 
 You may also specify the queue / tube a job should be sent to:
 
