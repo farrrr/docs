@@ -51,21 +51,21 @@ Laravel 佇列元件提供一個統一的API整合了許多不同的佇列服務
 
 	Queue::push('SendEmail@send', array('message' => $message));
 
-#### 指定佇列使用的Queue
+#### 指定佇列使用特定連線
 
-You may also specify the queue / tube a job should be sent to:
+你也可指定佇列工作送至指定的連線：
 
 	Queue::push('SendEmail@send', array('message' => $message), 'emails');
 
-#### Passing The Same Payload To Multiple Jobs
+#### 傳送相同的資料去多個連線
 
-If you need to pass the same data to several queue jobs, you may use the `Queue::bulk` method:
+如果你需要傳送一樣的資料去幾個不同的佇列伺服器,你也可以使用`Queue::bulk` 方法：
 
 	Queue::bulk(array('SendEmail', 'NotifyUser'), $payload);
 
-#### Delaying The Execution Of A Job
+#### 延遲執行一個工作
 
-Sometimes you may wish to delay the execution of a queued job. For instance, you may wish to queue a job that sends a customer an e-mail 15 minutes after sign-up. You can accomplish this using the `Queue::later` method:
+有時後你也希望延遲一個佇列工作的執行，舉例來說你希望一個佇列工作在客戶註冊15分鐘後寄送一個e-mail，你可以使用`Queue::later`方法來完成這件事情：
 
 	$date = Carbon::now()->addMinutes(15);
 
@@ -73,9 +73,12 @@ Sometimes you may wish to delay the execution of a queued job. For instance, you
 
 In this example, we're using the [Carbon](https://github.com/briannesbitt/Carbon) date library to specify the delay we wish to assign to the job. Alternatively, you may pass the number of seconds you wish to delay as an integer.
 
-#### Deleting A Processed Job
+在這個範例中，我們使用[Carbon](https://github.com/briannesbitt/Carbon)日期函式庫來指定我們希望佇列工作希望延遲的時間，
+另外你也可傳送一個整數來設定你希望延遲的秒數。
 
-Once you have processed a job, it must be deleted from the queue, which can be done via the `delete` method on the `Job` instance:
+#### 刪除一個處理中的工作
+
+當你已經開始處理完成一個佇列工作，它就必需在佇列中刪除，我們可以透過`Job`實例中的`delete`方法來完成這件事：
 
 	public function fire($job, $data)
 	{
@@ -84,9 +87,9 @@ Once you have processed a job, it must be deleted from the queue, which can be d
 		$job->delete();
 	}
 
-#### Releasing A Job Back Onto The Queue
+#### 釋放一個工作回到佇列中
 
-If you wish to release a job back onto the queue, you may do so via the `release` method:
+假如你希望將一個工作釋放回佇列之中，你可以透過`release`方法來完成這件事情：
 
 	public function fire($job, $data)
 	{
@@ -95,29 +98,29 @@ If you wish to release a job back onto the queue, you may do so via the `release
 		$job->release();
 	}
 
-You may also specify the number of seconds to wait before the job is released:
+你也可以指定秒數來讓這個工作延遲釋放：
 
 	$job->release(5);
 
-#### Checking The Number Of Run Attempts
+#### 檢查工作執行次數
 
-If an exception occurs while the job is being processed, it will automatically be released back onto the queue. You may check the number of attempts that have been made to run the job using the `attempts` method:
+當一個工作執行後發生錯誤，這個工作將會自動的釋放回佇列當中，你可以透過`attempts`方法來檢查這個工作已經被執行的次數：
 
 	if ($job->attempts() > 3)
 	{
 		//
 	}
 
-#### Accessing The Job ID
+#### 取得一個工作的ID
 
-You may also access the job identifier:
+你也可以取得這個工作的識別碼：
 
 	$job->getJobId();
 
 <a name="queueing-closures"></a>
-## Queueing Closures
+## 佇列閉包
 
-You may also push a Closure onto the queue. This is very convenient for quick, simple tasks that need to be queued:
+你也可以推送一個閉包去佇列，這個方法非常的方便及快速的來處理需要使用佇列的簡單的任務：
 
 #### Pushing A Closure Onto The Queue
 
@@ -128,57 +131,57 @@ You may also push a Closure onto the queue. This is very convenient for quick, s
 		$job->delete();
 	});
 
-> **Note:** Instead of making objects available to queued Closures via the `use` directive, consider passing primary keys and re-pulling the associated models from within your queue job. This often avoids unexpected serialization behavior.
+> **註記:** 要讓一個元件變數可以在佇列閉包中可以使用我們會透過`use`指令，試著傳送主鍵及重覆使用的相關模組在你的佇列工作中，這可以避免其他的序列化行為.
 
-When using Iron.io [push queues](#push-queues), you should take extra precaution queueing Closures. The end-point that receives your queue messages should check for a token to verify that the request is actually from Iron.io. For example, your push queue end-point should be something like: `https://yourapp.com/queue/receive?token=SecretToken`. You may then check the value of the secret token in your application before marshalling the queue request.
+當使用Iron.io[push queues](#push-queues)時,你應該在佇列閉包中采取一些其他的預防措施，我們應該在執行工作收到佇列資料時檢查token是否真來自Iron.io，舉例來說你推送一個佇列工作到`https://yourapp.com/queue/receive?token=SecretToken`，接下來在你的工作收到佇列的請求時，你就可以檢查token的值是否正確。
 
 <a name="running-the-queue-listener"></a>
-## Running The Queue Listener
+## 執行一個佇列監聽
 
-Laravel includes an Artisan task that will run new jobs as they are pushed onto the queue. You may run this task using the `queue:listen` command:
+Laravel 內含一個Artisan指令，它將推送到佇列的工作拉來下執行，你可以使用`queue:listen`命令，來執行這件常駐任務：
 
-#### Starting The Queue Listener
+#### 開始佇列監聽
 
 	php artisan queue:listen
 
-You may also specify which queue connection the listener should utilize:
+你也可以指定特定佇列連線讓監聽器使用：
 
 	php artisan queue:listen connection
 
-Note that once this task has started, it will continue to run until it is manually stopped. You may use a process monitor such as [Supervisor](http://supervisord.org/) to ensure that the queue listener does not stop running.
+注意當這個任務開始時，這將會一直持續執行到他被手動停止，你也可以使用一個處理監控像是[Supervisor](http://supervisord.org/)來確保這個佇列監聽不會停止執行。
 
-You may pass a comma-delimited list of queue connections to the `listen` command to set queue priorities:
+你也可以在`listen`指令中使用逗號分隔不同的佇列連線來設定佇列的重要性：
 
 	php artisan queue:listen --queue=high,low
 
-In this example, jobs on the `high-connection` will always be processed before moving onto jobs from the `low-connection`.
+在這個範列中，`high-connection`將總是會優先處理佇列的工作，相對於`low-connection`
 
-#### Specifying The Job Timeout Parameter
+#### 指定工作逾時參數
 
-You may also set the length of time (in seconds) each job should be allowed to run:
+你也可以設定給每個工作允許執行的秒數：
 
 	php artisan queue:listen --timeout=60
 
-#### Specifying Queue Sleep Duration
+#### 指定佇列休息時間
 
-In addition, you may specify the number of seconds to wait before polling for new jobs:
+此外，你也可以指定讓監聽器在拉取新工作時要等待幾秒：
 
 	php artisan queue:listen --sleep=5
 
-Note that the queue only "sleeps" if no jobs are on the queue. If more jobs are available, the queue will continue to work them without sleeping.
+注意佇列只會佇列上沒有工作時休息，假如有許多可執行的工作，佇列監聽將持續的處理工作不會休息
 
-#### Processing The First Job On The Queue
+#### 處理第佇列上的一個工作
 
-To process only the first job on the queue, you may use the `queue:work` command:
+當你只想處理佇列上的一個工作你可以使用`queue:work`指令：
 
 	php artisan queue:work
 
 <a name="daemon-queue-worker"></a>
-## Daemon Queue Worker
+## 常駐佇列處理器
 
-The `queue:work` also includes a `--daemon` option for forcing the queue worker to continue processing jobs without ever re-booting the framework. This results in a significant reduction of CPU usage when compared to the `queue:listen` command, but at the added complexity of needing to drain the queues of currently executing jobs during your deployments.
+`queue:work`也包含了一個`--daemon`選項強迫佇列處理器可以持續處理工作即使重新啟動框架，這個作法相對的比`queue:listen`可有效的減少CPU的使用量，但是卻增加了你佈署時正在處理中的佇列任務的複雜性。
 
-To start a queue worker in daemon mode, use the `--daemon` flag:
+當開始一個佇列處理器於常駐模式，使用`--daemon`旗標：
 
 	php artisan queue:work connection --daemon
 
@@ -186,32 +189,34 @@ To start a queue worker in daemon mode, use the `--daemon` flag:
 
 	php artisan queue:work connection --daemon --sleep=3 --tries=3
 
-As you can see, the `queue:work` command supports most of the same options available to `queue:listen`. You may use the `php artisan help queue:work` command to view all of the available options.
 
-### Deploying With Daemon Queue Workers
+如你所見`queue:work`指令支援`queue:listen`大多相同的選項參數，你也可使用`php artisan help queue:work`指令來觀看全部可用的選項參數。
 
-The simplest way to deploy an application using daemon queue workers is to put the application in maintenance mode at the beginning of your deploymnet. This can be done using the `php artisan down` command. Once the application is in maintenance mode, Laravel will not accept any new jobs off of the queue, but will continue to process existing jobs. Once enough time has passed for all of your existing jobs to execute (usually no longer than 30-60 seconds), you may stop the worker and continue your deployment process.
+### 佈署常駐佇列處理器
 
-If you are using Supervisor or Laravel Forge, which utilizes Supervisor, you may typically stop a worker with a command like the following:
+最簡單的方式佈署一個應用程式使用常駐佇列處理器就是將應用程式在開始佈署時使用維護模式，你可以使用`php artisan down`指令來完成這件事情，當這個應用程式在維護模式，Laravel將不會允許任何來自佇列上的新工作，但會持續的處理已存在的工作，，當過了足夠的時間所有你正在執行的工作都已處理完(通常不會很久約 30-60 秒), 你可以停止處理器及繼續處理你的佈署工作。
+
+假如你使用Supervisor或Laravel Forge，那你通常就會使用下面的指令來停止處理器：
 
 	supervisorctl stop worker-1
 
-Once the queues have been drained and your fresh code has been deployed to your server, you should restart the daemon queue work. If you are using Supervisor, this can typically be done with a command like this:
+
+當這些佇列都處理完且你更新完你的伺服器上的程式碼，你應該重啟常駐佇列處理器，假如你使用Supervisor，通常你會使用下面的指令：
 
 	supervisorctl start worker-1
 
 <a name="push-queues"></a>
-## Push Queues
+## 推送佇列
 
-Push queues allow you to utilize the powerful Laravel 4 queue facilities without running any daemons or background listeners. Currently, push queues are only supported by the [Iron.io](http://iron.io) driver. Before getting started, create an Iron.io account, and add your Iron credentials to the `app/config/queue.php` configuration file.
+你可以利用強大的Laravel 4 佇列架構來進行推送佇列工作，不需要執行任何的常駐或背景監聽，目前只支援 [Iron.io](http://iron.io)驅動，在你開始前建立一個Iron.io帳號及新增你的Iron憑證到`app/config/queue.php`設定檔。
 
-#### Registering A Push Queue Subscriber
+#### 註冊一個推送佇列訂閱
 
-Next, you may use the `queue:subscribe` Artisan command to register a URL end-point that will receive newly pushed queue jobs:
+接下來，你可以使用`queue:subscribe`指令註冊一個URL，這將會接收新的推送佇列工作：
 
 	php artisan queue:subscribe queue_name http://foo.com/queue/receive
 
-Now, when you login to your Iron dashboard, you will see your new push queue, as well as the subscribed URL. You may subscribe as many URLs as you wish to a given queue. Next, create a route for your `queue/receive` end-point and return the response from the `Queue::marshal` method:
+現在當你登入你的Iron儀表板，你將會看到你新的推送佇列，以及訂閱的URL，你可以訂閱許多的URLs給你希望的佇列，接下來建立一個route給你的`queue/receive` 及從`Queue::marshal`方法回傳回應：
 
 	Route::post('queue/receive', function()
 	{
