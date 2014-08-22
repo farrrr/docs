@@ -223,40 +223,41 @@ Laravel 內含一個Artisan指令，它將推送到佇列的工作拉來下執�
 		return Queue::marshal();
 	});
 
-The `marshal` method will take care of firing the correct job handler class. To fire jobs onto the push queue, just use the same `Queue::push` method used for conventional queues.
+`marshal` 方法會將工作處理到正確的類別，而發送工作到佇列中只要使用一樣的`Queue::push`方法。
 
 <a name="failed-jobs"></a>
-## Failed Jobs
+## 已失敗的工作
 
-Since things don't always go as planned, sometimes your queued jobs will fail. Don't worry, it happens to the best of us! Laravel includes a convenient way to specify the maximum number of times a job should be attempted. After a job has exceeded this amount of attempts, it will be inserted into a `failed_jobs` table. The failed jobs table name can be configured via the `app/config/queue.php` configuration file.
+事情往往不會如你預期的一樣，有時後你推送工作到佇列會失敗，別擔心，Laravel 包含一個簡單的方法去指定一個工作最多可以被執行幾次，在工作被執行到一定的次數時，他將會新增至`failed_jobs`資料表裡，然後失敗工作的資料表名稱可以在`app/config/queue.php`裡進行設定：
 
-To create a migration for the `failed_jobs` table, you may use the `queue:failed-table` command:
+要新增一個migration建立`failed_jobs`資料表，你可以使用`queue:failed-table`指令：
 
 	php artisan queue:failed-table
 
-You can specify the maximum number of times a job should be attempted using the `--tries` switch on the `queue:listen` command:
+你可以指定一個最大值來限制一個工作應該最多被執行幾次透過 `--tries` 這個選項參數在你執行`queue:listen`的時後：
 
 	php artisan queue:listen connection-name --tries=3
 
-If you would like to register an event that will be called when a queue job fails, you may use the `Queue::failing` method. This event is a great opportunity to notify your team via e-mail or [HipChat](https://www.hipchat.com).
+假如你會想註冊一個事件，這個事件會將會在佇列失敗時被呼叫，你可以使用`Queue::failing`方法，這個事件是一個很好的機會讓你可以通知你的團隊透過e-mail或 [HipChat](https://www.hipchat.com)。
 
 	Queue::failing(function($connection, $job, $data)
 	{
 		//
 	});
 
-To view all of your failed jobs, you may use the `queue:failed` Artisan command:
+要看到所有的失敗工作，你可以使用`queue:failed`指令：
 
 	php artisan queue:failed
 
-The `queue:failed` command will list the job ID, connection, queue, and failure time. The job ID may be used to retry the failed job. For instance, to retry a failed job that has an ID of 5, the following command should be issued:
+`queue:failed`
+指令將會列出工作的ID,連線,佇列名稱及失敗的時間，工作的ID也可以重新執行一個已經失敗的工作，例如一個已經失敗的工作他的ID是5，我們可以使用下面的指令：
 
 	php artisan queue:retry 5
 
-If you would like to delete a failed job, you may use the `queue:forget` command:
+假如你會想刪除一個已失敗的工作，你可以使用 `queue:forget`指令：
 
 	php artisan queue:forget 5
 
-To delete all of your failed jobs, you may use the `queue:flush` command:
+要刪除全部失敗的工作你可以使用`queue:flush`指令：
 
 	php artisan queue:flush
