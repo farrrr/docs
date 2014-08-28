@@ -194,30 +194,13 @@ Laravel 內含一個Artisan指令，它將推送到佇列的工作拉來下執�
 
 ### 佈署常駐佇列處理器
 
-<<<<<<< HEAD
 最簡單的方式佈署一個應用程式使用常駐佇列處理器就是將應用程式在開始佈署時使用維護模式，你可以使用`php artisan down`指令來完成這件事情，當這個應用程式在維護模式，Laravel將不會允許任何來自佇列上的新工作，但會持續的處理已存在的工作，，當過了足夠的時間所有你正在執行的工作都已處理完(通常不會很久約 30-60 秒), 你可以停止處理器及繼續處理你的佈署工作。
 
 假如你使用Supervisor或Laravel Forge，那你通常就會使用下面的指令來停止處理器：
-=======
-The simplest way to deploy an application using daemon queue workers is to put the application in maintenance mode at the beginning of your deploymnet. This can be done using the `php artisan down` command. Once the application is in maintenance mode, Laravel will not accept any new jobs off of the queue, but will continue to process existing jobs.
-
-The easiest way to restart your workers is to include the following command in your deployment script:
->>>>>>> dedcbfab3e00b3f206112d3a1174623c3d721d8f
 
 	php artisan queue:restart
 
-<<<<<<< HEAD
-
 當這些佇列都處理完且你更新完你的伺服器上的程式碼，你應該重啟常駐佇列處理器，假如你使用Supervisor，通常你會使用下面的指令：
-=======
-This command will instruct all queue workers to restart after they finish processing their current job.
->>>>>>> dedcbfab3e00b3f206112d3a1174623c3d721d8f
-
-### Coding For Daemon Queue Workers
-
-Daemon queue workers do not restart the framework before processing each job. Therefore, you should be careful to free any heavy resources before your job finishes. For example, if you are doing image manipulation with the GD library, you should free the memory with `imagedestroy` when you are done.
-
-Similarly, your database connection may disconnect when being used by long-running daemon. You may use the `DB::reconnect` method to ensure you have a fresh connection.
 
 <a name="push-queues"></a>
 ## 推送佇列
