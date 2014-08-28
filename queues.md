@@ -122,8 +122,6 @@ In this example, we're using the [Carbon](https://github.com/briannesbitt/Carbon
 
 你也可以推送一個閉包去佇列，這個方法非常的方便及快速的來處理需要使用佇列的簡單的任務：
 
-#### Pushing A Closure Onto The Queue
-
 	Queue::push(function($job) use ($id)
 	{
 		Account::delete($id);
