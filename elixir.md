@@ -1,8 +1,8 @@
 # Laravel Elixir
 
-- [Introduction](#introduction)
-- [Installation & Setup](#installation)
-- [Usage](#usage)
+- [簡介](#introduction)
+- [安裝與設定](#installation)
+- [使用方式](#usage)
 - [Gulp](#gulp)
 - [Directory Defaults](#defaults)
 - [Extensions](#extensions)
@@ -131,7 +131,7 @@ elixir(function(mix) {
     mix.styles([
         "normalize.css",
         "main.css"
-    ], 'public/build/css/everything.css', 'public/js');
+    ], 'public/build/css/everything.css', 'public/css');
 });
 ```
 
@@ -195,7 +195,7 @@ Behind the scenes, the `elixir()` function will determine the name of the hashed
 
 #### Copy a File to a New Location
 
-```js
+```javascript
 elixir(function(mix) {
     mix.copy('vendor/foo/bar.css', 'public/css/bar.css');
 });
@@ -203,7 +203,7 @@ elixir(function(mix) {
 
 #### Copy an Entire Directory to a New Location
 
-```js
+```javascript
 elixir(function(mix) {
     mix.copy('vendor/package/views', 'resources/views');
 });
