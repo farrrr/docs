@@ -83,4 +83,4 @@ Laravel 框架透過 `public/.htaccess` 檔案來讓網址中不需要 `index.ph
         try_files $uri $uri/ /index.php?$query_string;
     }
 
-當然，當你使用 [Homestead](/docs/master/homestead) 的話，優雅鏈結會自動的幫你設定完成。
+當然，如果你使用 [Homestead](/docs/master/homestead) 的話，優雅鏈結會自動的幫你設定完成。
