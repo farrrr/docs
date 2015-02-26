@@ -11,11 +11,11 @@
 <a name="introduction"></a>
 ## 介紹
 
-Laravel 的目標就是要讓實作認證機制變得簡單。事實上，幾乎所有的設定預設就已經完成了。有關認證的設定檔都放在 `config/auth.php` 裡，而在這些檔案裡也都包含了良好的註解，說明每一個選項的所對應的認證服務的方法。
+Laravel 的目標想要讓實作認證機制變得簡單。事實上，幾乎所有的設定預設就已經完成了。有關認證的設定檔都放在 `config/auth.php` 裡，在這些檔案裡也包含了良好的註解，說明每一個選項的所對應的認證服務的方法。
 
 Laravel 預設在 `app` 目錄內包含了一個使用 Eloquent 認證驅動的 `App\User` 模型。 
 
-請記得！在建立模型結構時，密碼欄位至少要有 60 個字元長度。此外，在開始之前，請確認你的 `users` （或其他同義）資料表包含一個名為 `remember_token` 的欄位，欄寬 100 字元、字串型態、可接受 null。這個欄位將會被用來儲存「記住我」的 session token。可以在遷移檔裡透過 `$table->rememberToken();` 新增此欄位。當然，Laravel 5 預設已經建立好遷移欄位！
+請注意！在建立模型結構時，密碼欄位至少要有 60 個字元長度。此外，在開始之前，請確認你的 `users` （或其他同義）資料表包含一個名為 `remember_token` 的欄位，欄寬 100 字元、字串型態、可接受 null。這個欄位將會被用來儲存「記住我」的 session token。可以在遷移檔裡透過 `$table->rememberToken();` 新增此欄位。當然，Laravel 5 預設已經建立好遷移欄位！
 
 假設你的應用程式不是使用 Eloquent，你可以使用 Laravel 查詢產生器 `database` 認證驅動。
 
@@ -24,17 +24,17 @@ Laravel 預設在 `app` 目錄內包含了一個使用 Eloquent 認證驅動的 
 
 Laravel 可以預設建立了兩個驗證相關的控制器。`AuthController` 處理新的使用者註冊和「登入」，而 `PasswordController` 可以幫助已經註冊的使用者重新設定忘記的密碼。
 
-每個控制器使用 trait 引入需要的方法。在多數應用上，你不需要修改這些控制器。這些控制器用到的視圖放在 `resources/views/auth` 目錄下。你可以依照需求修改這些視圖。
+每個控制器使用 trait  引入需要的方法。在多數應用上，你不需要修改這些控制器。這些控制器用到的視圖放在 `resources/views/auth` 目錄下。你可以依照需求修改這些視圖。
 
 ### 使用者註冊
 
 要修改應用程式註冊新使用者時所用到的表單欄位，可以修改 `App\Services\Registrar` 類別。這個類別負責驗證和建立應用程式的新使用者。
 
-`Registrar` 的 `validator` 方法包含註冊新使用者的驗證規則，而 `Registrar` 的 `create` 方法負責建立一筆新的 `User` 在資料庫。你可以自由的修改這些方法。 `AuthController` 經由 `AuthenticatesAndRegistersUsers` trait 的方法呼叫 `Registrar`。
+`Registrar` 的 `validator` 方法包含註冊新使用者的驗證規則，而 `Registrar` 的 `create` 方法負責建立一筆新的 `User` 紀錄在資料庫。你可以自由的修改這些方法。 `AuthController` 經由 `AuthenticatesAndRegistersUsers` trait  的方法呼叫 `Registrar`。
 
 #### 手動認證
 
-如果你不想使用預設的 `AuthController`，你需要直接 Laravel 的身分驗證類別管理使用者認證。別擔心，這也很簡單的！首先，讓我們看看 `attempt` 方法：
+如果你不想使用預設的 `AuthController`，你需要直接使用 Laravel 的身分驗證類別管理使用者認證。別擔心，這也很簡單！首先，讓我們看看 `attempt` 方法：
 
 	<?php namespace App\Http\Controllers;
 
@@ -58,7 +58,7 @@ Laravel 可以預設建立了兩個驗證相關的控制器。`AuthController` �
 
 	}
 
-`attempt` 方法可以接受鍵值對組成的陣列作為第一個參數。`password` 的值先進行 [雜湊](/docs/5.0/hashing)。陣列中的其他值會被用來查詢資料表裡的使用者。所以，在上面的範例中，會依照 `email` 的值找出使用者。如果找到該使用者，會比對資料庫中的雜湊的密碼會和陣列裡的 `password` 值雜湊 。假設兩個雜湊密碼相同，會重新為使用者啟動認證通過的 session。
+`attempt` 方法可以接受鍵值對組成的陣列作為第一個參數。`password` 的值先進行 [雜湊](/docs/5.0/hashing)。陣列中的其他值會被用來查詢資料表裡的使用者。所以，在上面的範例中，會依照 `email` 的值找出使用者。如果找到該使用者，會比對資料庫中的密碼雜湊會和陣列裡的 `password` 值雜湊 。假設兩個雜湊密碼相同，會重新為使用者啟動認證通過的 session。
 
 假設認證成功，`attempt` 將會回傳 `true`。否則，會回傳 `false`。
 
@@ -277,7 +277,7 @@ HTTP 基本認證提供了一個快速的方式認證使用者，而不用特定
 
 ### 密碼重設控制器
 
-Laravel 還包含了 `Auth\PasswordController` 其中包含重設使用者密碼的功能。預設甚至一些視圖，讓你可以開始使用！視圖在 `resources/views/auth` 目錄下。你可以按照你的應用程式設計，自由的修改這些視圖。
+Laravel 還包含了 `Auth\PasswordController` 其中包含重設使用者密碼的功能。甚至有預設的一些視圖，讓你可以開始使用！視圖在 `resources/views/auth` 目錄下。你可以按照你的應用程式設計，自由的修改這些視圖。
 
 你的使用者會收到一封 e-mail，內含連結指向 `PasswordController` 中的 `getReset` 方法。這個方法會顯示密碼重設表單，允許使用者重新設定密碼。在密碼重新設定完後，使用者將會自動登入到應用程式中，然後被導向到 `/home`。你可以透過 `PasswordController` 中的 `redirectTo` 來定義重設密碼後要重導的位置：
 
@@ -288,7 +288,7 @@ Laravel 還包含了 `Auth\PasswordController` 其中包含重設使用者密碼
 <a name="social-authentication"></a>
 ## 社群認證
 
-除了傳統已表單進行的認證，Laravel 還提供了簡單、方便的方式，使用 [Laravel Socialite](https://github.com/laravel/socialite) 進行 OAuth 認證。**Socialite 目前支援認證有 Facebook、 Twitter、Google、以及GitHub。** 
+除了傳統以表單進行的認證，Laravel 還提供了簡單、方便的方式，使用 [Laravel Socialite](https://github.com/laravel/socialite) 進行 OAuth 認證。**Socialite 目前支援認證有 Facebook、 Twitter、Google、以及GitHub。** 
 
 如果要開始使用社群認證，請將下面的程式碼加入到你的 `composer.json` 檔案內：
 
