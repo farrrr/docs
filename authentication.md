@@ -24,13 +24,13 @@ Laravel 預設在 `app` 目錄內包含了一個使用 Eloquent 認證驅動的 
 
 Laravel 可以預設建立了兩個驗證相關的控制器。`AuthController` 處理新的使用者註冊和「登入」，而 `PasswordController` 可以幫助已經註冊的使用者重新設定忘記的密碼。
 
-每個控制器使用 特徵機制 引入需要的方法。在多數應用上，你不需要修改這些控制器。這些控制器用到的視圖放在 `resources/views/auth` 目錄下。你可以依照需求修改這些視圖。
+每個控制器使用 trait  引入需要的方法。在多數應用上，你不需要修改這些控制器。這些控制器用到的視圖放在 `resources/views/auth` 目錄下。你可以依照需求修改這些視圖。
 
 ### 使用者註冊
 
 要修改應用程式註冊新使用者時所用到的表單欄位，可以修改 `App\Services\Registrar` 類別。這個類別負責驗證和建立應用程式的新使用者。
 
-`Registrar` 的 `validator` 方法包含註冊新使用者的驗證規則，而 `Registrar` 的 `create` 方法負責建立一筆新的 `User` 紀錄在資料庫。你可以自由的修改這些方法。 `AuthController` 經由 `AuthenticatesAndRegistersUsers` 特徵機制 的方法呼叫 `Registrar`。
+`Registrar` 的 `validator` 方法包含註冊新使用者的驗證規則，而 `Registrar` 的 `create` 方法負責建立一筆新的 `User` 紀錄在資料庫。你可以自由的修改這些方法。 `AuthController` 經由 `AuthenticatesAndRegistersUsers` trait  的方法呼叫 `Registrar`。
 
 #### 手動認證
 
