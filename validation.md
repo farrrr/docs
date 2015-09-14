@@ -25,10 +25,10 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 
 首先，讓我們假設我們有下列路由定義在我們的 `app/Http/routes.php` 檔案裡：
 
-	// Display a form to create a blog post...
+	// 顯示建立部落格文章表單...
 	Route::get('post/create', 'PostController@create');
 
-	// Store a new blog post...
+	// 儲存一篇新的部落格文章...
 	Route::post('post', 'PostController@store');
 
 當然，`GET` 路由會顯示一個表單是使用者用來建立一個新的部落格文章，同時 `POST` 路由會儲存新的部落格文章到資料庫。
@@ -47,7 +47,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 	class PostController extends Controller
 	{
 		/**
-		 * Show the form the create a new blog post.
+		 * 顯示建立部落格文章表單。
 		 *
 		 * @return Response
 		 */
@@ -57,14 +57,14 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 		}
 
 		/**
-		 * Store a new blog post.
+		 * 儲存一篇新的部落格文章。
 		 *
 		 * @param  Request  $request
 		 * @return Response
 		 */
 		public function store(Request $request)
 		{
-			// Validate and store the blog post...
+			// 驗證發表的部落格文章並且儲存...
 		}
 	}
 
@@ -77,7 +77,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 為了更能夠理解 `validate` 方法，讓我們先回到 `store` 方法：
 
 	/**
-	 * Store a new blog post.
+	 * 儲存一篇新的部落格文章。
 	 *
 	 * @param  Request  $request
 	 * @return Response
@@ -89,7 +89,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 			'body' => 'required',
 		]);
 
-		// The blog post is valid, store in database...
+		// 部落格文章發表已經通過驗證，並儲存到資料庫...
 	}
 
 正如你所看到的，我們透過 HTTP 所傳入的要求和所需要用的驗證規則在 `validate` 方法。此外，假設驗證失敗，將會自動產生一個對應的回應。如果通過驗證，那我們的控制器會繼續正常的執行。
@@ -167,7 +167,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 	class PostController extends Controller
 	{
 		/**
-		 * Store a new blog post.
+		 * 儲存一篇新的部落格文章。
 		 *
 		 * @param  Request  $request
 		 * @return Response
@@ -185,7 +185,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 							->withInput();
 			}
 
-			// Store the blog post...
+			// 儲存部落格文章...
 		}
 	}
 
@@ -230,7 +230,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 新產生的類別檔會放在 `app/Http/Requests` 目錄下。讓我們加入一些驗證規則到 `rules` 方法中：
 
 	/**
-	 * Get the validation rules that apply to the request.
+	 * 取得適用於請求的驗證規則。
 	 *
 	 * @return array
 	 */
@@ -245,14 +245,14 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 所以，驗證的規則會如何被執行？你所需要的只有在控制器方法，利用型別提示傳入請求。進入的請求會在控制器方法被呼叫前進行驗證，意思說你不會因為驗證邏輯而把控制器弄得一團糟：
 
 	/**
-	 * Store the incoming blog post.
+	 * 儲存發表的部落格文章。
 	 *
 	 * @param  StoreBlogPostRequest  $request
 	 * @return Response
 	 */
 	public function store(StoreBlogPostRequest $request)
 	{
-		// The incoming request is valid...
+		// 傳入的請求已經驗證...
 	}
 
 假設驗證失敗，會產生一個重導回應把使用者返回到先前的位置。這些錯誤會被閃存到 session，所以這些錯誤都可以被顯示。如果進來的是 AJAX 請求的話，而是會傳回一個 HTTP 回應，包含 422 狀態碼，並包含驗證錯誤的 JSON 資料。
@@ -262,7 +262,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 表單的請求類別內包含了 `authorize` 方法。在這個方法中，你可以確認使用者是否真的通過授權，可以更新特定資料。打個比方，當一個使用者試圖更新部落格文章的評論，他確實是這篇評論的擁有者嗎？例如：
 
 	/**
-	 * Determine if the user is authorized to make this request.
+	 * 確定使用者是否有權限提出這個請求。
 	 *
 	 * @return bool
 	 */
@@ -283,7 +283,7 @@ Laravel 提供了各種不同的處理方法來驗證應用程式傳入進來的
 如果你打算在應用程式的其他部分處理授權邏輯，只要從 `authorize` 方法回傳 `true` ：
 
 	/**
-	 * Determine if the user is authorized to make this request.
+	 * 確定使用者是否有權限提出這個請求。
 	 *
 	 * @return bool
 	 */
@@ -742,7 +742,7 @@ Laravel 提供了很多有用的驗證規則；但是，你可能希望自訂一
 	class AppServiceProvider extends ServiceProvider
 	{
 	    /**
-	     * Bootstrap any application services.
+	     * 啟動應用程式任何服務。
 	     *
 	     * @return void
 	     */
@@ -754,7 +754,7 @@ Laravel 提供了很多有用的驗證規則；但是，你可能希望自訂一
 		}
 
 		/**
-		 * Register the service provider.
+		 * 註冊服務提供者。
 		 *
 		 * @return void
 		 */
@@ -774,16 +774,16 @@ Laravel 提供了很多有用的驗證規則；但是，你可能希望自訂一
 
 在你的自訂的規則中，需要定義錯誤訊息。你可以自訂訊息陣列或是在驗證語系檔中加入新的規則。這個訊息應該被放在第一個級別的陣列，而不是放在 `custom` 陣列， 這是僅對特定屬性的錯誤訊息:
 
-	"foo" => "Your input was invalid!",
+	"foo" => "輸入無效!",
 
-    "accepted" => "The :attribute must be accepted.",
+    "accepted" => ":attribute 必須被接受。",
 
-    // The rest of the validation error messages...
+    // 其餘的驗證錯誤訊息...
 
 當你在建立自訂的驗證規則時，你可能需要定義保留欄位來取代錯誤訊息。你可以建立自訂的 Validator ，像上面所描述的透過 `Validator` facade 來使用 `replacer` 的方法。你可以透過 [服務提供者](/docs/{{version}}/providers) 中的 `boot` 方法這麼做：
 
     /**
-     * Bootstrap any application services.
+     * 啟動應用程式任何服務。
      *
      * @return void
      */
