@@ -19,7 +19,7 @@
 <a name="basic-routing"></a>
 ## 基本路由
 
-大多數基本的 Laravel 路由僅包含一個 URI 和一個 `閉包`， providing a very simple and expressive method of defining routes:
+大多數基本的 Laravel 路由僅包含一個 URI 和一個 `閉包`，提供了簡潔有力的路由方法：
 
     Route::get('foo', function () {
         return 'Hello World';
@@ -27,7 +27,7 @@
 
 #### 預設路由檔案
 
-All Laravel routes are defined in your route files, which are located in the `routes` directory. These files are automatically loaded by the framework. The `routes/web.php` file defines routes that are for your web interface. These routes are assigned the `web` middleware group, which provides features like session state and CSRF protection. The routes in `routes/api.php` are stateless and are assigned the `api` middleware group.
+所有的 Laravel 路由設定都被定義在你的路由檔案中，就放置在 `routes` 目錄下。而這些檔案會被自動載入使用。`routes/web.php` 檔案定義了所有會在網頁介面中使用的路由。像是 session 狀態和 CSRF 保護相關的路由設定會被指派給 `web` 中介層群組。 `routes/api.php` 中的路由設定則是無狀態的且指派給 `api` 中繼層群組。
 
 For most applications, you will begin by defining routes in your `routes/web.php` file.
 
@@ -54,7 +54,7 @@ For most applications, you will begin by defining routes in your `routes/web.php
 
 #### CSRF 保護
 
-Any HTML forms pointing to `POST`, `PUT`, or `DELETE` routes that are defined in the `web` routes file should include a CSRF token field. Otherwise, the request will be rejected. You can read more about CSRF protection in the [CSRF documentation](/docs/{{version}}/csrf):
+所有的 HTML 表單針對 `POST`、`PUT`、`DELETE` 等等路由設定都定義在 `web` 路由檔案中，且應該要包含一個 CSRF token 欄位。否則，該請求將被退回。你可以在 [CSRF 文件](/docs/{{version}}/csrf) 中讀到更多關於 CSRF 保護：
 
     <form method="POST" action="/profile">
         {{ csrf_field() }}
