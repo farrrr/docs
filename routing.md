@@ -29,7 +29,7 @@
 
 所有的 Laravel 路由設定都被定義在你的路由檔案中，就放置在 `routes` 目錄下。而這些檔案會被自動載入使用。`routes/web.php` 檔案定義了所有會在網頁介面中使用的路由。像是 session 狀態和 CSRF 保護相關的路由設定會被指派給 `web` 中介層群組。 `routes/api.php` 中的路由設定則是無狀態的且指派給 `api` 中繼層群組。
 
-For most applications, you will begin by defining routes in your `routes/web.php` file.
+在大部分的應用中，你將會從定義 `routes/web.php` 檔案開始。
 
 #### 可用的路由器方法
 
