@@ -255,7 +255,7 @@ You may use the `method_field` helper to generate the `_method` input:
 <a name="accessing-the-current-route"></a>
 ## 存取當前路由
 
-You may use the `current`, `currentRouteName`, and `currentRouteAction` methods on the `Route` facade to access information about the route handling the incoming request:
+你不妨使用 `current`、`currentRouteName`、以及 `currentRouteAction` 這些 `Route` facade 中的方法來取得當前路由請求的資訊：
 
     $route = Route::current();
 
@@ -263,4 +263,4 @@ You may use the `current`, `currentRouteName`, and `currentRouteAction` methods 
 
     $action = Route::currentRouteAction();
 
-Refer to the API documentation for both the [underlying class of the Route facade](http://laravel.com/api/{{version}}/Illuminate/Routing/Router.html) and [Route instance](http://laravel.com/api/{{version}}/Illuminate/Routing/Route.html) to review all accessible methods.
+請參閱 API 文件來了解 [路由 facade 基礎類別](http://laravel.com/api/{{version}}/Illuminate/Routing/Router.html) 以及 [路由實例](http://laravel.com/api/{{version}}/Illuminate/Routing/Route.html) 以查看所有可用的方法。
