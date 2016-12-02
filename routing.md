@@ -67,24 +67,24 @@
 <a name="required-parameters"></a>
 ### 必要的路由參數
 
-Of course, sometimes you will need to capture segments of the URI within your route. For example, you may need to capture a user's ID from the URL. You may do so by defining route parameters:
+當然，你往往會需要從 URI 路由中存取參數。例如，你可能需要從 URL 取得使用者的 ID。那麼你可以透過定義路由參數來取得：
 
     Route::get('user/{id}', function ($id) {
         return 'User '.$id;
     });
 
-You may define as many route parameters as required by your route:
+你可以依照路由需要來定義多個路由參數：
 
     Route::get('posts/{post}/comments/{comment}', function ($postId, $commentId) {
         //
     });
 
-Route parameters are always encased within `{}` braces and should consist of alphabetic characters. Route parameters may not contain a `-` character. Use an underscore (`_`) instead.
+路由參數會放在 `{}` (大括號)內且由英文字母所組成。路由參數不得包含 `-` 字元。請使用底線 (`_`) 來取代。
 
 <a name="parameters-optional-parameters"></a>
 ### 選擇性的路由參數
 
-Occasionally you may need to specify a route parameter, but make the presence of that route parameter optional. You may do so by placing a `?` mark after the parameter name. Make sure to give the route's corresponding variable a default value:
+某些時候你可能需要指定路由參數，但其存在是選擇性的。那麼你可以在參數名稱後面加上 `?` 標記。記得給該路由的對應參數一個預設值：
 
     Route::get('user/{name?}', function ($name = null) {
         return $name;
