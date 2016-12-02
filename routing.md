@@ -109,15 +109,15 @@
 
 #### 對命名路由產生 URLs
 
-Once you have assigned a name to a given route, you may use the route's name when generating URLs or redirects via the global `route` function:
+一但你在特定路由中指派了路由名稱，那麼你就可以使用全域函式 `route` 來產生 URLs 或是重導：
 
-    // Generating URLs...
+    // 產生 URLs...
     $url = route('profile');
 
-    // Generating Redirects...
+    // 產生重導...
     return redirect()->route('profile');
 
-If the named route defines parameters, you may pass the parameters as the second argument to the `route` function. The given parameters will automatically be inserted into the URL in their correct positions:
+若是命名路由有定義參數，你可以在 `route` 函式傳入第二個參數。給定的參數將自動加入到 URL 中正確的位置：
 
     Route::get('user/{id}/profile', function ($id) {
         //
