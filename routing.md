@@ -128,38 +128,38 @@
 <a name="route-groups"></a>
 ## 路由群組
 
-Route groups allow you to share route attributes, such as middleware or namespaces, across a large number of routes without needing to define those attributes on each individual route. Shared attributes are specified in an array format as the first parameter to the `Route::group` method.
+路由群組允許你共用路由屬性，例如：中介層、命名空間，你可以利用路由群組套用這些屬性到多個路由，而不需在每個路由都設定一次。共用屬性被指定為陣列格式，當作 `Route::group` 方法的第一個參數：
 
 <a name="route-group-middleware"></a>
 ### 中介層
 
-To assign middleware to all routes within a group, you may use the `middleware` key in the group attribute array. Middleware are executed in the order they are listed in the array:
+要指定中介層到所有群組內的路由，你可以在群組屬性陣列裡使用 `middleware` 參數。中介層將會依照你在列表內指定的順序執行：
 
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/', function ()    {
-            // Uses Auth Middleware
+            // 使用 Auth 中介層
         });
 
         Route::get('user/profile', function () {
-            // Uses Auth Middleware
+            // 使用 Auth 中介層
         });
     });
 
 <a name="route-group-namespaces"></a>
 ### 命名空間
 
-Another common use-case for route groups is assigning the same PHP namespace to a group of controllers using the `namespace` parameter in the group array:
+另一個常見的範例是，指派相同的 PHP 命名空間中給控制器群組。你可以使用 `namespace` 數指定群組內所有控制器的命名空間：
 
     Route::group(['namespace' => 'Admin'], function() {
-        // Controllers Within The "App\Http\Controllers\Admin" Namespace
+        // 控制器在 "App\Http\Controllers\Admin" 命名空間
     });
 
-Remember, by default, the `RouteServiceProvider` includes your route files within a namespace group, allowing you to register controller routes without specifying the full `App\Http\Controllers` namespace prefix. So, you only need to specify the portion of the namespace that comes after the base `App\Http\Controllers` namespace.
+記得，預設 `RouteServiceProvider` 會在命名空間群組內導入你的路由檔案，讓你不用指定完整的 `App\Http\Controllers` 命名空間前綴就能註冊控制器路由。所以，我們只需要指定在基底 `App\Http\Controllers` 根命名空間之後的命名空間部分。
 
 <a name="route-group-sub-domain-routing"></a>
 ### 子網域路由
 
-Route groups may also be used to handle sub-domain routing. Sub-domains may be assigned route parameters just like route URIs, allowing you to capture a portion of the sub-domain for usage in your route or controller. The sub-domain may be specified using the `domain` key on the group attribute array:
+路由群組也可以用來處理子網域。子網域可以像路由 URIs 分配路由參數，讓你在你的路由或控制器取得子網域參數。可以使用路由群組屬性陣列上的 `domain` 指定子網域變數名稱：
 
     Route::group(['domain' => '{account}.myapp.com'], function () {
         Route::get('user/{id}', function ($account, $id) {
@@ -170,11 +170,11 @@ Route groups may also be used to handle sub-domain routing. Sub-domains may be a
 <a name="route-group-prefixes"></a>
 ### 路由前綴
 
-The `prefix` group attribute may be used to prefix each route in the group with a given URI. For example, you may want to prefix all route URIs within the group with `admin`:
+透過路由群組陣列屬性中的 `prefix` ，在路由群組內為每個路由給定的 URI 加上前綴。例如，你可能想要在路由群組中將所有的路由 URIs 加上前綴 `admin`:
 
     Route::group(['prefix' => 'admin'], function () {
         Route::get('users', function ()    {
-            // Matches The "/admin/users" URL
+            // 符合 "/admin/users" URL
         });
     });
 
