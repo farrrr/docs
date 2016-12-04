@@ -236,7 +236,7 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 <a name="container-events"></a>
 ## 容器事件
 
-每當服務容器解析一個物件時就會觸發事件。你可以使用 `resolving` 方法監聽這個事件：The service container fires an event each time it resolves an object. You may listen to this event using the `resolving` method:
+每當服務容器解析一個物件時就會觸發事件。你可以使用 `resolving` 方法監聽這個事件：
 
     $this->app->resolving(function ($object, $app) {
         // 當容器解析任何型別的物件時會被呼叫...
