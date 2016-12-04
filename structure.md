@@ -155,6 +155,6 @@ Events 目錄預設不存在，會在你使用 `event:generate` 或 `make:event`
 <a name="the-providers-directory"></a>
 #### Providers 目錄
 
-`Providers` 目錄包含應用的[服務提供者](/docs/{{version}}/providers)。服務提供者在啟動應用過程中繫結服務到容器、註冊事件，以及執行其他任務，為即將到來的請求處理做準備。
+`Providers` 目錄包含應用程式的[服務提供者](/docs/{{version}}/providers)。服務提供者在啟動應用程式過程中繫結服務到容器、註冊事件，以及執行其他任務，為即將到來的請求處理做準備。
 
-在新安裝的 Laravel 應用中，該目錄已經包含了一些服務提供者，你可以按需新增自己的服務提供者到該目錄。
+在新安裝的 Laravel 應用程式中，該目錄已經包含了一些服務提供者，你可以按需新增自己的服務提供者到該目錄。
