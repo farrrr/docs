@@ -61,7 +61,7 @@ Artisan 命令列介面可以很容易地透過 `make:provider` 指令產生新�
 <a name="the-boot-method"></a>
 ### 啟動方法（boot）
 
-因此，若我們需要在我們的服務提供者中註冊一個視圖 composer 呢？這應該在 `boot` 方法中完成。**此方法會在所有其他的服務提供者被註冊後才被呼叫**，意味著你可以取得已經被框架註冊的所有其他服務：So, what if we need to register a view composer within our service provider? This should be done within the `boot` method. **This method is called after all other service providers have been registered**, meaning you have access to all other services that have been registered by the framework:
+若欲在服務提供者中註冊一個視圖 composer，那該做些什麼呢？應在 `boot` 方法中完成。**此方法會在所有其他的服務提供者被註冊後才被呼叫**，意味著你可以取得已經被框架註冊的所有其他服務：
 
     <?php
 
@@ -86,7 +86,7 @@ Artisan 命令列介面可以很容易地透過 `make:provider` 指令產生新�
 
 #### 啟動方法依賴注入
 
-你可以對服務提供者的 `boot` 方法作依賴的型別提式。[服務容器](/docs/{{version}}/container)會自動注入你所需要的任何依賴：You may type-hint dependencies for your service provider's `boot` method. The [service container](/docs/{{version}}/container) will automatically inject any dependencies you need:
+你可以對服務提供者的 `boot` 方法作依賴的型別提式。[服務容器](/docs/{{version}}/container)會自動注入你所需要的任何依賴：
 
     use Illuminate\Contracts\Routing\ResponseFactory;
 
@@ -100,12 +100,12 @@ Artisan 命令列介面可以很容易地透過 `make:provider` 指令產生新�
 <a name="registering-providers"></a>
 ## 註冊提供者
 
-所有的服務提供者都在 `config/app.php` 此設定檔中被註冊。這個檔案包含了一個 `providers` 陣列，你可以在其中列出你所有服務提供者的名稱。此陣列預設會列出一組 Laravel 的核心服務提供者。這些提供者啟動了 Laravel 的核心元件，例如郵件寄送器、隊列、快取及其他等等。All service providers are registered in the `config/app.php` configuration file. This file contains a `providers` array where you can list the class names of your service providers. By default, a set of Laravel core service providers are listed in this array. These providers bootstrap the core Laravel components, such as the mailer, queue, cache, and others.
+所有的服務提供者都在 `config/app.php` 此設定檔中被註冊。這個檔案包含了一個 `providers` 陣列，你可以在其中列出你所有服務提供者的類別名稱。此陣列預設會列出一組 Laravel 的核心服務提供者。這些提供者啟動了 Laravel 的核心元件，例如郵件寄送器、隊列、快取及其他等等。
 
-To register your provider, simply add it to the array:
+註冊你的服務提供者，只需簡單地加進這個陣列中：
 
     'providers' => [
-        // Other Service Providers
+        // 其他的服務提供者
 
         App\Providers\ComposerServiceProvider::class,
     ],
@@ -113,11 +113,11 @@ To register your provider, simply add it to the array:
 <a name="deferred-providers"></a>
 ## 緩載提供者
 
-若你的提供者**僅於**[服務容器](/docs/{{version}}/container)中註冊綁定，你可以選擇延緩其註冊，直到真正需要其中已註冊的綁定。延緩像這樣的提供者載入可增進你的應用程式的效能，因為這樣就毋須每個請求都從檔案系統將其載入。If your provider is **only** registering bindings in the [service container](/docs/{{version}}/container), you may choose to defer its registration until one of the registered bindings is actually needed. Deferring the loading of such a provider will improve the performance of your application, since it is not loaded from the filesystem on every request.
+若你的提供者**僅於**[服務容器](/docs/{{version}}/container)中註冊綁定，你可以選擇延緩其註冊，直到真正需要其中已註冊的綁定。延緩像這樣的提供者載入可增進你的應用程式的效能，因為這樣就毋須每個請求都從檔案系統將其載入。
 
-Laravel 編譯並儲存了一份清單，包括所有由延緩服務提供者所提供的服務，以及其服務提供者類別的名稱。因此，只有在當你企圖解析其中的服務時，Laravel 才會載入該服務提供者。Laravel compiles and stores a list of all of the services supplied by deferred service providers, along with the name of its service provider class. Then, only when you attempt to resolve one of these services does Laravel load the service provider.
+Laravel 編譯並儲存了一份清單，包括所有由延緩服務提供者所提供的服務，以及其服務提供者類別的名稱。因此，只有在當你企圖解析其中的服務時，Laravel 才會載入該服務提供者。
 
-要延緩提供者載入，將 `defer` 屬性設定為 `true`，並定義一個 `provides` 方法。`provides` 方法會回傳提供者所註冊的服務容器綁定：To defer the loading of a provider, set the `defer` property to `true` and define a `provides` method. The `provides` method should return the service container bindings registered by the provider:
+要延緩提供者載入，將 `defer` 屬性設定為 `true`，並定義一個 `provides` 方法。`provides` 方法會回傳提供者所註冊的服務容器綁定：
 
     <?php
 
