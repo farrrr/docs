@@ -15,6 +15,26 @@
     - [顯式綁定](#explicit-binding)
 - [表單方法欺騙](#form-method-spoofing)
 - [存取當前路由](#accessing-the-current-route)
+=======
+# Routing
+
+- [Basic Routing](#basic-routing)
+- [Route Parameters](#route-parameters)
+    - [Required Parameters](#required-parameters)
+    - [Optional Parameters](#parameters-optional-parameters)
+    - [Regular Expression Constraints](#parameters-regular-expression-constraints)
+- [Named Routes](#named-routes)
+- [Route Groups](#route-groups)
+    - [Middleware](#route-group-middleware)
+    - [Namespaces](#route-group-namespaces)
+    - [Sub-Domain Routing](#route-group-sub-domain-routing)
+    - [Route Prefixes](#route-group-prefixes)
+- [Route Model Binding](#route-model-binding)
+    - [Implicit Binding](#implicit-binding)
+    - [Explicit Binding](#explicit-binding)
+- [Form Method Spoofing](#form-method-spoofing)
+- [Accessing The Current Route](#accessing-the-current-route)
+>>>>>>> 60e0f17609e3b0cf1dc09850174c9ae0f0d0d379
 
 <a name="basic-routing"></a>
 ## 基本路由
@@ -92,6 +112,46 @@
 
     Route::get('user/{name?}', function ($name = 'John') {
         return $name;
+    });
+
+<a name="parameters-regular-expression-constraints"></a>
+### Regular Expression Constraints
+
+You may constrain the format of your route parameters using the `where` method on a route instance. The `where` method accepts the name of the parameter and a regular expression defining how the parameter should be constrained:
+
+    Route::get('user/{name}', function ($name) {
+        //
+    })->where('name', '[A-Za-z]+');
+
+    Route::get('user/{id}', function ($id) {
+        //
+    })->where('id', '[0-9]+');
+
+    Route::get('user/{id}/{name}', function ($id, $name) {
+        //
+    })->where(['id' => '[0-9]+', 'name' => '[a-z]+']);
+
+<a name="parameters-global-constraints"></a>
+#### Global Constraints
+
+If you would like a route parameter to always be constrained by a given regular expression, you may use the `pattern` method. You should define these patterns in the `boot` method of your `RouteServiceProvider`:
+
+    /**
+     * Define your route model bindings, pattern filters, etc.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Route::pattern('id', '[0-9]+');
+
+        parent::boot();
+    }
+
+Once the pattern has been defined, it is automatically applied to all routes using that parameter name:
+
+    Route::get('user/{id}', function ($id) {
+        // Only executed if {id} is numeric...
     });
 
 <a name="named-routes"></a>
@@ -222,7 +282,7 @@ Laravel 會自動解析變數名稱相符合且已定義在路由或是控制器
 
 接著，定義一個帶有 `{user}` 參數的路由：
 
-    $router->get('profile/{user}', function(App\User $user) {
+    Route::get('profile/{user}', function (App\User $user) {
         //
     });
 
@@ -234,9 +294,14 @@ Laravel 會自動解析變數名稱相符合且已定義在路由或是控制器
 
 如果你想使用自己的解析邏輯，你可以使用 `Route::bind` 方法。你傳遞給 `bind` 方法的 `閉包` you pass to the `bind` 將接收 URI 參數的值，並返回應該注入到路由中的類別實例：
 
-    $router->bind('user', function ($value) {
-        return App\User::where('name', $value)->first();
-    });
+    public function boot()
+    {
+        parent::boot();
+
+        Route::bind('user', function ($value) {
+            return App\User::where('name', $value)->first();
+        });
+    }
 
 <a name="form-method-spoofing"></a>
 ## 表單方法欺騙
