@@ -4,7 +4,7 @@
 - [路由參數](#route-parameters)
     - [必要參數](#required-parameters)
     - [選擇性參數](#parameters-optional-parameters)
-    - [Regular Expression Constraints](#parameters-regular-expression-constraints)
+    - [正規表達式規範](#parameters-regular-expression-constraints)
 - [命名路由](#named-routes)
 - [路由群組](#route-groups)
     - [中介層](#route-group-middleware)
@@ -96,9 +96,9 @@
     });
 
 <a name="parameters-regular-expression-constraints"></a>
-### Regular Expression Constraints
+### 正規表達式規範
 
-You may constrain the format of your route parameters using the `where` method on a route instance. The `where` method accepts the name of the parameter and a regular expression defining how the parameter should be constrained:
+你可以在一個路由實例中規範使用了 `where` 方法的路由參數格式。`where` 方法可接受參數名稱，以及一個正規表達式用來規範參數：
 
     Route::get('user/{name}', function ($name) {
         //
@@ -113,12 +113,12 @@ You may constrain the format of your route parameters using the `where` method o
     })->where(['id' => '[0-9]+', 'name' => '[a-z]+']);
 
 <a name="parameters-global-constraints"></a>
-#### Global Constraints
+#### 全域規範
 
-If you would like a route parameter to always be constrained by a given regular expression, you may use the `pattern` method. You should define these patterns in the `boot` method of your `RouteServiceProvider`:
+如果你想讓路由參數總是被特定的正規表達式所規範，你可以使用 `pattern` 方法。你可以在 `RouteServiceProvider` 中的 `boot` 方法定義該模式：
 
     /**
-     * Define your route model bindings, pattern filters, etc.
+     * 定義你的路由模型綁定、模式過濾器..等等。
      *
      * @return void
      */
@@ -129,7 +129,7 @@ If you would like a route parameter to always be constrained by a given regular 
         parent::boot();
     }
 
-Once the pattern has been defined, it is automatically applied to all routes using that parameter name:
+當該模式定義完成後，會自動地套用到所有使用到該參數名稱的路由：
 
     Route::get('user/{id}', function ($id) {
         // Only executed if {id} is numeric...
