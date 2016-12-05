@@ -4,6 +4,7 @@
 - [路由參數](#route-parameters)
     - [必要參數](#required-parameters)
     - [選擇性參數](#parameters-optional-parameters)
+    - [Regular Expression Constraints](#parameters-regular-expression-constraints)
 - [命名路由](#named-routes)
 - [路由群組](#route-groups)
     - [中介層](#route-group-middleware)
@@ -15,26 +16,6 @@
     - [顯式綁定](#explicit-binding)
 - [表單方法欺騙](#form-method-spoofing)
 - [存取當前路由](#accessing-the-current-route)
-=======
-# Routing
-
-- [Basic Routing](#basic-routing)
-- [Route Parameters](#route-parameters)
-    - [Required Parameters](#required-parameters)
-    - [Optional Parameters](#parameters-optional-parameters)
-    - [Regular Expression Constraints](#parameters-regular-expression-constraints)
-- [Named Routes](#named-routes)
-- [Route Groups](#route-groups)
-    - [Middleware](#route-group-middleware)
-    - [Namespaces](#route-group-namespaces)
-    - [Sub-Domain Routing](#route-group-sub-domain-routing)
-    - [Route Prefixes](#route-group-prefixes)
-- [Route Model Binding](#route-model-binding)
-    - [Implicit Binding](#implicit-binding)
-    - [Explicit Binding](#explicit-binding)
-- [Form Method Spoofing](#form-method-spoofing)
-- [Accessing The Current Route](#accessing-the-current-route)
->>>>>>> 60e0f17609e3b0cf1dc09850174c9ae0f0d0d379
 
 <a name="basic-routing"></a>
 ## 基本路由
