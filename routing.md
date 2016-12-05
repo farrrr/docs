@@ -42,7 +42,7 @@
     Route::delete($uri, $callback);
     Route::options($uri, $callback);
 
-有時候你可能需要讓註冊一個路由可以應對到多個 HTTP 動詞。你可以使用 `match` 方法做到。或者甚至可以透過 `any` 方法來使用註冊路由並回應所有的 HTTP 動詞：
+有時候你可能需要讓註冊一個路由可以對應到多個 HTTP 動詞。你可以使用 `match` 方法做到。或者甚至可以透過 `any` 方法來使用註冊路由並回應所有的 HTTP 動詞：
 
     Route::match(['get', 'post'], '/', function () {
         //
@@ -181,25 +181,25 @@
 <a name="route-model-binding"></a>
 ## 路由模型綁定
 
-When injecting a model ID to a route or controller action, you will often query to retrieve the model that corresponds to that ID. Laravel route model binding provides a convenient way to automatically inject the model instances directly into your routes. For example, instead of injecting a user's ID, you can inject the entire `User` model instance that matches the given ID.
+當你注入一個資料模型的 ID 到路由或是控制器動作時，通常可以查詢並使用該 ID 對應的資料模型。Laravel 路由模型綁定更提供一個方便的方式來注入類別實例至你的路由中。舉例來說，除了注入一個使用者的 ID，你還可以注入對應 ID 的完整 `User` 類別實例。
 
 <a name="implicit-binding"></a>
 ### 隱式綁定
 
-Laravel automatically resolves Eloquent models defined in routes or controller actions whose variable names match a route segment name. For example:
+Laravel 會自動解析變數名稱相符合且已定義在路由或是控制器動作中的 Eloquent 模型。下列例子：
 
     Route::get('api/users/{user}', function (App\User $user) {
         return $user->email;
     });
 
-In this example, since the Eloquent `$user` variable defined on the route matches the `{user}` segment in the route's URI, Laravel will automatically inject the model instance that has an ID matching the corresponding value from the request URI. If a matching model instance is not found in the database, a 404 HTTP response will automatically be generated.
+在這個例子中，由於 URI 中的 `{user}` 參數符合路由定義的 Eloquent 變數 `$user`， Laravel 將會注入與 URI 請求模型中 ID 相符合的實例。如果對應的模型實例不存在於資料庫中，那麼將自動產生一個 404 HTTP 回應。
 
 #### 自定鍵名
 
-If you would like model binding to use a database column other than `id` when retrieving a given model class, you may override the `getRouteKeyName` method on the Eloquent model:
+如果你希望模型綁定在透過資料模型查詢資料庫時，能夠使用 `id` 以外的欄位來索引，你不妨在 Eloquent 資料模型中覆寫 `getRouteKeyName` 方法：
 
     /**
-     * Get the route key for the model.
+     * 從資料模型中取得路由鍵值
      *
      * @return string
      */
@@ -211,7 +211,7 @@ If you would like model binding to use a database column other than `id` when re
 <a name="explicit-binding"></a>
 ### 顯式綁定
 
-To register an explicit binding, use the router's `model` method to specify the class for a given parameter. You should define your explicit model bindings in the `boot` method of the `RouteServiceProvider` class:
+要註冊顯示綁定，可使用路由器的 `model` 為特定類別指定一個參數。你應該在 `RouteServiceProvider` 類別裡的 `boot` 方法中定義顯示綁定：
 
     public function boot()
     {
@@ -220,19 +220,19 @@ To register an explicit binding, use the router's `model` method to specify the 
         Route::model('user', App\User::class);
     }
 
-Next, define a route that contains a `{user}` parameter:
+接著，定義一個帶有 `{user}` 參數的路由：
 
     $router->get('profile/{user}', function(App\User $user) {
         //
     });
 
-Since we have bound all `{user}` parameters to the `App\User` model, a `User` instance will be injected into the route. So, for example, a request to `profile/1` will inject the `User` instance from the database which has an ID of `1`.
+當我們將所有的 `{user}` 參數綁定到 `App\User` 資料模型，將會注入一個 `User` 到路由中。那麼舉例來說，一個來自 `profile/1` 的請求將會注入到來自資料庫中一筆 ID 為 `1` 的 `User` 實例。
 
-If a matching model instance is not found in the database, a 404 HTTP response will be automatically generated.
+如果對應的模型實例不存在於資料庫中，那麼將自動產生一個 404 HTTP 回應。
 
 #### 自定解析邏輯
 
-If you wish to use your own resolution logic, you may use the `Route::bind` method. The `Closure` you pass to the `bind` method will receive the value of the URI segment and should return the instance of the class that should be injected into the route:
+如果你想使用自己的解析邏輯，你可以使用 `Route::bind` 方法。你傳遞給 `bind` 方法的 `閉包` you pass to the `bind` 將接收 URI 參數的值，並返回應該注入到路由中的類別實例：
 
     $router->bind('user', function ($value) {
         return App\User::where('name', $value)->first();
