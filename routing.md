@@ -115,7 +115,7 @@
 <a name="parameters-global-constraints"></a>
 #### 全域規範
 
-如果你想讓路由參數總是被特定的正規表達式所規範，你可以使用 `pattern` 方法。你可以在 `RouteServiceProvider` 中的 `boot` 方法定義該模式：
+如果你想讓路由參數總是被特定的正規表達式所規範，那麼你可以使用 `pattern` 方法。你可以在 `RouteServiceProvider` 中的 `boot` 方法定義該模式：
 
     /**
      * 定義你的路由模型綁定、模式過濾器..等等。
