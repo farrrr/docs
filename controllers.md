@@ -59,9 +59,9 @@ Now, when a request matches the specified route URI, the `show` method on the `U
 <a name="controllers-and-namespaces"></a>
 ### 控制器與命名空間
 
-It is very important to note that we did not need to specify the full controller namespace when defining the controller route. Since the `RouteServiceProvider` loads your route files within a route group that contains the namespace, we only specified the portion of the class name that comes after the `App\Http\Controllers` portion of the namespace.
+有一點非常重要，那就是我們在定義控制器路由時，不需要指定完整的控制器命名空間。當 `RouteServiceProvider` 載入路由檔案時，其中有包含了命名空間的路由群組，所以只需要指定命名空間 `App\Http\Controllers` 之後部分的類別名稱即可。
 
-If you choose to nest your controllers deeper into the `App\Http\Controllers` directory, simply use the specific class name relative to the `App\Http\Controllers` root namespace. So, if your full controller class is `App\Http\Controllers\Photos\AdminController`, you should register routes to the controller like so:
+如果你選擇在 `App\Http\Controllers` 內層使用巢狀目錄來組織控制器，只需使用相對於 `App\Http\Controllers` 根命名空間的指定類別名稱。所以，若你的完整控制器類別是 `App\Http\Controllers\Photos\AdminController`，你應該如此將路由註冊到控制器：
 
     Route::get('foo', 'Photos\AdminController@method');
 
