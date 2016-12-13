@@ -17,7 +17,7 @@
 <a name="introduction"></a>
 ## 簡介
 
-Instead of defining all of your request handling logic as Closures in route files, you may wish to organize this behavior using Controller classes. Controllers can group related request handling logic into a single class. Controllers are stored in the `app/Http/Controllers` directory.
+除了將所有的請求處理邏輯以閉包的形式定義在路由檔案中，你或許希望能透過控制器類別的方式來組織這些邏輯行為。控制器可將相關的請求處理邏輯組成一個類別。就存放在 `app/Http/Controllers` 目錄中。
 
 <a name="basic-controllers"></a>
 ## 基礎控制器
