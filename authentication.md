@@ -24,7 +24,7 @@
 <a name="introduction"></a>
 ## 簡介
 
-> {tip} **想要快速起步？在一個全新的 Laravel 應用中執行 `php artisan make:auth` 和 `php artisan migrate`  命令，然後可以用瀏覽器訪問 `http://your-app.dev/register` 或其他在程式中定義的 url。這兩個簡單的指令就可以搭建好整個認證系統的骨架！
+> {tip} 想要快速起步？在一個全新的 Laravel 應用中執行 `php artisan make:auth` 和 `php artisan migrate`  指令，接著可用瀏覽器開啟 `http://your-app.dev/register` 或其他在程式中定義的 url。這兩個簡單的指令就可以搭建好整個認證系統的骨架！
 
 Laravel 中實現使用者認證非常簡單。實際上，幾乎所有東西都已經為你配置好了。配置檔案位於 `config/auth.php`，其中包含了用於調整認證服務行為的、標註好註釋的選項配置。
 
