@@ -15,31 +15,33 @@
     - [設定 Cron 排程器](#configuring-cron-schedules)
     - [連接埠](#ports)
 - [網路介面卡](#network-interfaces)
+- [升級 Homestead](#updating-homestead)
+- [舊版本](#old-versions)
 
 <a name="introduction"></a>
 ## 簡介
 
-Laravel 致力於讓 PHP 開發體驗更愉快，也包含你的本地開發環境。[Vagrant](https://www.vagrantup.com) 提供了一個簡單、優雅的方式來管理與供應虛擬機器。
+Laravel 致力於讓 PHP 開發體驗更愉快，也包含本地的開發環境。[Vagrant](https://www.vagrantup.com) 提供了一個簡單、優雅的方式來管理與供應虛擬機器。
 
-Laravel Homestead 是一個官方預載的 Vagrant box，提供你一個美好的開發環境，你不需要在你的本機電腦安裝 PHP、HHVM、網頁伺服器或任何伺服器軟體。不用擔心搞亂你的系統！Vagrant box 可以搞定一切。如果有什麼地方爛掉了，你可以在幾分鐘內快速的砍掉並重建虛擬機器！
+Laravel Homestead 是一個官方預載的 Vagrant box，提供一個美好的開發環境，不需要在本機電腦安裝 PHP、HHVM、網頁伺服器或任何伺服器軟體。不用擔心搞亂你的系統！Vagrant box 可以搞定一切。如果有什麼地方搞爛掉了，還可以在幾分鐘內快速地砍掉並重建虛擬機器！
 
-Homestead 可以在任何 Windows、Mac 或 Linux 系統上面執行，裡面包含了 Nginx 網頁伺服器、PHP 7.0、MySQL、Postgres、Redis、Memcached、Node，以及所有你在使用 Laravel 開發各種精彩的應用程式時所需要的軟體。
+Homestead 可以在任何 Windows、Mac 或 Linux 系統上面執行，裡面包含了 Nginx 網頁伺服器、PHP 7.1、MySQL、Postgres、Redis、Memcached、Node，以及所有在使用 Laravel 開發各種精彩的應用程式時所需要的軟體。
 
-> {note} 如果您是 Windows 的使用者，您可能需要啟用硬體虛擬化(VT-x)。這通常需要透過 BIOS 來啟用它。假如您使用的 Hyper-V 是在 UEFI 系統上，為了使用 VT-x 您可能需同時地禁用 Hyper-V。 
+> {note} 如果是 Windows 的使用者，您可能需要啟用硬體虛擬化(VT-x)。這通常需要透過 BIOS 來啟用它。假如您使用的 Hyper-V 是在 UEFI 系統上，為了使用 VT-x 您可能需同時地禁用 Hyper-V。 
 
 <a name="included-software"></a>
 ### 內建軟體	
 
 - Ubuntu 16.04
 - Git
-- PHP 7.0
+- PHP 7.1
 - Nginx
 - MySQL
 - MariaDB
 - Sqlite3
 - Postgres
 - Composer
-- Node (包含 PM2, Bower, Grunt, 和 Gulp)
+- Node (包含 Yarn, PM2, Bower, Grunt, and Gulp)
 - Redis
 - Memcached
 - Beanstalkd
@@ -50,21 +52,23 @@ Homestead 可以在任何 Windows、Mac 或 Linux 系統上面執行，裡面包
 <a name="first-steps"></a>
 ### 前置動作
 
-在啟動你的 Homestead 環境之前，你必須先安裝 [VirtualBox 5.x](https://www.virtualbox.org/wiki/Downloads) 或 [VMWare](https://www.vmware.com) 以及 [Vagrant](https://www.vagrantup.com/downloads.html)。這些軟體在各個常用的平台都有提供易用的視覺化安裝程式。
+在啟動 Homestead 環境之前，必需先安裝 [VirtualBox 5.1](https://www.virtualbox.org/wiki/Downloads)，[VMWare](https://www.vmware.com)，或 [Parallels](http://www.parallels.com/products/desktop/) 以及搭配 [Vagrant](https://www.vagrantup.com/downloads.html)。這些軟體在各個常用的平台都有提供易用的視覺化安裝程式。
 
 若要使用 VMware provider，你需要同時購買 VMware Fusion / Workstation 及 [VMware Vagrant plug-in](https://www.vagrantup.com/vmware)。雖然他不是免費的，但 VMware 可以在共享資料夾上獲得較快的性能。
 
+若要使用 Parallels provider，則必需安裝 [Parallels Vagrant plug-in](https://github.com/Parallels/vagrant-parallels)，它是免費的。
+
 #### 安裝 Homestead Vagrant Box
 
-當 VirtualBox / VMware 以及 Vagrant 安裝完成後，你可以在終端機以下列指令將 `laravel/homestead` 這個 box 安裝進你的 Vagrant 程式中。下載 box 會花你一點時間，時間長短將依據你的網路速度決定：
+當 VirtualBox / VMware 以及 Vagrant 安裝完成後，可以在終端機執行下列指令將 `laravel/homestead` 這個 box 安裝進你的 Vagrant 程式中。下載 box 會花一點時間，時間長短將依據你的網路速度決定：
 
     vagrant box add laravel/homestead
 
-如果此指令執行失敗了，請確保你安裝的 Vargrant 是最新版。
+如果此指令執行失敗了，請確保安裝的 Vargrant 是最新版。
 
 #### 安裝 Homestead
 
-你可以簡單地透過複製(clone)儲存庫的方式來安裝 Homestead。建議可將儲存庫複製至你的「home」目錄中的 `Homestead` 資料夾，如此一來 Homestead box 將能提供主機服務給你所有的 Laravel 專案：
+可以簡單地透過複製(clone)儲存庫的方式來安裝 Homestead。建議可將儲存庫複製至你的「home」目錄中的 `Homestead` 資料夾，如此一來 Homestead box 將能提供主機服務給你所有的 Laravel 專案：
 
     cd ~
 
@@ -72,33 +76,37 @@ Homestead 可以在任何 Windows、Mac 或 Linux 系統上面執行，裡面包
 
 複製完 Homestead 儲存庫，即可在 Homestead 目錄中執行 `bash init.sh` 指令來建立 `Homestead.yaml` 設定檔。 `Homestead.yaml` 檔案將會被放置在 `~/.homestead` 隱藏目錄中：
 
+    // Mac / Linux...
     bash init.sh
+
+    // Windows...
+    init.bat
 
 <a name="configuring-homestead"></a>
 ### 設定 Homestead
 
 #### 設定提供者
 
-在 `~/.homestead/Homestead.yaml` 檔案中的 `provider` 是用來設定你想要使用哪一個 Vagrant 提供者，像是：`virtualbox`，`vmware_fusion` 或 `vmware_workstation`。你可以根據喜好來決定提供者：
+在 `~/.homestead/Homestead.yaml` 檔案中的 `provider` 是用來設定想要使用哪一個 Vagrant 提供者，像是：`virtualbox`、`vmware_fusion`、`vmware_workstation` 或 `parallels`。你可以根據喜好來決定提供者：
 
     provider: virtualbox
 
 #### 設定共享目錄
 
-你可以在 `Homestead.yaml` 檔案的 `folders` 屬性裡列出所有你想與 Homestead 環境共享的目錄。這些目錄中的檔案若有更動，它們將會同步更動在你的本機電腦與 Homestead 環境。你可以將多個共享目錄都設定於此：
+可以在 `Homestead.yaml` 檔案的 `folders` 屬性裡列出所有想與 Homestead 環境共享的目錄。這些目錄中的檔案若有更動，它們將會同步更動在你的本機電腦與 Homestead 環境。可以將多個共享目錄都設定於此：
 
     folders:
         - map: ~/Code
           to: /home/vagrant/Code
 
-若要啟用 [NFS](https://www.vagrantup.com/docs/synced-folders/nfs.html)，你只需要在共享目錄的設定值中加入一個簡單的參數：
+若要啟用 [NFS](https://www.vagrantup.com/docs/synced-folders/nfs.html)，只需要在共享目錄的設定值中加入一個簡單的參數：
 
     folders:
         - map: ~/Code
           to: /home/vagrant/Code
           type: "nfs"
 
-You may also pass any options supported by Vagrant's [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) by listing them under the `options` key:
+也可以使用 Vagrant 的 [Synced Folders](https://www.vagrantup.com/docs/synced-folders/basic_usage.html) 傳遞參數，將他們列在 `options` 的鍵下：
 
     folders:
         - map: ~/Code
@@ -195,7 +203,7 @@ Windows:
 
 `homestead` 的資料庫設定了 MySQL 與 Postgres 兩種資料庫。為了方便使用，Laravel 的 `.env` 檔案預設會設定框架會使用此資料庫。
 
-如果想要從本機電腦上透過 Navicat 或者是 Sequel Pro 連接你的 MySQL 或 Postgres 資料庫，你應該連接 `127.0.0.1` 連接埠 `33060` (MySQL) 或 `54320` (Postgres)。資料庫的帳號及密碼皆為 `homestead` / `secret`.
+如果想要從本機電腦上透過資料庫連線程式連接你的 MySQL 或 Postgres 資料庫，你應該連接 `127.0.0.1` 連接埠 `33060` (MySQL) 或 `54320` (Postgres)。資料庫的帳號及密碼皆為 `homestead` / `secret`.
 
 > {note} 在本機電腦你應該只使用這些非標準的連接埠來連接資料庫。因為當 Laravel 執行於虛擬主機中時，你會在 Laravel 的資料庫設定檔使用預設的 3306 及 5432 連接埠。
 
@@ -261,3 +269,39 @@ Laravel 提供了便利的方式來[排程 Cron 任務](/docs/{{version}}/schedu
     networks:
         - type: "public_network"
           bridge: "en1: Wi-Fi (AirPort)"
+
+<a name="updating-homestead"></a>
+## 升級 Homestead
+
+可以使用兩個簡單的步驟來升級 Homestead，首先，應該先使用指令 `vagrant box update` 來升級 Vagrant box：
+
+    vagrant box update
+
+接下來，再更新 Homestead 的原始程式碼。若您是用 clone 的方式下載的話，可以在本地端儲存庫下，簡單地使用 `git pull origin master` 更新你的儲存庫。
+
+假如您是透過專案的 `composer.json` 來安裝 Homestead，請先確認 `composer.json` 檔中含有 `"laravel/homestead": "^4"`，再升級專案的相依函示庫：
+
+    composer update
+
+<a name="old-versions"></a>
+## 舊版本
+
+可以簡單地在 `Homestead.yaml` 檔案中，藉由增加以下的一行，覆寫 Homestead box 的版本：
+
+    version: 0.6.0
+
+範例：
+
+    box: laravel/homestead
+    version: 0.6.0
+    ip: "192.168.20.20"
+    memory: 2048
+    cpus: 4
+    provider: virtualbox
+
+當使用舊版 Homestead box，需要有相符的 Homestead 原始碼版本。下表列出支援的 box 版本，對應的 Homestead 原始碼版本，以及提供的 PHP 版本：
+
+|   | Homestead 版本 | Box 版本 |
+|---|---|---|
+| PHP 7.0 | 3.1.0 | 0.6.0 |
+| PHP 7.1 | 4.0.0 | 1.0.0 |

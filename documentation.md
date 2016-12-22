@@ -8,6 +8,7 @@
     - [設定](/docs/{{version}}/configuration)
     - [目錄結構](/docs/{{version}}/structure)
     - [錯誤與日誌](/docs/{{version}}/errors)
+    - [請求生命週期](/docs/{{version}}/lifecycle)
 - 開發環境
     - [Homestead](/docs/{{version}}/homestead)
     - [Valet](/docs/{{version}}/valet)
