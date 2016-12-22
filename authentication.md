@@ -75,6 +75,14 @@ Laravel 提供一個快速的指令來幫你建立所有認證所需的路由及
     protected $redirectTo = '/';
 
 當一個使用者登入認證失敗後，預設將會自動重導回登入表單頁面。
+假如重導路徑需要客製化邏輯，可以定義 `redirectTo` 方法，而不是 `redirectTo` 屬性：
+
+    protected function redirectTo()
+    {
+        //
+    }
+
+> {tip} `redirectTo` 方法比 `redirectTo` 屬性有更高的優先權。
 
 #### 客製化使用者名稱
 
@@ -179,7 +187,7 @@ Laravel 預設使用 `email` 欄位來認證，如果要客製此欄位，可以
 <a name="login-throttling"></a>
 ### 登入限流
 
-Laravel 內建的 `LoginController` 類提供 `Illuminate\Foundation\Auth\ThrottlesLogins` trait 允許你在應用程式中限制登入次數。預設情況下，如果使用者在進行幾次嘗試後仍不能提供正確的憑證，將在一分鐘內無法進行登入。這個限制會特別針對使用者的名稱 / e-mail 和他們的 IP 地址。
+Laravel 內建的 `LoginController` 類別提供 `Illuminate\Foundation\Auth\ThrottlesLogins` trait 允許你在應用程式中限制登入次數。預設情況下，如果使用者在進行幾次嘗試後仍不能提供正確的憑證，將在一分鐘內無法進行登入。這個限制會特別針對使用者的名稱 / e-mail 和他們的 IP 地址。
 
 <a name="authenticating-users"></a>
 ## 手動認證使用者
@@ -340,7 +348,7 @@ Laravel 內建的 `LoginController` 類提供 `Illuminate\Foundation\Auth\Thrott
 接著，[註冊這個路由中介層](/docs/{{version}}/middleware#registering-middleware)，然後將它增加在一個路由上：
 
     Route::get('api/user', function () {
-        // Only authenticated users may enter...
+        // 只有認證使用者能進入...
     })->middleware('auth.basic.once');
 
 <a name="adding-custom-guards"></a>
@@ -484,7 +492,7 @@ Laravel 內建的 `LoginController` 類提供 `Illuminate\Foundation\Auth\Thrott
 
     }
 
-這個介面很簡單。`getAuthIdentifierName` 方法需要回傳使用者的「主鍵」欄位名。`getAuthIdentifier` 方法需要回傳使用者的「主鍵」。在 MySQL 中，這個主鍵是指自動增加的主鍵。而 `getAuthPassword` 應該要回傳使用者雜湊後的密碼。這個介面允許認證系統和任何使用者類別運作，不管使用何種 ORM 或儲存抽象層。預設情況下，Laravel 的 `app` 資料夾中會包含 `User` 類別來實做此介面，所以你可以觀察這個類別以作為實做的例子。
+這個介面很簡單。`getAuthIdentifierName` 方法需要回傳使用者的「主鍵」欄位名。`getAuthIdentifier` 方法需要回傳使用者的「主鍵」。在 MySQL 中，指的是自動遞增主鍵。而 `getAuthPassword` 應該要回傳使用者雜湊後的密碼。這個介面允許認證系統和任何使用者類別運作，不管使用何種 ORM 或儲存抽象層。預設情況下，Laravel 的 `app` 資料夾中會包含 `User` 類別來實做此介面，所以你可以觀察這個類別以作為實做的例子。
 
 <a name="events"></a>
 ## 事件
