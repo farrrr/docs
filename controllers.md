@@ -98,16 +98,16 @@
 <a name="controller-middleware"></a>
 ## 控制器中介層
 
-[Middleware](/docs/{{version}}/middleware) may be assigned to the controller's routes in your route files:
+[中介層(Middleware)](/docs/{{version}}/middleware) 可以分配給路由文件中控制器的路由：
 
     Route::get('profile', 'UserController@show')->middleware('auth');
 
-However, it is more convenient to specify middleware within your controller's constructor. Using the `middleware` method from your controller's constructor, you may easily assign middleware to the controller's action. You may even restrict the middleware to only certain methods on the controller class:
+但是，在控制器的建構子函式中指定中介層更為方便。使用控制器建構子函式中的 `middleware` 方法，你可以輕鬆的就將中介層分配給控制器中的動作。甚至還可以將中介層限制在控制器類別中的特定方法：
 
     class UserController extends Controller
     {
         /**
-         * Instantiate a new controller instance.
+         * 實體化新的控制器實體。
          *
          * @return void
          */
@@ -121,7 +121,7 @@ However, it is more convenient to specify middleware within your controller's co
         }
     }
 
-Controller's also allow you to register middleware using a Closure. This provides a convenient way to define a middleware for a single controller without defining an entire middleware class:
+控制器還允許你使用閉包(Closure)來註冊中介層。這提供了一個簡便方法來為單一控制器定義中介層，而不需要定義整個中介層類別：
 
     $this->middleware(function ($request, $next) {
         // ...
@@ -129,7 +129,7 @@ Controller's also allow you to register middleware using a Closure. This provide
         return $next($request);
     });
 
-> {tip} You may assign middleware to a subset of controller actions; however, it may indicate your controller is growing too large. Instead, consider breaking your controller into multiple, smaller controllers.
+> {提示} 你可以將中介層分配給控制器動作的子集；不過，這可能會導致你的控制器變得太肥。相對來說，可以考慮將你的控制器打散為多個較小的控制器。
 
 <a name="resource-controllers"></a>
 ## 資源控制器
