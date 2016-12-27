@@ -68,7 +68,7 @@
 <a name="single-action-controllers"></a>
 ### 單一動作控制器
 
-If you would like to define a controller that only handles a single action, you may place a single `__invoke` method on the controller:
+如果你想定義一個只處理單個動作的控制器，你可以在控制器中放置一個  `__invoke` 方法：
 
     <?php
 
@@ -80,7 +80,7 @@ If you would like to define a controller that only handles a single action, you 
     class ShowProfile extends Controller
     {
         /**
-         * Show the profile for the given user.
+         * 顯示指定的使用者個人資訊。
          *
          * @param  int  $id
          * @return Response
@@ -91,7 +91,7 @@ If you would like to define a controller that only handles a single action, you 
         }
     }
 
-When registering routes for single action controllers, you do not need to specify a method:
+註冊單一動作控制器的路由時，你不需要指定方法：
 
     Route::get('user/{id}', 'ShowProfile');
 
