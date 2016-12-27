@@ -25,7 +25,7 @@
 <a name="defining-controllers"></a>
 ### 定義控制器
 
-Below is an example of a basic controller class. Note that the controller extends the base controller class included with Laravel. The base class provides a few convenience methods such as the `middleware` method, which may be used to attach middleware to controller actions:
+以下是一個基礎控制器類別的範例。注意，控制器擴充了 Laravel 所包含的基礎控制器類別。基礎類別提供了一些方便的方法，像是 `中介層(middleware)` 方法，可用於將中介層附加到控制器動作中：
 
     <?php
 
@@ -37,7 +37,7 @@ Below is an example of a basic controller class. Note that the controller extend
     class UserController extends Controller
     {
         /**
-         * Show the profile for the given user.
+         * 顯示指定的使用者個人資訊。
          *
          * @param  int  $id
          * @return Response
@@ -48,13 +48,13 @@ Below is an example of a basic controller class. Note that the controller extend
         }
     }
 
-You can define a route to this controller action like so:
+你可以像這樣定義一個對應到此控制器動作的路由：
 
     Route::get('user/{id}', 'UserController@show');
 
-Now, when a request matches the specified route URI, the `show` method on the `UserController` class will be executed. Of course, the route parameters will also be passed to the method.
+現在，當請求配對到指定的路由 URI 時，`UserController` 類別的 `show` 方法將被執行。當然，路由參數也會傳遞給方法。
 
-> {tip} Controllers are not **required** to extend a base class. However, you will not have access to convenience features such as the `middleware`, `validate`, and `dispatch` methods.
+> {提示} 控制器並非 **一定** 得繼承基礎類別。 但是，你將無法存取一些方便的功能，像是 `中介層(middleware)`、`驗證(validate)` 以及 `任務派發(dispatch)` 之類。
 
 <a name="controllers-and-namespaces"></a>
 ### 控制器與命名空間
