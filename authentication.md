@@ -24,7 +24,7 @@
 <a name="introduction"></a>
 ## 簡介
 
-> {tip} 想要快速起步？在一個全新的 Laravel 應用中執行 `php artisan make:auth` 和 `php artisan migrate`  指令，接著可用瀏覽器開啟 `http://your-app.dev/register` 或其他在程式中定義的 url。這兩個簡單的指令就可以搭建好整個認證系統的骨架！
+> {tip} **想要快速起步？**在一個全新的 Laravel 應用中執行 `php artisan make:auth` 和 `php artisan migrate`  指令，接著可用瀏覽器開啟 `http://your-app.dev/register` 或其他在程式中定義的 url。這兩個簡單的指令就可以搭建好整個認證系統的骨架！
 
 Laravel 中實現使用者認證非常簡單。實際上，幾乎所有東西都已經為你配置好了。配置檔案位於 `config/auth.php`，其中包含了用於調整認證服務行為的、標註好註釋的選項配置。
 
@@ -95,7 +95,7 @@ Laravel 預設使用 `email` 欄位來認證，如果要客製此欄位，可以
 
 #### 客製化 Guard 
 
-你還可以自定實做使用者認證和註冊的「guard」。開始之前，需要在 `LoginController`、`RegisterController` 和 `ResetPasswordController` 中定義 `guard` 方法，該方法需要傳回一個 guard 實例：
+你還可以自定實作使用者認證和註冊的「guard」。開始之前，需要在 `LoginController`、`RegisterController` 和 `ResetPasswordController` 中定義 `guard` 方法，該方法需要傳回一個 guard 實例：
 
     use Illuminate\Support\Facades\Auth;
 
@@ -259,7 +259,7 @@ Laravel 內建的 `LoginController` 類別提供 `Illuminate\Foundation\Auth\Thr
         // 這個使用者被記住了...
     }
 
-> {tip} 如果使用 Laravel 內建的 `LoginController`，「記住我」的邏輯已經透過 traits 實做完成。
+> {tip} 如果使用 Laravel 內建的 `LoginController`，「記住我」的邏輯已經透過 traits 實作完成。
 
 可以使用 `viaRemember` 方法來檢查這個使用者是否使用「記住我」cookie 來做認證：
 
@@ -383,7 +383,7 @@ Laravel 內建的 `LoginController` 類別提供 `Illuminate\Foundation\Auth\Thr
         }
     }
 
-正如上面的程式碼所示，`extend` 方法傳參進去的回呼需要傳回 `Illuminate\Contracts\Auth\Guard` 的實例，這個介面有幾個方法需要實做。一旦定義好 Guard 以後，可在 `auth.php` 設定檔中使用 `guards` 配置：
+正如上面的程式碼所示，`extend` 方法傳參進去的回呼需要傳回 `Illuminate\Contracts\Auth\Guard` 的實例，這個介面有幾個方法需要實作。一旦定義好 Guard 以後，可在 `auth.php` 設定檔中使用 `guards` 配置：
 
     'guards' => [
         'api' => [
@@ -444,7 +444,7 @@ Laravel 內建的 `LoginController` 類別提供 `Illuminate\Foundation\Auth\Thr
 <a name="the-user-provider-contract"></a>
 ### The User Provider Contract
 
-`Illuminate\Contracts\Auth\UserProvider` 的實做只負責獲取 `Illuminate\Contracts\Auth\Authenticatable` 的一個實做， 且不受限於永久儲存系統，例如 MySQL, Riak 等等。這兩個介面允許 Laravel 認證機制繼續作用，而不用管使用者如何儲存或是使用什麼樣型別的類別實現它。
+`Illuminate\Contracts\Auth\UserProvider` 的實作只負責獲取 `Illuminate\Contracts\Auth\Authenticatable` 的一個實作， 且不受限於永久儲存系統，例如 MySQL, Riak 等等。這兩個介面允許 Laravel 認證機制繼續作用，而不用管使用者如何儲存或是使用什麼樣型別的類別實現它。
 
 讓我們來看看 `Illuminate\Contracts\Auth\UserProvider` contract:
 
@@ -462,20 +462,20 @@ Laravel 內建的 `LoginController` 類別提供 `Illuminate\Foundation\Auth\Thr
 
     }
 
-`retrieveById` 函式通常傳入一個代表使用者的值，例如 MySQL 中遞增的 ID。`Authenticatable` 的實做透過 ID 匹配的方法來取出和回傳。
+`retrieveById` 函式通常傳入一個代表使用者的值，例如 MySQL 中遞增的 ID。透過 ID 匹配的方法來取出和回傳 `Authenticatable` 的實作。
 
-`retrieveByToken` 函式借由使用者唯一的 `$identifier` 和「記住我」`$token` 來取得使用者。如同之前的方法，`Authenticatable` 的實做應該被回傳。
+`retrieveByToken` 函式藉由使用者唯一的 `$identifier` 和「記住我」`$token` 來取得使用者。如同之前的方法，應該回傳 `Authenticatable` 的實作。
 
 `updateRememberToken` 方法使用新的 `$token` 更新了 `$user` 的 `remember_token` 欄位。這個新的 token 可以是全新的 token（嘗試使用「記住我」登入成功時），或是 null（當用戶登出時）。
 
-`retrieveByCredentials` 方法獲取了從 `Auth::attempt` 方法傳送過來的憑證陣列（當想要登入時）。這個方法應該要 「查詢」所使用的持久化儲存系統來匹配這些憑證。通常，這個方法會執行一個帶著「where」`$credentials['username']` 條件的查詢。這個方法接著需要回傳一個 `Authenticatable` 的一個實做。**此方法不應該企圖做任何密碼驗證或認證操作。**
+`retrieveByCredentials` 方法獲取了從 `Auth::attempt` 方法傳送過來的憑證陣列（當想要登入時）。這個方法應該要 「查詢」所使用的持久化儲存系統來匹配這些憑證。通常，這個方法會執行一個帶著「where」`$credentials['username']` 條件的查詢。這個方法接著需要回傳一個 `Authenticatable` 的一個實作。**此方法不應該企圖做任何密碼驗證或認證操作。**
 
-`validateCredentials` 方法需要比較 `$user` 和 `$credentials` 來認證這個使用者。例如，這個方法可能會比較 `Hash::check` 後的 `$user->getAuthPassword()` 值及 `$credentials['password']` 值。這個方法應該只驗證密碼的有效性並回傳布林值。
+`validateCredentials` 方法需要比較 `$user` 和 `$credentials` 來認證這個使用者。例如，這個方法可能會比較 `Hash::check` 後的 `$user->getAuthPassword()` 值及 `$credentials['password']` 值。這個方法驗證密碼的有效性並應該只回傳布林值。
 
 <a name="the-authenticatable-contract"></a>
 ### The Authenticatable Contract
 
-剛剛我們已經探討了 `UserProvider` 的每個方法，讓我們看一下 `Authenticatable` contract。還記得吧，UserProvider 提供者需要從 `retrieveById` 和 `retrieveByCredentials` 方法來回傳 Authenticatable 介面的實做：
+剛剛我們已經探討了 `UserProvider` 的每個方法，讓我們看一下 `Authenticatable` contract。還記得吧，UserProvider 需要從 `retrieveById` 和 `retrieveByCredentials` 方法來回傳 Authenticatable 介面的實作：
 
     <?php
 
@@ -492,7 +492,7 @@ Laravel 內建的 `LoginController` 類別提供 `Illuminate\Foundation\Auth\Thr
 
     }
 
-這個介面很簡單。`getAuthIdentifierName` 方法需要回傳使用者的「主鍵」欄位名。`getAuthIdentifier` 方法需要回傳使用者的「主鍵」。在 MySQL 中，指的是自動遞增主鍵。而 `getAuthPassword` 應該要回傳使用者雜湊後的密碼。這個介面允許認證系統和任何使用者類別運作，不管使用何種 ORM 或儲存抽象層。預設情況下，Laravel 的 `app` 資料夾中會包含 `User` 類別來實做此介面，所以你可以觀察這個類別以作為實做的例子。
+這個介面很簡單。`getAuthIdentifierName` 方法需要回傳使用者的「主鍵」欄位名。`getAuthIdentifier` 方法需要回傳使用者的「主鍵」。在 MySQL 中，指的是自動遞增主鍵。而 `getAuthPassword` 應該要回傳使用者雜湊後的密碼。這個介面允許認證系統和任何使用者類別運作，不管使用何種 ORM 或儲存抽象層。預設情況下，Laravel 的 `app` 資料夾中會包含 `User` 類別來實作此介面，所以你可以觀察這個類別以作為實作的例子。
 
 <a name="events"></a>
 ## 事件
