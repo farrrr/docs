@@ -98,7 +98,7 @@ Laravel 幾乎不需設定就可以馬上使用，你可以自由的開始開發
 
 #### Apache
 
-Laravel 包含 `public/.htaccess` 檔案，提供無需 `index.php` 前端控制器的優雅 URL。當 Laravel 架設於 Apache 時，確認您的伺服器已啟用 `mod_rewrite` 模組，則 `.htaccess` 檔案會被啟用。
+Laravel 包含 `public/.htaccess` 檔案，提供無需顯示 `index.php` 前端控制器的優雅 URL。當 Laravel 架設於 Apache 時，確認您的伺服器已啟用 `mod_rewrite` 模組，則 `.htaccess` 檔案會被啟用。
 
 若在您的 Apache 環境中 `.htaccess` 檔案沒有效的話，嘗試以下的替代內容：
 
@@ -117,5 +117,5 @@ Laravel 包含 `public/.htaccess` 檔案，提供無需 `index.php` 前端控制
         try_files $uri $uri/ /index.php?$query_string;
     }
 
-理所當然的事，當使用 [Homestead](/docs/{{version}}/homestead) 或 [Valet](/docs/{{version}}/valet)，優雅的 URL 已自動設定完畢。
+理所當然的是，當使用 [Homestead](/docs/{{version}}/homestead) 或 [Valet](/docs/{{version}}/valet)，優雅的 URL 已自動設定完畢。
 
