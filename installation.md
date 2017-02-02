@@ -4,6 +4,8 @@
     - [伺服器需求](#server-requirements)
     - [安裝 Laravel](#installing-laravel)
     - [設定](#configuration)
+- [Web 伺服器設定](#web-server-configuration)
+    - [優雅的 URL](#pretty-urls)
 
 <a name="installation"></a>
 ## 安裝
@@ -27,7 +29,7 @@ Laravel 框架有一些系統上的需求。當然，[Laravel Homestead](/docs/{
 <a name="installing-laravel"></a>
 ### 安裝 Laravel
 
-Laravel 使用 [Composer](http://getcomposer.org) 來管理相依性。所以，在使用 Laravel 之前，你必須確認電腦上是否安裝了 Composer。
+Laravel 使用 [Composer](https://getcomposer.org) 來管理相依性。所以，在使用 Laravel 之前，你必須確認電腦上是否安裝了 Composer。
 
 #### 方式一：透過 Laravel Installer
 
@@ -35,7 +37,7 @@ Laravel 使用 [Composer](http://getcomposer.org) 來管理相依性。所以，
 
     composer global require "laravel/installer"
 
-請確定把 `$HOME/.composer/vendor/bin`路徑(實際路徑依據作業系統可能不同)放置於環境變數 $PATH 裡，這樣你的系統才能找到 `laravel` 執行檔。
+請確定把 `$HOME/.composer/vendor/bin` 路徑放置於環境變數 $PATH 裡，這樣你的系統才能找到 `laravel` 執行檔。
 
 一旦安裝完成後，就可以使用 `laravel new` 指令在指定的目錄建立一份全新安裝的 Laravel。例如：`laravel new blog` 將會建立一個名稱為 `blog` 的目錄，裡面存放著全新安裝的 Laravel 和相依程式碼：
 
@@ -47,13 +49,13 @@ Laravel 使用 [Composer](http://getcomposer.org) 來管理相依性。所以，
 
     composer create-project --prefer-dist laravel/laravel blog
 
-#### 本地開發環境伺服器
+#### 本地開發伺服器
 
-如果有在本地端安裝 PHP 且打算使用 PHP 內建的開發環境伺服器來啟用你的應用程式，可以使用 Artisan 指令 `serve`。這個指令會將開發伺服器啟動在 `http://localhost:8000` :
+If you have PHP installed locally and you would like to use PHP's built-in development server to serve your application, you may use the `serve` Artisan command. This command will start a development server at `http://localhost:8000`:
 
     php artisan serve
 
-當然，更健全地開發環境選項還是透過 [Homestead](/docs/{{version}}/homestead) 和 [Valet](/docs/{{version}}/valet).
+Of course, more robust local development options are available via [Homestead](/docs/{{version}}/homestead) and [Valet](/docs/{{version}}/valet).
 
 <a name="configuration"></a>
 ### 設定
@@ -88,4 +90,32 @@ Laravel 幾乎不需設定就可以馬上使用，你可以自由的開始開發
 - [Session](/docs/{{version}}/session#configuration)
 </div>
 
-一旦 Laravel 安裝完成，你應該同時[設定本機環境](/docs/{{version}}/configuration#environment-configuration)。
+<a name="web-server-configuration"></a>
+## Web 伺服器設定
+
+<a name="pretty-urls"></a>
+### 優雅的 URL
+
+#### Apache
+
+Laravel 包含 `public/.htaccess` 檔案，提供無需 `index.php` 前端控制器的優雅 URL。當 Laravel 架設於 Apache 時，確認您的伺服器已啟用 `mod_rewrite` 模組，則 `.htaccess` 檔案會被啟用。
+
+若在您的 Apache 環境中 `.htaccess` 檔案沒有效的話，嘗試以下的替代內容：
+
+    Options +FollowSymLinks
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+#### Nginx
+
+若你使用的是 Nginx，在網站設定檔中使用以下的指令，會重導所有的請求給 `index.php` 前端控制器：
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+理所當然的事，當使用 [Homestead](/docs/{{version}}/homestead) 或 [Valet](/docs/{{version}}/valet)，優雅的 URL 已自動設定完畢。
+

@@ -521,6 +521,10 @@ Laravel 提供了在認證過程中的各種[事件](/docs/{{version}}/events)�
             'App\Listeners\LogSuccessfulLogin',
         ],
 
+        'Illuminate\Auth\Events\Failed' => [
+            'App\Listeners\LogFailedLogin',
+        ],
+
         'Illuminate\Auth\Events\Logout' => [
             'App\Listeners\LogSuccessfulLogout',
         ],

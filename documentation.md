@@ -2,12 +2,11 @@
     - [發行說明](/docs/{{version}}/releases)
     - [升級導引](/docs/{{version}}/upgrade)
     - [貢獻導引](/docs/{{version}}/contributions)
-    - [API 文件](/api/{{version}})
+    - [API 文件](https://laravel.com/api/{{version}})
 - 入門
     - [安裝](/docs/{{version}}/installation)
     - [設定](/docs/{{version}}/configuration)
     - [目錄結構](/docs/{{version}}/structure)
-    - [錯誤與日誌](/docs/{{version}}/errors)
     - [請求生命週期](/docs/{{version}}/lifecycle)
 - 開發環境
     - [Homestead](/docs/{{version}}/homestead)
@@ -43,6 +42,7 @@
 - 常用功能
     - [廣播](/docs/{{version}}/broadcasting)
     - [快取](/docs/{{version}}/cache)
+    - [錯誤與日誌](/docs/{{version}}/errors)
     - [事件](/docs/{{version}}/events)
     - [檔案儲存](/docs/{{version}}/filesystem)
     - [郵件](/docs/{{version}}/mail)

@@ -60,7 +60,7 @@ The `make:console` command has been renamed to `make:command`.
 
 #### Authentication Scaffolding
 
-The two default authentication controllers provided with the framework have been split into four smaller controllers. This change provides cleaner, more focused authentication controllers by default. The easiest way to upgrade your application to the new authentication controllers is to [grab a fresh copy of each controller from GitHub](https://github.com/laravel/laravel/tree/master/app/Http/Controllers/Auth) and place them into your application.
+The two default authentication controllers provided with the framework have been split into four smaller controllers. This change provides cleaner, more focused authentication controllers by default. The easiest way to upgrade your application to the new authentication controllers is to [grab a fresh copy of each controller from GitHub](https://github.com/laravel/laravel/tree/5.3/app/Http/Controllers/Auth) and place them into your application.
 
 You should also make sure that you are calling the `Auth::routes()` method in your `routes/web.php` file. This method will register the proper routes for the new authentication controllers.
 
@@ -127,7 +127,7 @@ In prior versions of Laravel, when registering custom Blade directives using the
 
 #### Service Provider
 
-Laravel 5.3 includes significant improvements to [event broadcasting](/docs/{{version}}/broadcasting). You should add the new `BroadcastServiceProvider` to your `app/Providers` directory by [grabbing a fresh copy of the source from GitHub](https://raw.githubusercontent.com/laravel/laravel/develop/app/Providers/BroadcastServiceProvider.php). Once you have defined the new service provider, you should add it to the `providers` array of your `config/app.php` configuration file.
+Laravel 5.3 includes significant improvements to [event broadcasting](/docs/{{version}}/broadcasting). You should add the new `BroadcastServiceProvider` to your `app/Providers` directory by [grabbing a fresh copy of the source from GitHub](https://raw.githubusercontent.com/laravel/laravel/5.3/app/Providers/BroadcastServiceProvider.php). Once you have defined the new service provider, you should add it to the `providers` array of your `config/app.php` configuration file.
 
 ### Cache
 
@@ -164,6 +164,14 @@ In previous versions of Laravel, the `$key` was passed first. Since most use cas
 A collection's `where` method now performs a "loose" comparison by default instead of a strict comparison. If you would like to perform a strict comparison, you may use the `whereStrict` method.
 
 The `where` method also no longer accepts a third parameter to indicate "strictness". You should explicitly call either `where` or `whereStrict` depending on your application's needs.
+
+### Configuration
+
+#### Application Name
+
+In the `config/app.php` configuration file, add the following configuration option:
+
+    'name' => 'Your Application Name',
 
 ### Controllers
 
@@ -417,10 +425,6 @@ It is no longer necessary to specify the `--daemon` option when calling the `que
     // Process a single job...
     php artisan queue:work --once
 
-#### Event Data Changes
-
-Various queue job events such as `JobProcessing` and `JobProcessed` no longer contain the `$data` property. You should update your application to call `$event->job->payload()` to get the equivalent data.
-
 #### Database Driver Changes
 
 If you are using the `database` driver to store your queued jobs, you should drop the `jobs_queue_reserved_reserved_at_index` index then drop the `reserved` column from your `jobs` table. This column is no longer required when using the `database` driver. Once you have completed these changes, you should add a new compound index on the `queue` and `reserved_at` columns.
@@ -452,6 +456,22 @@ Below is an example migration you may use to perform the necessary changes:
             $table->dropColumn('exception');
         });
     }
+
+#### Event Data Changes
+
+Various queue job events such as `JobProcessing` and `JobProcessed` no longer contain the `$data` property. You should update your application to call `$event->job->payload()` to get the equivalent data.
+
+#### Failed Job Events
+
+If you are calling the `Queue::failing` method in your `AppServiceProvider`, you should update the method signature to the following:
+
+    use Illuminate\Queue\Events\JobFailed;
+
+    Queue::failing(function (JobFailed $event) {
+        // $event->connectionName
+        // $event->job
+        // $event->exception
+    });
 
 #### Process Control Extension
 
