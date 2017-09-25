@@ -118,7 +118,7 @@ Laravel 的 `Schema` [facade](/docs/{{version}}/facades) 提供了在資料庫�
 ## 撰寫遷移
 
 <a name="creating-tables"></a>
-### 建力資料表
+### 建立資料表
 
 要建立一張新的資料表，可以使用 `Schema` facade 的 `create`方法。`create` 方法接收兩個參數。第一個參數為資料表的名稱，第二個參數為一個`閉包`，它接收一個用於定義新資料表的 `Blueprint` 物件：
 
