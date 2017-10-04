@@ -258,10 +258,10 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 <a name="retrieving-input"></a>
 ### 取得輸入
 
-While your command is executing, you will obviously need to access the values for the arguments and options accepted by your command. To do so, you may use the `argument` and `option` methods:
+當你的指令執行時，想必需要處理指令的參數與選項，那麼你可以使用 `argument` 和 `option` 這兩個方法：
 
     /**
-     * Execute the console command.
+     * 當指令被執行時
      *
      * @return mixed
      */
@@ -272,85 +272,85 @@ While your command is executing, you will obviously need to access the values fo
         //
     }
 
-If you need to retrieve all of the arguments as an `array`, call the `arguments` method:
+如果你想要將所有的參數匯聚成一個 `array` ，直接使用 `arguments` 這個方法而不需再加參數：
 
     $arguments = $this->arguments();
 
-Options may be retrieved just as easily as arguments using the `option` method. To retrieve all of the options as an array, call the `options` method:
+取得選項就和取得參數一樣簡單，你只需要使用 `option` 方法。要取得陣列的全部，直接使用 `options` 方法且不用加入任何參數:
 
-    // Retrieve a specific option...
+    // 取得特定選項...
     $queueName = $this->option('queue');
 
-    // Retrieve all options...
+    // 取得全部選項...
     $options = $this->options();
 
-If the argument or option does not exist, `null` will be returned.
+如果參數或選項不存在，將會回傳 `null` 。
 
 <a name="prompting-for-input"></a>
 ### 互動式輸入
 
-In addition to displaying output, you may also ask the user to provide input during the execution of your command. The `ask` method will prompt the user with the given question, accept their input, and then return the user's input back to your command:
+除了顯示輸出外，你也可以在指令在執行期間，要求使用者輸入東西。 `ask` 方法將會提供問題來詢問使用者，並且等待回覆與回傳使用者輸入的東西給指令：
 
     /**
-     * Execute the console command.
+     * 當指令被執行時
      *
      * @return mixed
      */
     public function handle()
     {
-        $name = $this->ask('What is your name?');
+        $name = $this->ask('請輸入您的名字');
     }
 
-The `secret` method is similar to `ask`, but the user's input will not be visible to them as they type in the console. This method is useful when asking for sensitive information such as a password:
+ `secret` 方法使用起來很像 `ask` 方法，但是使用者輸入的內容並不會顯示在指令列上。這個方法適合要求使用者提供密碼或其他敏感資訊：
 
-    $password = $this->secret('What is the password?');
+    $password = $this->secret('請輸入您的密碼');
 
-#### Asking For Confirmation
+#### 要求確認
 
-If you need to ask the user for a simple confirmation, you may use the `confirm` method. By default, this method will return `false`. However, if the user enters `y` or `yes` in response to the prompt, the method will return `true`.
+如果你需要使用者做簡單的確認，你可以使用 `confirm` 方法。預設的情況下，這個方法會回傳 `false`。然而，使用者輸入 `y` 或 `yes` ，那麼這個方法才會回傳 `true`。
 
-    if ($this->confirm('Do you wish to continue?')) {
+    if ($this->confirm('您確定執行嗎？[y|N]')) {
         //
     }
 
-#### Auto-Completion
+#### 自動補齊
 
-The `anticipate` method can be used to provide auto-completion for possible choices. The user can still choose any answer, regardless of the auto-completion hints:
+`anticipate` 方法能預測並補齊使用者可能想輸入的內容，但是使用者仍可以輸入其他內容：
 
-    $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
+    $name = $this->anticipate('請輸入您的名字', ['Taylor', 'Dayle']);
 
-#### Multiple Choice Questions
+#### 多選題
 
-If you need to give the user a predefined set of choices, you may use the `choice` method. You may set the default value to be returned if no option is chosen:
+如果你希望提供使用者以選擇題作答，你可以使用 `choice` 方法.。你還可以設置預設值來回應使用者回答問題以外的東西。
 
     $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $default);
 
 <a name="writing-output"></a>
 ### 自訂輸出
 
-To send output to the console, use the `line`, `info`, `comment`, `question` and `error` methods. Each of these methods will use appropriate ANSI colors for their purpose. For example, let's display some general information to the user. Typically, the `info` method will display in the console as green text:
+使用 `line`, `info`, `comment`, `question` 和 `error` 方法來傳送輸出到終端。每個方法都有適合的 ANSI 顏色來表達他們的目的。例如，我們要傳送一般資訊給使用者，建議使用 `info` 方法，這將會回傳綠字給終端：
 
     /**
-     * Execute the console command.
+     * 當指令被執行時
      *
      * @return mixed
      */
     public function handle()
     {
-        $this->info('Display this on the screen');
+        $this->info('顯示於畫面上');
     }
 
-To display an error message, use the `error` method. Error message text is typically displayed in red:
+使用 `error` 方法可以回傳錯誤訊息給使用者，並以紅字呈現：
 
-    $this->error('Something went wrong!');
+    $this->error('有東西出問題囉！');
 
-If you would like to display plain, uncolored console output, use the `line` method:
+如果你只想顯示終端機的輸出顏色，可以使用 `line` 方法:
 
-    $this->line('Display this on the screen');
+    $this->line('顯示於畫面');
 
-#### Table Layouts
+#### 表格佈局
 
-The `table` method makes it easy to correctly format multiple rows / columns of data. Just pass in the headers and rows to the method. The width and height will be dynamically calculated based on the given data:
+ `table` 方法可以更輕鬆地格式化多行多列的資料，只需要傳送標題與行給這個方法。寬與高會根據資料進行動態調整：
 
     $headers = ['Name', 'Email'];
 
@@ -358,9 +358,9 @@ The `table` method makes it easy to correctly format multiple rows / columns of 
 
     $this->table($headers, $users);
 
-#### Progress Bars
+#### 進度條
 
-For long running tasks, it could be helpful to show a progress indicator. Using the output object, we can start, advance and stop the Progress Bar. First, define the total number of steps the process will iterate through. Then, advance the Progress Bar after processing each item:
+對於長時間執行的任務，顯示進度條將會很有幫助。使用輸出物件，我們可以開始、前進和停止進度條。當開始執行時你需要定義總共有幾個階段，然後在給個階段完成後就讓進度條前進：
 
     $users = App\User::all();
 
@@ -374,15 +374,15 @@ For long running tasks, it could be helpful to show a progress indicator. Using 
 
     $bar->finish();
 
-For more advanced options, check out the [Symfony Progress Bar component documentation](https://symfony.com/doc/2.7/components/console/helpers/progressbar.html).
+想知道更多資訊，請點閱 [Symfony Progress Bar component documentation](https://symfony.com/doc/2.7/components/console/helpers/progressbar.html).
 
 <a name="registering-commands"></a>
 ## 註冊指令
 
-Because of the `load` method call in your console kernel's `commands` method, all commands within the `app/Console/Commands` directory will automatically be registered with Artisan. In fact, you are free to make additional calls to the `load` method to scan other directories for Artisan commands:
+由於在終端核心 `commands`方法呼叫了 `load` 方法，所以 `app/Console/Commands` 目錄下的所有指令都將會自動註冊到 Artisan 。實際上，你仍可以任意地呼叫 `load` 方法來掃描 Artisan 指令的其他目錄：
 
     /**
-     * Register the commands for the application.
+     * 註冊 Artisan 指令
      *
      * @return void
      */
@@ -394,7 +394,7 @@ Because of the `load` method call in your console kernel's `commands` method, al
         // ...
     }
 
-You may also manually register commands by adding its class name to the `$command` property of your `app/Console/Kernel.php` file. When Artisan boots, all the commands listed in this property will be resolved by the [service container](/docs/{{version}}/container) and registered with Artisan:
+你還可以藉由類別名稱寫入 `app/Console/Kernel.php` 檔案的 `$command` 屬性來手動註冊命令。當 Artisan 啟動時，該屬性中列出的所有指令將由 [服務容器](/docs/{{version}}/container) 解析並註冊到 Artisan 指令上：
 
     protected $commands = [
         Commands\SendEmails::class
@@ -403,7 +403,7 @@ You may also manually register commands by adding its class name to the `$comman
 <a name="programmatically-executing-commands"></a>
 ## 使用程式碼呼叫指令
 
-Sometimes you may wish to execute an Artisan command outside of the CLI. For example, you may wish to fire an Artisan command from a route or controller. You may use the `call` method on the `Artisan` facade to accomplish this. The `call` method accepts the name of the command as the first argument, and an array of command parameters as the second argument. The exit code will be returned:
+有時候你希望從終端機介面外執行 Artisan 指令。例如，你希望能從控制器或路由觸發 Artisan 指令。你可以使用 `Artisan` facade 的 `call` 方法做到。 `call` 方法的第一個參數為指令名稱，第二個參數為陣列型態的指令輸入。退出碼將會被回傳：
 
     Route::get('/foo', function () {
         $exitCode = Artisan::call('email:send', [
@@ -413,7 +413,7 @@ Sometimes you may wish to execute an Artisan command outside of the CLI. For exa
         //
     });
 
-Using the `queue` method on the `Artisan` facade, you may even queue Artisan commands so they are processed in the background by your [queue workers](/docs/{{version}}/queues). Before using this method, make sure you have configured your queue and are running a queue listener:
+在 `Artisan` facade 上使用 `queue` 方法，可以將 Artisan 指令放入 [隊列](/docs/{{version}}/queues) 處理。在使用此方法前，請先確認隊列的設定，在執行隊列：
 
     Route::get('/foo', function () {
         Artisan::queue('email:send', [
@@ -423,9 +423,9 @@ Using the `queue` method on the `Artisan` facade, you may even queue Artisan com
         //
     });
 
-#### Passing Array Values
+#### 傳遞陣列
 
-If your command defines an option that accepts an array, you may simply pass an array of values to that option:
+如果你需要接收陣列的選項，則可以簡單地將陣列傳給選項：
 
     Route::get('/foo', function () {
         $exitCode = Artisan::call('email:send', [
@@ -433,9 +433,9 @@ If your command defines an option that accepts an array, you may simply pass an 
         ]);
     });
 
-#### Passing Boolean Values
+#### 傳遞布林值
 
-If you need to specify the value of an option that does not accept string values, such as the `--force` flag on the `migrate:refresh` command, you should pass `true` or `false`:
+如果你需要指定非接收字串選項的值，像是 `migrate:refresh` 指令的 `--force` 標記，你可以傳遞 `true` 或 `false`：
 
     $exitCode = Artisan::call('migrate:refresh', [
         '--force' => true,
@@ -444,10 +444,10 @@ If you need to specify the value of an option that does not accept string values
 <a name="calling-commands-from-other-commands"></a>
 ### 在指令中呼叫其他指令
 
-Sometimes you may wish to call other commands from an existing Artisan command. You may do so using the `call` method. This `call` method accepts the command name and an array of command parameters:
+有時候，你希望從指令中呼叫其他已存在的指令。你可以使用 `call` 方法。 `call` 方法接受指令名稱和指令參數的陣列：
 
     /**
-     * Execute the console command.
+     * 當指令被執行時
      *
      * @return mixed
      */
@@ -460,7 +460,7 @@ Sometimes you may wish to call other commands from an existing Artisan command. 
         //
     }
 
-If you would like to call another console command and suppress all of its output, you may use the `callSilent` method. The `callSilent` method has the same signature as the `call` method:
+如果你想要呼叫其它指令並呼列它所有的輸出，你可以使用 `callSilent` 方法。 `callSilent`和 `call` 方法使用方式一樣:
 
     $this->callSilent('email:send', [
         'user' => 1, '--queue' => 'default'
