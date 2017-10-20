@@ -24,7 +24,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-> {溫馨提醒} **想快速入門？**只要在新建的 Laravel 執行 `php artisan make:auth` 和 `php artisan migrate` 指令。接著，進入 `http://your-app.dev/register` 或重新定義你想要的路由位址。這兩個指令就可以快速地建立整個認證系統！
+> {tip} **想快速入門？**只要在新建的 Laravel 執行 `php artisan make:auth` 和 `php artisan migrate` 指令。接著，進入 `http://your-app.dev/register` 或重新定義你想要的路由位址。這兩個指令就可以快速地建立整個認證系統！
 
 Laravel 實作認證功能非常簡單。事實上，幾乎所有東西都已經幫你設定好了。設定認證系統的檔案在 `config/auth.php`，其中還包含了幾個好用的選項用來調整認證系統。
 
@@ -82,7 +82,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
         return '/path';
     }
 
-> {溫馨提醒} `redirectTo` 方法將優先於 `redirectTo` 屬性。
+> {tip} `redirectTo` 方法將優先於 `redirectTo` 屬性。
 
 #### 自訂使用者名稱
 
@@ -157,7 +157,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
         // 如果使用者已登入就...
     }
 
-> {溫馨提醒} 即使可以使用 `check` 方法來檢查使用者是否有通過認證，但還是建議你在使用者存取控制器或路由之前，使用「中介層」來過濾使用者的認證狀態。想知道更多資訊，可以看看[保護路由](/docs/{{version}}/authentication#protecting-routes)這個文件（其實就在下面）。
+> {tip} 即使可以使用 `check` 方法來檢查使用者是否有通過認證，但還是建議你在使用者存取控制器或路由之前，使用「中介層」來過濾使用者的認證狀態。想知道更多資訊，可以看看[保護路由](/docs/{{version}}/authentication#protecting-routes)這個文件（其實就在下面）。
 
 <a name="protecting-routes"></a>
 ### 保護路由
@@ -232,7 +232,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
         // 如果這名使用者的活動是存在且有效的話...
     }
 
-> {注意} 在這些例子中，`email` 不是一個必要的選項，它只被用來當作範例。你應該使用你的資料庫中與「username」相同意義的欄位名稱。
+> {note} 在這些例子中，`email` 不是一個必要的選項，它只被用來當作範例。你應該使用你的資料庫中與「username」相同意義的欄位名稱。
 
 
 #### 存取指定「守衛」實例
@@ -261,7 +261,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
         // 如果這名使用者已被記住就...
     }
 
-> {溫馨提醒} 如果你使用 Laravel 內建的 `LoginController`，則「記住」使用者的程式邏輯已經由控制器使用的 traits 實作。
+> {tip} 如果你使用 Laravel 內建的 `LoginController`，則「記住」使用者的程式邏輯已經由控制器使用的 traits 實作。
 
 如果你「已經記住」使用者，你可以使用 `viaRemember` 方法來確認這個使用者是否使用「記住我」cookie 來做認證：
 
