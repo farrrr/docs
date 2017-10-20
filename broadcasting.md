@@ -34,7 +34,7 @@
 
 為了協助你建構 WebSocket 連線，Laravel 把「廣播[事件](/docs/{{version}}/events)」弄的很輕鬆。 Laravel 允許你在廣播事件的時候共用後端與前端（JavaScript）的事件名稱。
 
-> {溫馨提醒} 再深入了解廣播之前，請你先閱讀所有關於 Laravel [事件與監聽器](/docs/{{version}}/events) 的文件。
+> {tip} 再深入了解廣播之前，請你先閱讀所有關於 Laravel [事件與監聽器](/docs/{{version}}/events) 的文件。
 
 <a name="configuration"></a>
 ### 設定
