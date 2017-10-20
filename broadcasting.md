@@ -30,24 +30,24 @@
 <a name="introduction"></a>
 ## 介紹
 
-在許多現代網頁應用程式中， WebSocket 被用來實作 realtime 與即時更新的使用者介面。當伺服器在更新某些資料時，會透過 WebSocket 的連線去處理使用者的訊息。相較於不斷地重新查詢來取得後端資料的方式，這提供了更強大、更有效率的方式。
+在許多現代網頁應用程式中，WebSocket 被用來實作 realtime 與即時更新的使用者介面。當伺服器在更新某些資料時，會透過 WebSocket 的連線去處理使用者的訊息。相較於不斷地重新查詢來取得後端資料的方式，這提供了更強大、更有效率的方式。
 
-為了協助你建構 WebSocket 連線， Laravel 把「廣播[事件](/docs/{{version}}/events)」弄的很輕鬆。 Laravel 允許你在廣播事件的時候共用後端與前端（ JavaScript ）的事件名稱。
+為了協助你建構 WebSocket 連線，Laravel 把「廣播[事件](/docs/{{version}}/events)」弄的很輕鬆。 Laravel 允許你在廣播事件的時候共用後端與前端（JavaScript）的事件名稱。
 
 > {溫馨提醒} 再深入了解廣播之前，請你先閱讀所有關於 Laravel [事件與監聽器](/docs/{{version}}/events) 的文件。
 
 <a name="configuration"></a>
 ### 設定
 
-所有關於事件廣播設定都存放在 `config/broadcasting.php` 這個設定檔。 Laravel 支援幾個廣播用的驅動： [Pusher](https://pusher.com) 、 [Redis](/docs/{{version}}/redis) 和一個用來本地開發與除錯的 `log` 。此外，你可以使用 `null` 來禁用所有的廣播器。在 `config/broadcasting.php` 中，每個驅動的配置都有附上設定的範例供你參考。
+所有關於事件廣播設定都存放在 `config/broadcasting.php` 這個設定檔。Laravel 支援幾個廣播用的驅動：[Pusher](https://pusher.com)、[Redis](/docs/{{version}}/redis) 和一個用來本地開發與除錯的 `log`。此外，你可以使用 `null` 來禁用所有的廣播器。在 `config/broadcasting.php` 中，每個驅動的配置都有附上設定的範例供你參考。
 
 #### 廣播的服務提供者
 
-在廣播任何事件前，首先你需要註冊 `App\Providers\BroadcastServiceProvider` 。在全新的 Laravel 應用程式中，你只需要在 `config/app.php` 設定檔中找到 `providers` 陣列，並取消對它們的註解。這個提供者可以讓你註冊廣播授權路由和回呼函式。
+在廣播任何事件前，首先你需要註冊 `App\Providers\BroadcastServiceProvider`。在全新的 Laravel 應用程式中，你只需要在 `config/app.php` 設定檔中找到 `providers` 陣列，並取消對它們的註解。這個提供者可以讓你註冊廣播授權路由和回呼函式。
 
 #### CSRF Token
 
-[Laravel Echo](#installing-laravel-echo) 會需要存取當前 session CSRF token 。你應當確認你的 `head` HTML 標籤裡是否有放入 `meta` 標籤來設定 CSRF token ：
+[Laravel Echo](#installing-laravel-echo) 會需要存取當前 session 的 CSRF token 。你應當確認你的 `head` HTML 標籤裡是否有放入 `meta` 標籤來設定 CSRF token：
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -90,7 +90,7 @@ Redis 廣播器會使用 Redis 發布/訂閱 功能來廣播訊息。然而，�
 
 #### Socket.IO
 
-如果你搭配 Redis 和 Socket.IO ，你會需要載入 Socket.IO 的 JavaScript 程式庫在你網頁的 `head` HTML 標籤裡。當 Socket.IO 伺服器啟動時，它會自動公開客戶端的 JavaScript 程式庫的 URL。舉例來說，如果你執行的 Socket.IO 和網頁在同一個網域，你可以像下面這樣來讓前端存取你的 Socket.IO 的 JavaScript 程式庫 :
+如果你搭配 Redis 和 Socket.IO ，你會需要載入 Socket.IO 的 JavaScript 程式庫在你網頁的 `head` HTML 標籤裡。當 Socket.IO 伺服器啟動時，它會自動公開客戶端的 JavaScript 程式庫的 URL。舉例來說，如果你執行的 Socket.IO 和網頁在同一個網域，你可以像下面這樣來讓前端存取你的 Socket.IO 的 JavaScript 程式庫：
 
     <script src="//{{ Request::getHost() }}:6001/socket.io/socket.io.js"></script>
 
@@ -103,7 +103,7 @@ Redis 廣播器會使用 Redis 發布/訂閱 功能來廣播訊息。然而，�
         host: window.location.hostname + ':6001'
     });
 
-最後，你會需要可以相容於 Socket.IO 的伺服器。 Laravel 不會載入 Socket.IO 伺服器來實作。然而，有個由社群維護與提供的 Socket.IO伺服器—— [tlaverdure/laravel-echo-server](https://github.com/tlaverdure/laravel-echo-server)。
+最後，你會需要可以相容於 Socket.IO 的伺服器。Laravel 不會載入 Socket.IO 伺服器來實作。然而，有個由社群維護與提供的 Socket.IO伺服器—— [tlaverdure/laravel-echo-server](https://github.com/tlaverdure/laravel-echo-server)。
 
 #### Queue 必備條件
 
@@ -120,7 +120,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 <a name="using-example-application"></a>
 ### 示範一個例子
 
-在深入廣播事件的每個元件前，讓我們用電子商務作為較完整的例子。在這邊，我們不會討論如何配置 [Pusher](https://pusher.com) 或 [Laravel Echo](#installing-laravel-echo) ，因為這些內容會在技術文件的其他部分做詳細討論。
+在深入廣播事件的每個元件前，讓我們用電子商務作為較完整的例子。在這邊，我們不會討論如何配置 [Pusher](https://pusher.com) 或 [Laravel Echo](#installing-laravel-echo)，因為這些內容會在技術文件的其他部分做詳細討論。
 
 在我們的應用程式中，假設我們有一個頁面，提供給使用者查看訂單的運送狀況。我們還假定當應用程式處理運送狀態更新的時候，會發出 `ShippingStatusUpdated` 的事件：
 
@@ -189,7 +189,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 
 要告訴 Laravel 廣播給定的事件，只需要在事件類別上繼承 `Illuminate\Contracts\Broadcasting\ShouldBroadcast` 這個介面。該介面已經導入到所有由 Laravel 產生的事件類別中，所以你可以簡單地將它添加到任何事件中。
 
-`ShouldBroadcast` 介面需要你實作一個方法： `broadcastOn`。 `broadcastOn` 方法會回傳一個頻道或一組頻道的陣列，事件會被廣播道這些頻道上。頻道會是 `Channel` 、 `PrivateChannel` 或 `PresenceChannel` 的這些實例。頻道會有三種實例： `Channel` 、 `PrivateChannel` 和 `PresenceChannel`。 `Channel` 實例代表任何使用者都可以訂閱的公共頻道，而 `PrivateChannels` 和 `PresenceChannels` 則代表需要 [頻道授權](#authorizing-channels)的私人頻道：
+`ShouldBroadcast` 介面需要你實作一個方法：`broadcastOn`。`broadcastOn` 方法會回傳一個頻道或一組頻道的陣列，事件會被廣播道這些頻道上。頻道會是 `Channel`、`PrivateChannel` 或 `PresenceChannel` 的這些實例。頻道會有三種實例：`Channel`、`PrivateChannel` 和 `PresenceChannel`。`Channel` 實例代表任何使用者都可以訂閱的公共頻道，而 `PrivateChannels` 和 `PresenceChannels` 則代表需要[頻道授權](#authorizing-channels)的私人頻道：
 
     <?php
 
@@ -234,7 +234,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 <a name="broadcast-name"></a>
 ### 廣播名稱
 
-預設上， Laravel 會使用事件類別名稱去廣播事件。然而，你可以在事件上定義 `broadcastAs` 方法來自訂廣播名稱：
+預設上，Laravel 會使用事件類別名稱去廣播事件。然而，你可以在事件上定義 `broadcastAs` 方法來自訂廣播名稱：
 
     /**
      * The event's broadcast name.
@@ -246,7 +246,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
         return 'server.created';
     }
 
-如果你使用 `broadcastAs` 方法自訂廣播名稱使用，你應當確保註冊你的監聽器字元前綴加上 `.` ，這會告知 Laravel Echo 不要把應用程式的命名空間添加到事件中：
+如果你使用 `broadcastAs` 方法自訂廣播名稱使用，你應當確保註冊你的監聽器字元前綴加上 `.`，這會告知 Laravel Echo 不要把應用程式的命名空間添加到事件中：
 
     .listen('.server.created', function (e) {
         ....
@@ -323,11 +323,11 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 <a name="defining-authorization-routes"></a>
 ### 定義授權的路由
 
-所幸， Laravel 可以輕易地定義路由來回應頻道授權的請求。在 Laravel 載入的 `BroadcastServiceProvider`  這個提供器，你會看到呼叫 Broadcast::routes` 方法。該方法會註冊 `/broadcasting/auth` 路由來處理授權請求：
+所幸，Laravel 可以輕易地定義路由來回應頻道授權的請求。在 Laravel 載入的 `BroadcastServiceProvider`  這個提供器，你會看到呼叫 Broadcast::routes` 方法。該方法會註冊 `/broadcasting/auth` 路由來處理授權請求：
 
     Broadcast::routes();
 
- `Broadcast::routes` 方法會自行將它的路由放置 `web` 中介層群組中。然而，如果你想要自定一些屬性，你可以傳遞一組路由屬性的陣列到這個方法：
+`Broadcast::routes` 方法會自行將它的路由放置 `web` 中介層群組中。然而，如果你想要自定一些屬性，你可以傳遞一組路由屬性的陣列到這個方法：
 
     Broadcast::routes($attributes);
 
@@ -340,7 +340,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
         return $user->id === Order::findOrNew($orderId)->user_id;
     });
 
-`channel` 方法接受兩個參數：其一是頻道名稱，另一個是回傳 `true` 或 `false` ，用來判斷使用者是否有授權監聽頻道的回呼。
+`channel` 方法接受兩個參數：其一是頻道名稱，另一個是回傳 `true` 或 `false`，用來判斷使用者是否有授權監聽頻道的回呼。
 
 所有的授權回呼都會將當前已認證使用者作為第一個參數，和任何其他萬元字元作為後續參數。在這個範例中，我們使用  `{orderId}` 來表示頻道名稱的「 ID 」。
 
@@ -385,9 +385,9 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 
 #### 設定
 
-在你初始化 laravel-echo 實例的時候， socket ID 會被指定到該連線上。如果你是使用 [Vue](https://vuejs.org) 和 [Axios](https://github.com/mzabriskie/axios) 這個組合， socket ID 會自動添加 `X-Socket-ID` 標頭到每個送出的請求上。然後，當你呼叫 `toOthers` 方法時， Laravel 會從標頭中拿到 socket ID ，並告訴廣播器不要廣播到同一個 socket ID 的連線上。
+在你初始化 laravel-echo 實例的時候，socket ID 會被指定到該連線上。如果你是使用 [Vue](https://vuejs.org) 和 [Axios](https://github.com/mzabriskie/axios) 這個組合，socket ID 會自動添加 `X-Socket-ID` 標頭到每個送出的請求上。然後，當你呼叫 `toOthers` 方法時，Laravel 會從標頭中拿到 socket ID，並告訴廣播器不要廣播到同一個 socket ID 的連線上。
 
-如果你不是使用 Vue 和 Axios ，你需要自行設定 JavaScript 應用程式來送出 `X-Socket-ID` 標頭。你可以使用 `Echo.socketId` 方法來取得 socket ID :
+如果你不是使用 Vue 和 Axios，你需要自行設定 JavaScript 應用程式來送出 `X-Socket-ID` 標頭。你可以使用 `Echo.socketId` 方法來取得 socket ID：
 
     var socketId = Echo.socketId();
 
@@ -397,11 +397,11 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 <a name="installing-laravel-echo"></a>
 ### 安裝 Laravel Echo
 
-Laravel Echo 是一個 JavaScript 程式庫，它可以無縫地在 Laravel 上訂閱頻道與監聽事件廣播。你可以透過 NPM 套件管理器來安裝 Echo 。在這個範例中，我們也會安裝 `pusher-js` 套件，因為我們會使用 Pusher 來廣播：
+Laravel Echo 是一個 JavaScript 程式庫，它可以無縫地在 Laravel 上訂閱頻道與監聽事件廣播。你可以透過 NPM 套件管理器來安裝 Echo。在這個範例中，我們也會安裝 `pusher-js` 套件，因為我們會使用 Pusher 來廣播：
 
     npm install --save laravel-echo pusher-js
 
-一旦安裝好 Echo ，你可以準備在你的 JavaScript 應用程式中建立全新的 Echo 實例。好消息是 Laravel 以為你寫好並放在 `resources/assets/js/bootstrap.js` 檔案的最底下：
+一旦安裝好 Echo，你可以準備在你的 JavaScript 應用程式中建立全新的 Echo 實例。好消息是 Laravel 以為你寫好並放在 `resources/assets/js/bootstrap.js` 檔案的最底下：
 
     import Echo from "laravel-echo"
 
@@ -469,7 +469,7 @@ Presence 頻道建構在私人頻道的安全性上，同時多了一個「知�
 <a name="authorizing-presence-channels"></a>
 ### 授權給 Presence 頻道
 
-所有的 presence 頻道也算是私人頻道。因此，使用者必須[被授權才可存取他們](#authorizing-channels)。然而，在定義 presence 頻道授權回呼的時候，若有個使用者有被授權進入頻道，則回傳 `true` ，反之，你應該回傳一組關於使用者資料的陣列。
+所有的 presence 頻道也算是私人頻道。因此，使用者必須[被授權才可存取他們](#authorizing-channels)。然而，在定義 presence 頻道授權回呼的時候，若有個使用者有被授權進入頻道，則回傳 `true`，反之，你應該回傳一組關於使用者資料的陣列。
 
 授權回呼所回傳的資料會用在 JavaScript 應用程式中的 presence 頻道事件監聽器。如果使用者未被授權允許加入 presence 頻道，你應該會傳 `false` 或 `null` ：
 
@@ -482,7 +482,7 @@ Presence 頻道建構在私人頻道的安全性上，同時多了一個「知�
 <a name="joining-presence-channels"></a>
 ### 加入到 Presence 頻道
 
-要加入 presence 頻道，你可以使用 Echo 的 `join` 方法。 `join` 方法會回傳一個 `PresenceChannel` 實作，並且你還可以繼續加上 `listen` 方法，這會允許你使用訂閱 `here` 、 `joining` 和 `leaving` 事件。
+要加入 presence 頻道，你可以使用 Echo 的 `join` 方法。 `join` 方法會回傳一個 `PresenceChannel` 實作，並且你還可以繼續加上 `listen` 方法，這會允許你使用訂閱 `here`、`joining` 和 `leaving` 事件。
 
     Echo.join(`chat.${roomId}`)
         .here((users) => {
