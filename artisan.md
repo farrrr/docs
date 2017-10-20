@@ -31,7 +31,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 
 #### Laravel REPL
 
-所有 Laravel 的應用程式都可以使用 Tinker，是基於 [PsySH](https://github.com/bobthecow/psysh) 這個套件所提供的 REPL。 Tinker 可以直接操控你的整個 Laravel 應用程式，包括 Eloquent ORM、任務、事件等。 執行 `tinker` 這個指令，即可進入 Tinker 環境：
+所有 Laravel 的應用程式都可以使用 Tinker，是基於 [PsySH](https://github.com/bobthecow/psysh) 這個套件所提供的 REPL。Tinker 可以直接操控你的整個 Laravel 應用程式，包括 Eloquent ORM、任務、事件等。 執行 `tinker` 這個指令，即可進入 Tinker 環境：
 
     php artisan tinker
 
@@ -50,11 +50,11 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 <a name="command-structure"></a>
 ### 指令結構
 
-產生新的指令後，應該先宣告 `signature` 和 `description` 的屬性內容，這會在使用 `list` 這個指令的時候顯示出來。 當指令被執行時， `handle` 方法會被呼叫，因此你可以將任何的指令邏輯放到該方法中。
+產生新的指令後，應該先宣告 `signature` 和 `description` 的屬性內容，這會在使用 `list` 這個指令的時候顯示出來。 當指令被執行時，`handle` 方法會被呼叫，因此你可以將任何的指令邏輯放到該方法中。
 
-> {tip} 為了讓程式碼更有效地使用（重用性），最好讓終端指令的程式碼保持輕量化，並讓它們緩載到應用程式服務的任務完成。在下列範例中，請注意！我們注入了一個服務類別來完成發送信件的「重任」。
+> {tip} 為了讓程式碼更有效的複用，最好讓終端指令的程式碼保持輕量化，並讓它們緩載到應用程式服務的任務完成。在下列範例中，請注意！我們注入了一個服務類別來完成發送信件的「重任」。
 
-讓我們看一個例子。請注意，我們可以在建構子中注入任何需要的依賴， Laravel 的 [服務容器](/docs/{{version}}/container) 將會自動注入任何型別提示的依賴到建構子中。
+讓我們看一個例子。請注意，我們可以在建構子中注入任何需要的依賴，Laravel 的[服務容器](/docs/{{version}}/container)將會自動注入任何型別提示的依賴到建構子中。
 
     <?php
 
@@ -114,7 +114,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 <a name="closure-commands"></a>
 ### 閉包指令
 
-基於閉包的指令提供了有別於使用類別定義終端指令的方法。簡單的說，路由閉包是另一種撰寫指令的方式。在 `app/Console/Kernel.php` 檔案的 `commands` 這個方法中， Laravel 會載入 `routes/console.php` 這個檔案：
+基於閉包的指令提供了有別於使用類別定義終端指令的方法。簡單的說，路由閉包是另一種撰寫指令的方式。在 `app/Console/Kernel.php` 檔案的 `commands` 這個方法中，Laravel 會載入 `routes/console.php` 這個檔案：
 
     /**
      * 為應用程式註冊基於閉包的指令
@@ -126,7 +126,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
         require base_path('routes/console.php');
     }
 
-即使這個檔案沒有定義 HTTP 路由，它仍可以透過路由終端定義到應用程式中。在這個檔案中，你可以使用 `Artisan::command` 這個方法定義所有基於閉包的路由。 `command` 方法可以接受兩個參數： 其一是[命名](#defining-input-expectations) ，另一個取得指令參數與選項的閉包：
+即使這個檔案沒有定義 HTTP 路由，它仍可以透過路由終端定義到應用程式中。在這個檔案中，你可以使用 `Artisan::command` 這個方法定義所有基於閉包的路由。`command` 方法可以接受兩個參數：其一是[指令命名](#defining-input-expectations)，另一個取得指令參數與選項的閉包：
 
     Artisan::command('build {project}', function ($project) {
         $this->info("Building {$project}!");
@@ -134,9 +134,9 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 
 因為閉包綁定最底層的指令實例，所以你完全可以使用指令類別的所有輔助方法
 
-#### 型態提示依賴
+#### 型態提示
 
-除了接收指令參數與選項外，指令閉包還可以使用型別提示從 [服務容器](/docs/{{version}}/container) 中注入所需的任何依賴：
+除了接收指令參數與選項外，指令閉包還可以使用型別提示從[服務容器](/docs/{{version}}/container)中注入所需的任何依賴：
 
     use App\User;
     use App\DripEmailer;
@@ -156,12 +156,12 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 <a name="defining-input-expectations"></a>
 ## 定義預期的輸入
 
-在撰寫終端指令時，通常還會透過參數或選項來取得使用者輸入的指令。 Laravel 可以非常方便的使用 `signature` 屬性來定義你預期用戶輸入的內容。 `signature` 屬性可以給你使用單一且可讀性高，還有類似路由的語法來定義名稱、參數和選項。
+在撰寫終端指令時，通常還會透過參數或選項來取得使用者輸入的指令。 Laravel 可以非常方便的使用 `signature` 屬性來定義你預期用戶輸入的內容。`signature` 屬性可以給你使用單一且可讀性高，還有類似路由的語法來定義名稱、參數和選項。
 
 <a name="arguments"></a>
 ### 參數
 
-所有使用者輸入的參數與選項都會在大括號中。在接下來的範例中，這個指令定義了一個 **必要的** 參數： `user`:
+所有使用者輸入的參數與選項都會在大括號中。在接下來的範例中，這個指令定義了一個**必要的**參數：`user`：
 
     /**
      * 指令列的命名和用法
@@ -181,7 +181,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 <a name="options"></a>
 ### 選項
 
-選項，很像參數，是用戶輸入的另一種方式。當指令列指定選項時，它們以兩個字符（`--`）作為前綴。有兩種類型的選項：可接受值和不可接受值。不接受值的選項又可作為布林值的「開關」。讓我們看一下這種類型選項的例子：
+選項很類似參數，是用戶輸入的另一種方式。當指令列指定選項時，它們以兩個字符（`--`）作為前綴。有兩種類型的選項：可接受值和不可接受值。不接受值的選項又可作為布林值的「開關」。讓我們看一下這種類型選項的例子：
 
     /**
      * 指令列的命名和用法
@@ -190,14 +190,14 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
      */
     protected $signature = 'email:send {user} {--queue}';
 
-在這個例子中，可以在執行 Artisan 指令中加入 `--queue`，如果有輸入 `--queue` ，那麼將會回傳 `true` 。除此之外，則回傳 `false` ：
+在這個例子中，可以在執行 Artisan 指令中加入 `--queue`，如果有輸入 `--queue`，那麼將會回傳 `true`。除此之外，則回傳 `false`：
 
     php artisan email:send 1 --queue
 
 <a name="options-with-values"></a>
 #### 附值的選項
 
-接下來，如果需要使用者輸入參數的值，那麼只需要在選項名稱後面添加 `=`：
+接著，讓我們看一下某個選項所期望的值。如果使用者必須為選項指定一個值，只需要在名稱後面加入 = 符號：
 
     /**
      * 指令列的命名和用法
@@ -210,7 +210,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 
     php artisan email:send 1 --queue=default
 
-你可以指定預設值給選項：
+你可以在選項名稱後指定預設值。如果使用者沒有傳送選項的值，將會使用預設值：
 
     email:send {user} {--queue=default}
 
@@ -272,7 +272,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
         //
     }
 
-如果你想要將所有的參數匯聚成一個 `array` ，直接使用 `arguments` 這個方法而不需再加參數：
+如果你想要將所有的參數匯聚成一個 `array`，直接使用 `arguments` 這個方法而不需再加參數：
 
     $arguments = $this->arguments();
 
@@ -284,32 +284,32 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
     // 取得全部選項...
     $options = $this->options();
 
-如果參數或選項不存在，將會回傳 `null` 。
+如果參數或選項不存在，將會回傳 `null`。
 
 <a name="prompting-for-input"></a>
 ### 互動式輸入
 
-除了顯示輸出外，你也可以在指令在執行期間，要求使用者輸入東西。 `ask` 方法將會提供問題來詢問使用者，並且等待回覆與回傳使用者輸入的東西給指令：
+除了顯示輸出外，你也可以在指令在執行期間，要求使用者輸入東西。`ask` 方法將會提供問題來詢問使用者，並且等待回覆與回傳使用者輸入的東西給指令：
 
     /**
-     * 當指令被執行時
+     * 執行終端指令
      *
      * @return mixed
      */
     public function handle()
     {
-        $name = $this->ask('請輸入您的名字');
+        $name = $this->ask('What is your name?');
     }
 
- `secret` 方法使用起來很像 `ask` 方法，但是使用者輸入的內容並不會顯示在指令列上。這個方法適合要求使用者提供密碼或其他敏感資訊：
+`secret` 方法使用起來很像 `ask` 方法，但是使用者輸入的內容並不會顯示在指令列上。這個方法適合要求使用者提供密碼或其他敏感資訊：
 
-    $password = $this->secret('請輸入您的密碼');
+    $password = $this->secret('What is the password?');
 
 #### 要求確認
 
-如果你需要使用者做簡單的確認，你可以使用 `confirm` 方法。預設的情況下，這個方法會回傳 `false`。然而，使用者輸入 `y` 或 `yes` ，那麼這個方法才會回傳 `true`。
+如果你需要使用者做簡單的確認，你可以使用 `confirm` 方法。預設的情況下，這個方法會回傳 `false`。然而，使用者輸入 `y` 或 `yes`，那麼這個方法才會回傳 `true`。
 
-    if ($this->confirm('您確定執行嗎？[y|N]')) {
+    if ($this->confirm('Do you wish to continue?')) {
         //
     }
 
@@ -317,40 +317,40 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 
 `anticipate` 方法能預測並補齊使用者可能想輸入的內容，但是使用者仍可以輸入其他內容：
 
-    $name = $this->anticipate('請輸入您的名字', ['Taylor', 'Dayle']);
+    $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
 
 #### 多選題
 
-如果你希望提供使用者以選擇題作答，你可以使用 `choice` 方法.。你還可以設置預設值來回應使用者回答問題以外的東西。
+如果你希望提供使用者以選擇題作答，你可以使用 `choice` 方法。你還可以設置預設值來回應使用者回答問題以外的東西。
 
     $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $default);
 
 <a name="writing-output"></a>
 ### 自訂輸出
 
-使用 `line`, `info`, `comment`, `question` 和 `error` 方法來傳送輸出到終端。每個方法都有適合的 ANSI 顏色來表達他們的目的。例如，我們要傳送一般資訊給使用者，建議使用 `info` 方法，這將會回傳綠字給終端：
+使用 `line`、`info`、`comment`、`question` 和 `error` 方法來傳送輸出到終端。每個方法都有適合的 ANSI 顏色來表達他們的目的。例如，我們要傳送一般資訊給使用者，建議使用 `info` 方法，這將會回傳綠字給終端：
 
     /**
-     * 當指令被執行時
+     * 執行終端指令
      *
      * @return mixed
      */
     public function handle()
     {
-        $this->info('顯示於畫面上');
+        $this->info('Display this on the screen');
     }
 
 使用 `error` 方法可以回傳錯誤訊息給使用者，並以紅字呈現：
 
-    $this->error('有東西出問題囉！');
+    $this->error('Something went wrong!');
 
-如果你只想顯示終端機的輸出顏色，可以使用 `line` 方法:
+如果你只想要單純輸出文字到終端，可以使用 `line` 方法:
 
-    $this->line('顯示於畫面');
+    $this->line('Display this on the screen');
 
 #### 表格佈局
 
- `table` 方法可以更輕鬆地格式化多行多列的資料，只需要傳送標題與行給這個方法。寬與高會根據資料進行動態調整：
+`table` 方法可以更輕鬆地格式化多行多列的資料，只需要傳送標題與行給這個方法。寬與高會根據資料進行動態調整：
 
     $headers = ['Name', 'Email'];
 
@@ -374,12 +374,12 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 
     $bar->finish();
 
-想知道更多資訊，請點閱 [Symfony Progress Bar component documentation](https://symfony.com/doc/2.7/components/console/helpers/progressbar.html).
+更多進階選項，請點閱 [Symfony Progress Bar component documentation](https://symfony.com/doc/2.7/components/console/helpers/progressbar.html)。
 
 <a name="registering-commands"></a>
 ## 註冊指令
 
-由於在終端核心 `commands`方法呼叫了 `load` 方法，所以 `app/Console/Commands` 目錄下的所有指令都將會自動註冊到 Artisan 。實際上，你仍可以任意地呼叫 `load` 方法來掃描 Artisan 指令的其他目錄：
+由於 `load` 方法呼叫了在你的終端 kernel 的 `command` 方法，所有 `app/Console/Commands` 目錄下的所有指令都將會自動註冊到 Artisan。實際上，你可以自由地呼叫 `load` 方法來掃描 Artisan 指令的其他目錄：
 
     /**
      * 註冊 Artisan 指令
@@ -394,7 +394,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
         // ...
     }
 
-你還可以藉由類別名稱寫入 `app/Console/Kernel.php` 檔案的 `$command` 屬性來手動註冊命令。當 Artisan 啟動時，該屬性中列出的所有指令將由 [服務容器](/docs/{{version}}/container) 解析並註冊到 Artisan 指令上：
+你還可以藉由類別名稱寫入 `app/Console/Kernel.php` 檔案的 `$command` 屬性來手動註冊命令。當 Artisan 啟動時，該屬性中列出的所有指令將由[服務容器](/docs/{{version}}/container)解析並註冊到 Artisan 指令上：
 
     protected $commands = [
         Commands\SendEmails::class
@@ -403,7 +403,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 <a name="programmatically-executing-commands"></a>
 ## 使用程式碼呼叫指令
 
-有時候你希望從終端機介面外執行 Artisan 指令。例如，你希望能從控制器或路由觸發 Artisan 指令。你可以使用 `Artisan` facade 的 `call` 方法做到。 `call` 方法的第一個參數為指令名稱，第二個參數為陣列型態的指令輸入。退出碼將會被回傳：
+有時候你希望從終端機介面外執行 Artisan 指令。例如，你希望能從控制器或路由觸發 Artisan 指令。你可以使用 `Artisan` facade 的 `call` 方法做到。`call` 方法的第一個參數為指令名稱，第二個參數為陣列型態的指令輸入。退出碼將會被回傳：
 
     Route::get('/foo', function () {
         $exitCode = Artisan::call('email:send', [
@@ -413,7 +413,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
         //
     });
 
-在 `Artisan` facade 上使用 `queue` 方法，可以將 Artisan 指令放入 [隊列](/docs/{{version}}/queues) 處理。在使用此方法前，請先確認隊列的設定，在執行隊列：
+在 `Artisan` facade 上使用 `queue` 方法，可以將 Artisan 指令放入[隊列](/docs/{{version}}/queues) 處理。在使用此方法前，請先確認隊列的設定，在執行隊列：
 
     Route::get('/foo', function () {
         Artisan::queue('email:send', [
@@ -447,7 +447,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 有時候，你希望從指令中呼叫其他已存在的指令。你可以使用 `call` 方法。 `call` 方法接受指令名稱和指令參數的陣列：
 
     /**
-     * 當指令被執行時
+     * 執行終端指令
      *
      * @return mixed
      */
@@ -460,7 +460,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
         //
     }
 
-如果你想要呼叫其它指令並呼列它所有的輸出，你可以使用 `callSilent` 方法。 `callSilent`和 `call` 方法使用方式一樣:
+如果你想要呼叫其它指令並呼列它所有的輸出，你可以使用 `callSilent` 方法。`callSilent`和 `call` 方法使用方式一樣：
 
     $this->callSilent('email:send', [
         'user' => 1, '--queue' => 'default'
