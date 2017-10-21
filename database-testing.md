@@ -1,6 +1,7 @@
 # Database Testing
 
 - [Introduction](#introduction)
+- [Generating Factories](#generating-factories)
 - [Resetting The Database After Each Test](#resetting-the-database-after-each-test)
 - [Writing Factories](#writing-factories)
     - [Factory States](#factory-states)
@@ -27,6 +28,19 @@ Laravel provides a variety of helpful tools to make it easier to test your datab
 You can also use the `assertDatabaseMissing` helper to assert that data does not exist in the database.
 
 Of course, the `assertDatabaseHas` method and other helpers like it are for convenience. You are free to use any of PHPUnit's built-in assertion methods to supplement your tests.
+
+<a name="generating-factories"></a>
+## Generating Factories
+
+To create a factory, use the `make:factory` [Artisan command](/docs/{{version}}/artisan):
+
+    php artisan make:factory PostFactory
+
+The new factory will be placed in your `database/factories` directory.
+
+The `--model` option may be used to indicate the name of the model created by the factory. This option will pre-fill the generated factory file with the given model:
+
+    php artisan make:factory PostFactory --model=Post
 
 <a name="resetting-the-database-after-each-test"></a>
 ## Resetting The Database After Each Test
@@ -63,7 +77,9 @@ It is often useful to reset your database after each test so that data from a pr
 
 When testing, you may need to insert a few records into your database before executing your test. Instead of manually specifying the value of each column when you create this test data, Laravel allows you to define a default set of attributes for each of your [Eloquent models](/docs/{{version}}/eloquent) using model factories. To get started, take a look at the `database/factories/UserFactory.php` file in your application. Out of the box, this file contains one factory definition:
 
-    $factory->define(App\User::class, function (Faker\Generator $faker) {
+    use Faker\Generator as Faker;
+
+    $factory->define(App\User::class, function (Faker $faker) {
         static $password;
 
         return [
