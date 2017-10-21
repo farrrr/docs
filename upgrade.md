@@ -15,7 +15,19 @@ Laravel 5.5 requires PHP 7.0.0 or higher.
 
 ### Updating Dependencies
 
-Update your `laravel/framework` dependency to `5.5.*` in your `composer.json` file. In addition, you should update your `phpunit/phpunit` dependency to `~6.0`. Finally, add `filp/whoops` version `~2.0` to the `require-dev` section of your `composer.json` file.
+Update your `laravel/framework` dependency to `5.5.*` in your `composer.json` file. In addition, you should update your `phpunit/phpunit` dependency to `~6.0`. Next, add the `filp/whoops` package with version `~2.0` to the `require-dev` section of your `composer.json` file. Finally, in the `scripts` section of your `composer.json` file, add the `package:discover` command to the `post-autoload-dump` event:
+
+    "scripts": {
+        ...
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover"
+        ],
+    }
+
+Of course, don't forget to examine any 3rd party packages consumed by your application and verify you are using the proper version for Laravel 5.5 support.
+
+#### Laravel Installer
 
 > {tip} If you commonly use the Laravel installer via `laravel new`, you should update your Laravel installer package using the `composer global update` command.
 
@@ -82,6 +94,15 @@ If you are overriding the `belongsToMany` method on your Eloquent model, you sho
         //
     }
 
+#### BelongsToMany `getQualifiedRelatedKeyName`
+
+The `getQualifiedRelatedKeyName` method has been renamed to `getQualifiedRelatedPivotKeyName`.
+
+#### BelongsToMany `getQualifiedForeignKeyName`
+
+The `getQualifiedForeignKeyName` method has been renamed to `getQualifiedForeignPivotKeyName`.
+
+
 #### Model `is` Method
 
 If you are overriding the `is` method of your Eloquent model, you should remove the `Model` type-hint from the method. This allows the `is` method to receive `null` as an argument:
@@ -107,7 +128,7 @@ The protected `$parent` property on the `Illuminate\Database\Eloquent\Relations\
 
 #### Relationship `create` Methods
 
-The `BelongsToMany`, `HasOneOrMany`, and `MorphOneOrMany` class' `create` methods have been modified to provide a default value for the `$attributes` argument. If you are overriding these methods, you should update your signatures to match the new definition:
+The `BelongsToMany`, `HasOneOrMany`, and `MorphOneOrMany` classes' `create` methods have been modified to provide a default value for the `$attributes` argument. If you are overriding these methods, you should update your signatures to match the new definition:
 
     public function create(array $attributes = [])
     {
@@ -127,6 +148,11 @@ When using an alias, the `withCount` method will no longer automatically append 
 However, in Laravel 5.5, the alias will be used exactly as it is given. If you would like to append `_count` to the resulting column, you must specify that suffix when defining the alias:
 
     $users = User::withCount('foo as bar_count')->get();
+
+
+#### Model Methods & Attribute Names
+
+To prevent accessing a model's private properties when using array access, it's no longer possible to have a model method with the same name as an attribute or property. Doing so will cause exceptions to be thrown when accessing the model's attributes via array access (`$user['name']`) or the `data_get` helper function.
 
 ### Exception Format
 
@@ -189,7 +215,7 @@ If you were customizing the response format of an individual form request, you s
 
 #### The `files` Method
 
-The `files` method of the `Illuminate\Filesystem\Filesystem` class has changed it signature to add the `$hidden` argument and now returns an array of `SplFileInfo` objects, similar to the `allFiles` method. Previously, the `files` method returned an array of string path names. The new signature is as follows:
+The `files` method of the `Illuminate\Filesystem\Filesystem` class has changed its signature to add the `$hidden` argument and now returns an array of `SplFileInfo` objects, similar to the `allFiles` method. Previously, the `files` method returned an array of string path names. The new signature is as follows:
 
     public function files($directory, $hidden = false)
 
@@ -287,6 +313,15 @@ Some authentication assertions were renamed for better consistency with the rest
 
 If you are using the `Mail` fake to determine if a mailable was **queued** during a request, you should now use `Mail::assertQueued` instead of `Mail::assertSent`. This distinction allows you to specifically assert that the mail was queued for background sending and not sent during the request itself.
 
+#### Tinker
+
+Laravel Tinker now supports omitting namespaces when referring to your application classes. This feature requires an optimized Composer class-map, so you should add the `optimize-autoloader` directive to the `config` section of your `composer.json` file:
+
+    "config": {
+        ...
+        "optimize-autoloader": true
+    }
+
 ### Translation
 
 #### The `LoaderInterface`
@@ -310,6 +345,14 @@ When allowing the dynamic `__call` method to share variables with a view, these 
 The `maximumVotes` variable may be accessed in the template like so:
 
     {{ $maximumVotes }}
+
+#### `@php` Blade Directive
+
+The `@php` blade directive no longer accepts inline tags. Instead, use the full form of the directive:
+
+    @php
+        $teamMember = true;
+    @endphp
 
 ### Miscellaneous
 

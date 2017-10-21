@@ -148,7 +148,7 @@ Of course, you are not limited to displaying the contents of the variables passe
 
     The current UNIX timestamp is {{ time() }}.
 
-> {note} Blade `{{ }}` statements are automatically sent through PHP's `htmlspecialchars` function to prevent XSS attacks.
+> {tip} Blade `{{ }}` statements are automatically sent through PHP's `htmlspecialchars` function to prevent XSS attacks.
 
 #### Displaying Unescaped Data
 
@@ -157,6 +157,20 @@ By default, Blade `{{ }}` statements are automatically sent through PHP's `htmls
     Hello, {!! $name !!}.
 
 > {note} Be very careful when echoing content that is supplied by users of your application. Always use the escaped, double curly brace syntax to prevent XSS attacks when displaying user supplied data.
+
+#### Rendering JSON
+
+Sometimes you may pass an array to your view with the intention of rendering it as JSON in order to initialize a JavaScript variable. For example:
+
+    <script>
+        var app = <?php echo json_encode($array); ?>;
+    </script>
+
+However, instead of manually calling `json_encode`, you may use the `@json` Blade directive:
+
+    <script>
+        var app = @json($array);
+    </script>
 
 <a name="blade-and-javascript-frameworks"></a>
 ### Blade & JavaScript Frameworks
@@ -222,6 +236,16 @@ The `@auth` and `@guest` directives may be used to quickly determine if the curr
     @endauth
 
     @guest
+        // The user is not authenticated...
+    @endguest
+
+If needed, you may specify the [authentication guard](/docs/{{version}}/authentication) that should be checked when using the `@auth` and `@guest` directives:
+
+    @auth('admin')
+        // The user is authenticated...
+    @endauth
+
+    @guest('admin')
         // The user is not authenticated...
     @endguest
 
@@ -375,6 +399,10 @@ If you would like to `@include` a view depending on a given boolean condition, y
 
     @includeWhen($boolean, 'view.name', ['some' => 'data'])
 
+To include the first view that exists from a given array of views, you may use the `includeFirst` directive:
+
+    @includeFirst(['custom.admin', 'admin'], ['some' => 'data'])
+
 > {note} You should avoid using the `__DIR__` and `__FILE__` constants in your Blade views, since they will refer to the location of the cached, compiled view.
 
 <a name="rendering-views-for-collections"></a>
@@ -488,6 +516,8 @@ Once the custom conditional has been defined, we can easily use it on our templa
 
     @env('local')
         // The application is in the local environment...
+    @elseenv('testing')
+        // The application is in the testing environment...
     @else
-        // The application is not in the local environment...
+        // The application is not in the local or testing environment...
     @endenv
