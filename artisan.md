@@ -31,7 +31,7 @@ Artisan 是 Laravel 內建的指令集合，它能提供許多好用的指令來
 
 #### Laravel REPL
 
-所有 Laravel 的應用程式都可以使用 Tinker，是基於 [PsySH](https://github.com/bobthecow/psysh) 這個套件所提供的 REPL。Tinker 可以直接操控你的整個 Laravel 應用程式，包括 Eloquent ORM、任務、事件等。 執行 `tinker` 這個指令，即可進入 Tinker 環境：
+所有 Laravel 的應用程式都可以使用 Tinker，是基於 [PsySH](https://github.com/bobthecow/psysh) 這個套件所提供的 REPL。Tinker 可以直接操控你的整個 Laravel 應用程式，包括 Eloquent ORM、任務、事件等。執行 `tinker` 這個指令，即可進入 Tinker 環境：
 
     php artisan tinker
 
