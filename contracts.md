@@ -1,17 +1,17 @@
 # Contracts
 
-- [Introduction](#introduction)
+- [介紹](#introduction)
     - [Contracts Vs. Facades](#contracts-vs-facades)
-- [When To Use Contracts](#when-to-use-contracts)
-    - [Loose Coupling](#loose-coupling)
-    - [Simplicity](#simplicity)
-- [How To Use Contracts](#how-to-use-contracts)
-- [Contract Reference](#contract-reference)
+- [何時該使用 Contracts](#when-to-use-contracts)
+    - [低耦合](#loose-coupling)
+    - [簡單性](#simplicity)
+- [如何使用 Contracts](#how-to-use-contracts)
+- [Contract 的參考清單](#contract-reference)
 
 <a name="introduction"></a>
-## Introduction
+## 介紹
 
-Laravel's Contracts are a set of interfaces that define the core services provided by the framework. For example, a `Illuminate\Contracts\Queue\Queue` contract defines the methods needed for queueing jobs, while the `Illuminate\Contracts\Mail\Mailer` contract defines the methods needed for sending e-mail.
+Laravel 的 Contracts are a set of interfaces that define the core services provided by the framework. For example, a `Illuminate\Contracts\Queue\Queue` contract defines the methods needed for queueing jobs, while the `Illuminate\Contracts\Mail\Mailer` contract defines the methods needed for sending e-mail.
 
 Each contract has a corresponding implementation provided by the framework. For example, Laravel provides a queue implementation with a variety of drivers, and a mailer implementation that is powered by [SwiftMailer](https://swiftmailer.symfony.com/).
 
