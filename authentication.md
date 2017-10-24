@@ -1,4 +1,4 @@
-# Authentication
+# 認證
 
 - [介紹](#introduction)
     - [資料庫注意事項](#introduction-database-considerations)
@@ -30,18 +30,18 @@ Laravel 實作認證功能非常簡單。事實上，幾乎所有東西都已經
 
 Laravel 的認證系統核心主要由「守衛」與「提供者」組成。守衛定義了在每個請求中，如何與使用者進行身份認證。舉例來說，Laravel 內建的 `session` 守衛會使用 session 與 cookies 來維護認證狀態。
 
-「提供者」定義如何從資料庫中取得使用者資料。Laravel 內建支援使用 Eloquent 和資料庫查詢產生器來取得使用者資料。然而，你可以依據應用程式的需求來定義額外的「提供者」。
+提供者定義如何從資料庫中取得使用者資料。Laravel 內建支援使用 Eloquent 和資料庫查詢產生器來取得使用者資料。然而，你可以依據應用程式的需求來定義額外的「提供者」。
 
-如果你聽到這裡就覺得很混亂的話，別擔心！大多數的應用程式都不太需要修改預設的設定。
+如果這些聽起來很困惑的話，別擔心！大多數的應用程式不需要去修改預設的認證設定。
 
 <a name="introduction-database-considerations"></a>
 ### 資料庫注意事項
 
-預設的 Laravel 會在 `app` 資料夾中內建一個 `App\User` [Eloquent 模型](/docs/{{version}}/eloquent)。這個模型預設只用 Eloquent 認證驅。如果你的應用程式沒有使用 Eloquent，你可以改用 `database` 這個使用了 Laravel 查詢生成器的認證驅動。
+預設的 Laravel 會在 `app` 資料夾中內建一個 `App\User` [Eloquent 模型](/docs/{{version}}/eloquent)。這個模型預設只用 Eloquent 認證驅動。如果你的應用程式沒有使用 Eloquent，你可以改用 `database` 這個使用了 Laravel 查詢生成器的認證驅動。
 
-為 `App\User` 模型建立資料庫結構時，請確保密碼欄位長度至少有60字元長。建議字元長度為255字元長。
+為 `App\User` 模型建立資料庫結構時，請確保密碼欄位長度至少有 60 字元長。建議字元長度為 255 字元長。
 
-還有，你應該確認你的 `users` 資料表(或同等意義的)要有一個 nullable、100字元長的欄位給 `remember_token`，這個欄位將會用來儲存「記住我」的 session token。
+還有，你應該確認你的 `users` 資料表（或同等意義的）要有一個 nullable、100 字元長的欄位給 `remember_token`，使用者如果選擇「記住我」的選項，此欄將被用來儲存 token 被記錄到你的應用程式
 
 <a name="authentication-quickstart"></a>
 ## 認證快速入門
@@ -71,7 +71,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 自訂路徑
 
-當使用者成功通過認證，他們將會重導至 `/home` 這個URI。你能透過修改 `LoginController`、`RegisterController` 和 `ResetPasswordController` 這些控制器中的 `redirectTo` 屬性來重新選擇想要重導的位置：
+當使用者成功通過認證，他們將會重導至 `/home` 這個 URI。你能透過修改 `LoginController`、`RegisterController` 和 `ResetPasswordController` 這些控制器中的 `redirectTo` 屬性來重新選擇想要重導的位置：
 
     protected $redirectTo = '/';
 
@@ -86,14 +86,14 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 自訂使用者名稱
 
- Laravel 預設是使用 `email` 去做認證。如果想要修改，你可以自行在 `LoginController` 這個控制器中定義 `username` 屬性內容：
+ 預設上，Laravel 使用 `email` 欄位來認證。如果你想要自訂的話，你可以在 `LoginController` 定義一個 `username` 方法：
 
     public function username()
     {
         return 'username';
     }
 
-#### 自訂「守衛」
+#### 自訂守衛
 
 你可以自行定義認證與註冊用的「守衛」。要實現這一功能，需要再 `LoginController`、`RegisterController` 和 `ResetPasswordController` 這些控制器中定義 `guard` 方法。這個方法會回傳一個「守衛」實例：
 
@@ -106,11 +106,11 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 自訂驗證與儲存
 
-要修改一個新使用者註冊時所需填寫的表單欄位，或是自訂如何將使用者的紀錄新增到資料庫的方式，你可以修改 `RegisterController` 這個類別。這個類別負責驗證與建立新的使用者。
+要修改一個新使用者註冊時所需填寫的表單欄位，或是自訂如何將使用者的記錄新增到資料庫的方式，你可以修改 `RegisterController` 這個類別。這個類別負責驗證與建立新的使用者。
 
-`RegisterController` 的 `validator` 方法包含了對於新使用者的驗證規格，你可以任意修改這個方法。
+`RegisterController` 的 `validator` 方法包含了對於新使用者的驗證規則，你可以根據你的需求來自由的修改這些方法
 
-`RegisterController` 的 `create` 方法負責使用 [Eloquent ORM](/docs/{{version}}/eloquent) 建立新的 `App\User` 記錄到你的資料庫。你可以根據實際資料庫需求任意修改這個方法。
+`RegisterController` 的 `create` 方法負責使用 [Eloquent ORM](/docs/{{version}}/eloquent) 負責在你的資料庫建立新的 `App\User` 記錄。你可以根據實際資料庫需求任意修改這個方法。
 
 <a name="retrieving-the-authenticated-user"></a>
 ### 取得已認證的使用者
@@ -125,7 +125,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
     // 取得目前已認證的使用者 ID ...
     $id = Auth::id();
 
-另外，你也可以從 `Illuminate\Http\Request` 實例存取已認證的使用者。要記得，型別提示的類別將會自動注入到你的控制的方法中：
+另外，一旦使用者已經被認證，你也可以從 `Illuminate\Http\Request` 實例存取已認證的使用者。要記得，型別提示的類別將會自動注入到你的控制器方法中：
 
     <?php
 
@@ -149,15 +149,15 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 確認目前的使用者是否通過認證
 
-為了確定使用者是否已經登入，你可以使用 `Auth` facade 的 `check` 方法，如果使用者已被認證過，將回傳 `true`：
+為了確定使用者是否已經登入你的應用程式，你可以使用 `Auth` facade 的 `check` 方法，如果使用者已經被認證，將回傳 `true`：
 
     use Illuminate\Support\Facades\Auth;
 
     if (Auth::check()) {
-        // 如果使用者已登入就...
+        // 使用者已經登入...
     }
 
-> {tip} 即使可以使用 `check` 方法來檢查使用者是否有通過認證，但還是建議你在使用者存取控制器或路由之前，使用「中介層」來過濾使用者的認證狀態。想知道更多資訊，可以看看[保護路由](/docs/{{version}}/authentication#protecting-routes)這個文件（其實就在下面）。
+> {tip} 即使可以使用 `check` 方法來檢查使用者是否有通過認證，但還是建議你在使用者存取控制器或路由之前，使用「中介層」來過濾使用者的認證狀態。想知道更多資訊，可以查看[保護路由](/docs/{{version}}/authentication#protecting-routes)文件。
 
 <a name="protecting-routes"></a>
 ### 保護路由
@@ -177,7 +177,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 指定「守衛」
 
-當你將 `auth` 中介層加入到某個路由，你也可以指定要哪個「守衛」來認證使用者。指定的「守衛」必須對應到 `auth.php` 設定檔中 `guards` 陣列的其中一個鍵名：
+當你將 `auth` 中介層附加到一個路由，你也可以指定要哪個守衛來認證使用者。被指定的守衛必須對應到 `auth.php` 設定檔中 `guards` 陣列的其中一個鍵名：
 
     public function __construct()
     {
@@ -192,9 +192,9 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="authenticating-users"></a>
 ## 手動認證使用者
 
-當然，如果你不想使用 Laravel 內建的認證控制器，且想刪除這些控制器，你只需要直接使用 Laravel 的認證類別來處理使用者認證。別擔心！這很簡單唷！
+當然，你不需要使用 Laravel 內建的認證控制器。如果你選擇移除這些控制器，你將需要直接使用 Laravel 認證類別來直接管理使用者認證。別擔心，這很容易！
 
-我們將使用 [facade](/docs/{{version}}/facades) 的 `Auth` 存取 Laravel 認證服務，所以我們需要確認使否導入 facade 的 `Auth` 到類別。接下來，讓我們看看 `attempt` 方法：
+我們將藉由 `Auth` 的 [facade](/docs/{{version}}/facades) 存取 Laravel 認證服務，所以我們將需要確保在類別最上方引入 Auth facade。接下來，讓我們看看 `attempt` 方法：
 
     <?php
 
@@ -212,32 +212,31 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
         public function authenticate()
         {
             if (Auth::attempt(['email' => $email, 'password' => $password])) {
-                // 如果認證通過就...
+                // 如果認證通過...
                 return redirect()->intended('dashboard');
             }
         }
     }
 
-`attempt` 方法會接受一個鍵值對陣列作為第一個參數。這個陣列的值會用來尋找資料庫裡的使用者資料，所以在上面的範例中，會藉由取得使用者的 e-mail 欄位去尋找使用者的資料，如果找到了相對應的 e-mail，就會用資料庫已雜湊化的使用者密碼與陣列中的也雜湊化的密碼做比對，一旦比對成功，就會啟動一組以認證的 session 給使用者。
+`attempt` 方法會接受一個鍵值對陣列作為第一個參數。這個陣列內的值會被用來尋找在資料表內的使用者。所以在上面的範例中，會藉由取得使用者的 `e-mail` 欄位去尋找使用者的資料。如果找到了使用者，就會用資料庫已雜湊化的使用者密碼與陣列中的也雜湊化的密碼做比對，一旦比對成功，就會啟動一組以認證的 session 給使用者。
 
 如果認證成功，`attempt` 方法將會回傳 `true`。反之，則回傳 `false`。
 
-在被認證用的中介層過濾前，`intended` 方法可以將使用者導回他們嘗試存取的頁面。如果導回的頁面不存在，則可以傳導到指定的頁面。
+redirector 上的 `intented` 方法在透過身份認證中介層之前，將使用者重導到他們嘗試存取的 URL。如果導回的頁面不存在，則可以傳導到指定的頁面。
 
 #### 指定額外的條件
 
 如果你希望，你也可以加入除了 Email 和密碼以外的條件到認證查詢。舉例來說，我們要確認使用者是否標記「active」:
 
     if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1])) {
-        // 如果這名使用者的活動是存在且有效的話...
+        // 使用者是活躍且存在....
     }
 
-> {note} 在這些例子中，`email` 不是一個必要的選項，它只被用來當作範例。你應該使用你的資料庫中與「username」相同意義的欄位名稱。
+> {note} 在這些例子中，`email` 不是一個必要的選項，它只被用來當作範例。你應該使用任何對應到資料庫「username」的欄位名稱。
 
+#### 存取指定守衛實例
 
-#### 存取指定「守衛」實例
-
-你可以在使用 facade 的 `Auth` 時使用 `guard` 來指定「守衛」實例。這允許你在管理應用程式的不同部分時，可以使用不同的認證模組或使用者的資料表。
+你可以使用 `Auth` facade 的 `guard` 方法來指定你想要的守衛實例。允許你在管理應用程式不同部分時，使用完全獨立的認證模組或是使用者的資料表。
 
 `guard` 方法所指定的守衛名稱必須對應到 `auth.php` 設定檔中 guards 陣列的其中一個鍵名：
 
@@ -247,18 +246,17 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 登出
 
-為了讓使用者登出，你可以使用 facade `Auth` 的 `logout` 方法。該方法會清除使用者在 session 中所有認證相關關的資料：
+為了讓使用者登出，你可以使用 facade `Auth` 的 `logout` 方法。這個方法會清除使用者在 session 中所有認證相關的資料：
 
     Auth::logout();
 
 <a name="remembering-users"></a>
-
 ### 記住使用者
 
 如果你想要提供「記住我」的功能，你可以傳入一個布林值到 `attempt` 方法的第二個參數，這會維持使用者的 session 存在直到使用者手動登出。你的 `users` 資料表必須要包含一個 `remember_token` 欄位，這將用來儲存「記住我」的 token。
 
     if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-        // 如果這名使用者已被記住就...
+        // 如果使用者已經被記住...
     }
 
 > {tip} 如果你使用 Laravel 內建的 `LoginController`，則「記住」使用者的程式邏輯已經由控制器使用的 traits 實作。
@@ -272,22 +270,22 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="other-authentication-methods"></a>
 ### 其他認證方法
 
-#### 用使用者實例做認證Authenticate A User Instance
+#### 認證使用者實例
 
-如果你需要使用存在的使用者實例來登入，你需要呼叫 `login` 方法，並傳入使用實例，這個物件必須實作 `Illuminate\Contracts\Auth\Authenticatable`（[contract](/docs/{{version}}/contracts)。當然，內建的 `App\User` 模型已經實作了這個介面：
+如果你需要登入一個現有的使用者實例到你的應用程式，你可以在你的使用者實例呼叫 `login` 方法。給定的物件必須實作  `Illuminate\Contracts\Auth\Authenticatable`（[contract](/docs/{{version}}/contracts)。當然，內建的 `App\User` 模型已經實作了這個介面：
 
     Auth::login($user);
 
-    // 登入並「記住」給使用者...
+    // 登入並記住給使用者...
     Auth::login($user, true);
 
 當然，你可以指定「守衛」實例：
 
     Auth::guard('admin')->login($user);
 
-#### 用使用者 ID 做認證
+#### 使用 ID 來認證使用者
 
-如果你需要用使用者 ID 來登入，你需要使用 `loginUsingId` 方法，這個方法只接受要登入的使用者的主鍵：
+如果要透過使用者的 ID 來登入應用程式，你可以使用 `LoginUsingId` 方法。你希望這個認證方法只接受使用者的主鍵：
 
     Auth::loginUsingId(1);
 
@@ -296,7 +294,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 #### 一次性的使用者認證
 
-你可以使用 `once` 方法來只針對一次的請求來認證使用者，沒有任何的 session 或 cookie 會被使用，這個對於建議無狀態的 API 非常的好用：
+你可以使用 `once` 方法來針對一次的請求來認證使用者。沒有任何的 session 或 cookie 會被使用，當你建立一個無狀態的 API 時，這個方法可能對你會有幫助：
 
     if (Auth::once($credentials)) {
         //
@@ -313,7 +311,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 一但中介層被加入到路由，當使用瀏覽器進入這個路由時，會主動提示你需要提供憑證。預設情況下，`auth.basic` 中介層會使用 `email` 欄位當作「使用者名稱」。
 
-#### FastCGI的注意事項
+#### FastCGI 的注意事項
 
 如果你使用了 PHP FastCGI，HTTP 基礎認證可能會無法正常運作，你需要將下面的幾行設定加到你的 `.htaccess` 檔案中：
 
@@ -323,7 +321,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="stateless-http-basic-authentication"></a>
 ### 無狀態 HTTP 基礎認證
 
-你也可以使用 HTTP 基礎認證而不用在 session 中設定使用者認證用的 cookie ，這個功能對 API 認證來說非常有用。為了達到目的，[定義一個中介層](/docs/{{version}}/middleware)會呼叫 `onceBasic` 方法。如果沒有任何回應從 `onceBasic` 方法返回的話，這個請求就會進一步傳進應用程式中：
+你也可以使用 HTTP 基礎認證而不用在 session 中設定使用者認證用的 cookie ，這個功能對 API 認證來說非常有用。為了達到目的，[定義一個中介層](/docs/{{version}}/middleware)來呼叫 `onceBasic` 方法。如果沒有任何回應從 `onceBasic` 方法回傳的話，這個請求可以進一步傳進應用程式中：
 
     <?php
 
@@ -347,7 +345,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
     }
 
-接著，[註冊這個路由](/docs/{{version}}/middleware#registering-middleware)，並將它增加到路由上：
+接著，[註冊路由中介層](/docs/{{version}}/middleware#registering-middleware)，並將它加入到路由：
 
     Route::get('api/user', function () {
         // 只有被認證的使用者可以進入...
@@ -356,7 +354,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="adding-custom-guards"></a>
 ## 新增客製化守衛
 
-你可以使用 facade `Auth` 的 `extend` 方法來定義屬於你自己的身份認證守衛。你需要在[服務提供者](/docs/{{version}}/providers)中呼叫 `provider`。由於 Laravel 已內建了 `AuthServiceProvider`，所以我們可以把程式碼放到這個檔案裡：
+你可以使用 `Auth` facade 的 `extend` 方法來定義屬於你自己的身份認證守衛。你需要在[服務提供者](/docs/{{version}}/providers)中呼叫 `provider`。由於 Laravel 已內建了 `AuthServiceProvider`，所以我們可以把程式碼放到這個提供者裡：
 
     <?php
 
@@ -385,7 +383,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
         }
     }
 
-你可以看到上面的範例中，傳遞給 `extend` 方法的回呼函示必須要回傳 `Illuminate\Contracts\Auth\Guard` 的實例。若你需要定義一個客製化守衛，可以實作這個介面的一些方法。一旦定義完，你就可以在 `auth.php` 設定檔設定 `guards` 並開始使用：
+你可以看到上面的範例中，傳送給 `extend` 方法的回呼函式應該回傳一個 `Illuminate\Contracts\Auth\Guard` 的實例。這個介面包含了一些方法你將需要去實作定義一個客製化的守衛。一旦完成客製化守衛的定義，你可以在你的 `auth.php` 設定檔內的 `guards` 設定使用這個守衛：
 
     'guards' => [
         'api' => [
@@ -397,7 +395,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="adding-custom-user-providers"></a>
 ## 新增客製化使用者守衛
 
-如果你不使用傳統關聯式資料庫去存放你的使用者資料，你將需要擴充 Laravel 來新增你自己的認證使用者的提供者。我們將使用 facade `Auth` 的 `provider` 方法來定義客製化提供者：
+如果你不使用傳統關聯式資料庫去存放你的使用者資料，你將需要擴充 Laravel 來新增你自己的認證使用者的提供者。我們將使用 `Auth` facade 的 `provider` 方法來定義客製化提供者：
 
     <?php
 
@@ -466,9 +464,9 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 
 `retrieveById` 函式通常接收一個代表使用者的值，例如 MySQL 中自動增加的 ID。該方法應該要取得並回傳比對這個 ID 的 `Authenticatable` 的實例。
 
-`retrieveByToken` 函式藉由使用者獨特的 `$identifier`和儲存在 `remember_token` 欄位的「記住我」 `$token` 來取得使用者。如同之前的方法，`Authenticatable` 的實力應該被回傳。
+`retrieveByToken` 函式藉由使用者唯一的 `$identifier`和儲存在 `remember_token` 欄位的「記住我」 `$token` 來取得使用者。如同之前的方法，`Authenticatable` 的實例應該被回傳。
 
-`updateRememberToken` 方法使用新的 `$token` 更新了 `$user` 的 `remember_token` 欄位。當使用「記住我」嘗試登入成功時，或是 null（當使用者登出時，就會重新給一個 token。
+`updateRememberToken` 方法使用新的 `$token` 來更新 `$user` 的 `remember_token` 欄位。token 可以是一個全新的 token，應用在成功「記住我」登入嘗試，或者是使用者登出時。
 
 在嘗試登入應用程式時，`retrieveByCredentials` 方法會接收 `Auth::attempt` 方法給的憑證陣列。這個方法應當要「查詢」底層永久儲存的資料來比對使用者的憑證。通常，該方法會利用 `$credentials['username']` 來執行一個帶著「where」條件地查詢。接著這個方法需要會傳 `Authenticatable` 實例。**此方法不應該企圖做任何密碼的驗證或認證！**
 
@@ -477,7 +475,7 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="the-authenticatable-contract"></a>
 ### 認證用的 Contract
 
-現在我們已經介紹了 `UserProvider` 的每個方法，讓我們看一下 `Authenticatable` contract。請記得， `UserProvider` 的 `retrieveById` 和 `retrieveByCredentials` 方法需要回傳 `Authenticatable` 的實例：
+現在我們已經介紹了 `UserProvider` 的每個方法，讓我們看一下 `Authenticatable` contract。請記得，`UserProvider` 的 `retrieveById` 和 `retrieveByCredentials` 方法需要回傳 `Authenticatable` 的實例：
 
     <?php
 
@@ -499,10 +497,10 @@ Laravel 提供一個簡單的指令來快速建立所有認證所需的路由和
 <a name="events"></a>
 ## 事件
 
-Laravel 在認證過程中觸發了許多[事件](/docs/{{version}}/events)，你可以在 `EventServiceProvider` 添加監聽器來監聽事件：
+Laravel 在認證過程中觸發了許多[事件](/docs/{{version}}/events)，你可以在 `EventServiceProvider` 增加監聽器來監聽事件：
 
     /**
-     * 添加監聽器來監聽應用程式
+     * 增加監聽器來監聽應用程式
      *
      * @var array
      */
