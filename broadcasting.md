@@ -109,7 +109,6 @@ Redis 廣播器會使用 Redis 發布/訂閱 功能來廣播訊息。然而，�
 
 在廣播事件之前，你也許會需要設定和執行[隊列監聽器](/docs/{{version}}/queues)。全部的事件廣播都會通過隊列器進行，使你的程式回應時間不會受到太嚴重的影響。
 
-
 <a name="concept-overview"></a>
 ## 觀念簡述
 
@@ -548,8 +547,7 @@ Presence 頻道就像私人或公共頻道一樣，可以接收事件。來舉�
 <a name="notifications"></a>
 ## 通知
 
-事件廣播搭配[通知系統](/docs/{{version}}/notifications)，可讓你的 JavaScript 應用程式在不需要重新整理頁面得情況下接收新的通知。
-首先，請看一下有關使用[廣播通知頻道](/docs/{{version}}/notifications#broadcast-notifications)的技術文件。
+事件廣播搭配[通知系統](/docs/{{version}}/notifications)，可讓你的 JavaScript 應用程式在不需要重新整理頁面得情況下接收新的通知。首先，請看一下有關使用[廣播通知頻道](/docs/{{version}}/notifications#broadcast-notifications)的技術文件。
 
 如果你已設定通知系統到廣播頻道，你就可以使用 Echo 的 `notification` 方法來監聽廣播事件。但請記得，頻道名稱應該與接收通知的實例之類別名稱一致：
 
