@@ -10,7 +10,7 @@
 <a name="installation"></a>
 ## 安裝
 
-> {video} 你是位視覺化學習者？ Laracasts 提供了一個[免費、全面介紹 Laravel 的平台](http://laravelfromscratch.com)給予使用這套框架的新手。這裡是能夠帶你展開這套框架使用之旅的好地方。
+> {video} 你是位視覺化學習者？ [Laracasts](http://laravelfromscratch.com) 為入門 Laravel 框架的新手，提供了免費、深入的介紹。這裡是能夠帶你入門這套框架的好地方。
 
 <a name="server-requirements"></a>
 ### 系統需求
@@ -39,9 +39,11 @@ Laravel 使用了 [Composer](https://getcomposer.org) 來管理套件的相依�
 
     composer global require "laravel/installer"
 
-請確定把 `$HOME/.composer/vendor/bin` 目錄 （實際的目錄路徑依據你的作業系統可能有所不同） 放置於環境變數 $PATH 裡，這樣你的系統才能夠找到並正確執行 `laravel` 這個指令。
+請確定把 `$HOME/.composer/vendor/bin` 目錄（實際的目錄路徑依據你的作業系統可能有所不同） 放置於環境變數 $PATH 裡，這樣你的系統才能夠找到並正確執行 `laravel` 這個指令。
 
 一旦安裝完畢，可以使用 `laravel new` 建立全新的 Laravel 專案至指定的目錄。例如：`laravel new blog` 會建立名稱為 `blog` 的目錄，裡面包含新安裝的 Laravel 專案和相依程式碼：
+
+    laravel new blog
 
 #### 方法二：使用 Composer Create-Project
 
@@ -81,9 +83,9 @@ Laravel 使用了 [Composer](https://getcomposer.org) 來管理套件的相依�
 
 #### 其他設定
 
-Laravel  幾乎不需設定就可以馬上使用，你可以自由自在的開始開發！不過，你或許會想看看 `config/app.php` 檔案和相關的文件。其中包含了數個設定選項，像是 `timezone(時區)` 和 `locale(語言環境)`，你不仿根據你的應用程式來做修改。
+Laravel 幾乎不需設定就可以馬上使用，你可以自由自在的開始開發！不過，你或許會想看看 `config/app.php` 檔案和相關的文件。其中包含了數個設定選項，像是 `timezone` 和 `locale`，你可以根據你的應用程式來做修改。
 
-你也可以設定 Laravel 的幾個附加元件，像是：
+你可能也會想要設定一些 Laravel 附加的元件，像是：
 
 <div class="content-list" markdown="1">
 - [快取](/docs/{{version}}/cache#configuration)
@@ -101,7 +103,7 @@ Laravel  幾乎不需設定就可以馬上使用，你可以自由自在的開�
 
 Laravel 內包含了一個 `public/.htaccess` 檔案用於讓 URLs 路徑不帶有前端控制器 `index.php`。使用 Apache 部署 Laravel 前，請確認是否將 `mod_rewrite` 模組啟用，這樣 `.htaccess` 檔案才能夠正確的被伺服器正確解析。
 
-如果 Laravel 專案內預先搭載的 `.htaccess` 檔案在你的 Apache 環境下不能使用，您可以嘗試替代以下檔案內容：
+如果 Laravel 專案內預先搭載的 `.htaccess` 檔案在你的 Apache 環境下不能使用，你可以嘗試這個方法：
 
     Options +FollowSymLinks
     RewriteEngine On
@@ -112,7 +114,7 @@ Laravel 內包含了一個 `public/.htaccess` 檔案用於讓 URLs 路徑不帶�
 
 #### Nginx
 
-若您是使用 Nginx，可以透過在您的網站設定 (site configuration) 內加入以下的指令 (directive) 來導向所有的請求至 `index.php` 前端控制器：
+若你是使用 Nginx，可以透過在你的網站設定內加入以下的指令來導向所有的請求至 `index.php` 前端控制器：
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
