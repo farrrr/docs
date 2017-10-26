@@ -66,7 +66,6 @@ Laravel 使用了 [Composer](https://getcomposer.org) 來管理套件的相依�
 
 在安裝完 Laravel 後，你需要將你的網站伺服器根目錄指向 public 目錄。該目錄下的 index.php 程式將作為前端控制器，所有的 HTTP 請求都會透過它進入至你的應用程式。
 
-
 #### 設定檔
 
 所有 Laravel 框架的設定檔都位於 `config` 目錄下。每一個設定的選項均有詳細的說明，因此你可以輕鬆地瀏覽這些文件，並且熟悉這些選項及配置。
