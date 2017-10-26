@@ -45,7 +45,7 @@ Laravel 使用了 [Composer](https://getcomposer.org) 來管理套件的相依�
 
     laravel new blog
 
-#### 方法二：使用 Composer Create-Project
+#### 方法二：透過 Composer Create-Project
 
 或者，你也可以透過 Composer 在命令列執行 `create-project` 指令安裝 Laravel ：
 
