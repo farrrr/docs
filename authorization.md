@@ -35,7 +35,7 @@ Gates 和 Policy 的關係像是路由和控制器。Gates 提供簡單且採用
 Gates 是用來確認是否受權指定的行為給使用者，通常在 `App\Providers\AuthServiceProvider` 的類別中使用 `Gate` facade 定義內容。Gates 的第一個參數主要接受使用者實例，並且可以接受額外的參數，像是 Eloquent 模型關聯：
 
     /**
-     * 註冊任何認證或授權的服務
+     * 註冊任何認證或授權的服務。
      *
      * @return void
      */
@@ -51,7 +51,7 @@ Gates 是用來確認是否受權指定的行為給使用者，通常在 `App\Pr
 Gates 也可以定義一個用 `Class@method` 風格的回呼字串，像是使用控制器那樣：
 
     /**
-     * 註冊任何認證或授權的服務
+     * 註冊任何認證或授權的服務。
      *
      * @return void
      */
@@ -149,7 +149,7 @@ Policy 是組織特定模型或是資源的授權邏輯類別。舉例來說，�
         ];
 
         /**
-         * 註冊任何認證或授權的服務
+         * 註冊任何認證或授權的服務。
          *
          * @return void
          */
@@ -181,7 +181,7 @@ Policy 是組織特定模型或是資源的授權邏輯類別。舉例來說，�
     class PostPolicy
     {
         /**
-         * 確認使用者是否有被授權可以更新這篇貼文
+         * 確認使用者是否有被授權可以更新這篇貼文。
          *
          * @param  \App\User  $user
          * @param  \App\Post  $post
@@ -292,7 +292,7 @@ Laravel 包含一個可以在傳入請求到你的路由或控制器前就授權
     class PostController extends Controller
     {
         /**
-         * 更新給定的部落格文章
+         * 更新給定的部落格文章。
          *
          * @param  Request  $request
          * @param  Post  $post
@@ -311,7 +311,7 @@ Laravel 包含一個可以在傳入請求到你的路由或控制器前就授權
 如前所述，有些像是 `create` 的行為不需要指定模型實例。在這種情況下，你可以傳遞類別名稱到 `authorize` 方法。這個類別名稱將會用來確定授權行為時應該用哪個 Policy：
 
     /**
-     * 建立一個新的部落格文
+     * 建立一個新的部落格文。
      *
      * @param  Request  $request
      * @return Response
