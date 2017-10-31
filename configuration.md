@@ -3,9 +3,9 @@
 - [介紹](#introduction)
 - [環境設定](#environment-configuration)
     - [取得環境設定](#retrieving-environment-configuration)
-    - [確認當前環境](#determining-the-current-environment)
+    - [確認目前環境](#determining-the-current-environment)
 - [存取設定值](#accessing-configuration-values)
-- [快取你的設定](#configuration-caching)
+- [快取設定](#configuration-caching)
 - [維護模式](#maintenance-mode)
 
 <a name="introduction"></a>
@@ -16,11 +16,11 @@ Laravel 框架的所有設定檔都存放在 `config` 目錄中。每個選項�
 <a name="environment-configuration"></a>
 ## 環境設定
 
-根據應用程式所執行的環境給予適合的設定是有助於開發的。舉例來說，你可能希望針對開發環境和正式環境使用不同的快取驅動。
+根據應用程式所執行的環境給予適合的設定是有助於開發的。例如，你可能希望針對開發環境和正式環境使用不同的快取驅動。
 
-為了做到這件事，Laravel 透過 Vance Lucas 的 [DotEnv](https://github.com/vlucas/phpdotenv) PHP 函式庫來達到這項需求。在你新安裝的 Laravel 中，其根目錄會有 `.env.example` 的檔案。如果你是透過 Composer 安裝 Laravel 的話，這個檔案會自動複製一份並重新命名為  `.env`。如果沒有的話，麻煩你重新命名 `.env.example` 檔案。
+為了做到這件事，Laravel 透過 Vance Lucas 的 [DotEnv](https://github.com/vlucas/phpdotenv) PHP 函式庫來達到這項需求。在你新安裝的 Laravel 中，其根目錄會有 `.env.example` 的檔案。如果你是透過 Composer 安裝 Laravel 的話，檔案會自動重新命名為  `.env`。如果沒有的話，你需要手動重新命名 `.env.example` 檔案。
 
-你的 `.env` 檔案不應該被提交到版本控制上，因為每個開發或正式環境未必會使用相同的環境設定。除此之外，如果有黑客想嘗試存取你的版本控制系統，這會造成資安漏洞，因為所有敏感資訊都會被外流。
+你的 `.env` 檔案不應該被提交到版本控制上，因為每個開發或正式環境未必會使用相同的環境設定。除此之外，如果有入侵者想嘗試存取你的版本控制系統，這會造成資安漏洞，因為所有敏感資訊都會被外流。
 
 如果你是團隊開發，你可能希望應用程式能保留 `.env.example` 檔案。可以在範例設定檔放置預設值，這樣團隊的其他開發者能清楚地知道執行應用程式需要哪些環境設定值。 你也可以建立 `.env.testing` 檔案。在執行 PHPUnit 測試或執行 Artisan 指令並搭配 `--env=testing` 選項的時候，該檔案會覆蓋 `.env` 檔案內的環境設定值。
 
@@ -36,28 +36,28 @@ Laravel 框架的所有設定檔都存放在 `config` 目錄中。每個選項�
 傳遞給 `env` 函式的第二個值是「預設值」，該值會用在沒有環境變數存在的情況下給定預設值。
 
 <a name="determining-the-current-environment"></a>
-### 確認當前環境
+### 確認目前環境
 
-當前應用程式的環境是透過從你的 `.env` 檔案中的 `APP_ENV` 變數去確定的。你可以透過在 `App` [facade](/docs/{{version}}/facades) 上的 `environment` 方法來存取這個值：
+目前應用程式的環境透過從你的  `.env` 檔案中的 `APP_ENV` 變數去判定的。你可以透過在 `App` [facade](/docs/{{version}}/facades) 上的 `environment` 方法來存取這個值：
 
     $environment = App::environment();
 
-你也可以傳遞參數到 `environment` 方法來檢查給定的值是否與環境變數一致。如果給定的值與條件上的環境變數之值相同，該方法就會回傳 `true`：
+你也可以傳遞參數到 `environment` 方法來檢查給定的值是否與本機端變數一致。如果給定的值與條件上的本機端變數之值相同，該方法就會回傳 `true`：
 
     if (App::environment('local')) {
         // The environment is local
     }
 
     if (App::environment(['local', 'staging'])) {
-        // The environment is either local OR staging...
+        // 環境是本機端或是 Stage...
     }
 
-> {tip} 當前應用程式環境檢的測能被伺服器層級的 `APP_ENV` 環境變數覆蓋。這有助於你在共享不同的環境設定給相同的應用程式上，因此你可以在伺服器的設定中設置主機環境來配合給定的環境。
+> {tip} 目前應用程式環境檢測可以被伺服器層級的 `APP_ENV` 環境變數覆蓋。這有助於你在共享不同的環境設定給相同的應用程式上，因此你可以在伺服器的設定中設置主機環境來配合給定的環境。
 
 <a name="accessing-configuration-values"></a>
 ## 存取設定值
 
-你可以在你的應用程式任何地方輕易地使用全域 `config` 輔助函式來存取你的設定值。可以使用「點」來存取設定值，這其中還包括你想要存取的檔案和選項名稱。也可以指定想要的值，或者如果設定的選項不存就回傳預設值。：
+你可以在你的應用程式任何地方輕易地使用全域 `config` 輔助函式來存取你的設定值。可以使用「點」來存取設定值，這其中還包括你想要存取的檔案和選項名稱。也可以指定想要的值，或者如果設定的選項不存就回傳預設值：
 
     $value = config('app.timezone');
 
@@ -68,7 +68,7 @@ Laravel 框架的所有設定檔都存放在 `config` 目錄中。每個選項�
 <a name="configuration-caching"></a>
 ## 快取你的設定
 
-想讓你的應用程式更快一些，你應該使用 `config:cache` Artisan 指令把全部的設定檔快取到一個檔案。這會將你應用程式中的所有設定選項集中到單一個檔案，然後讓框架能更快速地載入它。
+想讓你的應用程式更快一些，你應該使用 Artisan 的 `config:cache` 指令把全部的設定檔快取到一個檔案。這會將你應用程式中的所有設定選項合併成單一個檔案，讓框架能更快速的載入。
 
 通常來說，你應該將執行 `php artisan config:cache` 指令當作正式產品部署的例行公事。該指令不應該執行在本地開環境，因為設定選項會因開發求而經常的更動。
 
@@ -77,13 +77,13 @@ Laravel 框架的所有設定檔都存放在 `config` 目錄中。每個選項�
 <a name="maintenance-mode"></a>
 ## 維護模式
 
-當你的應用程式正在維護時，所有傳遞至應用程式的請求都會顯示自訂的視圖。在你要更新或進行維護的時候，此舉能輕易的「關閉」你的應用程式。預設的中介層堆疊會為你的應用程式檢核是否正在使用維護模式。如果應用程式進入維護模式時，`MaintenanceModeException` 會拋出 503 HTTP 狀態碼。
+當你的應用程式正在維護時，所有傳遞至應用程式的請求都會顯示自訂的視圖。在你要更新或進行維護的時候，能輕易的「關閉」你的應用程式。預設的中介層堆疊會為你的應用程式檢核是否正在使用維護模式。如果應用程式進入維護模式時，`MaintenanceModeException` 會拋出 503 HTTP 狀態碼。
 
-若要啟動維護模式，可以簡單地執行 `down` Artisan 指令：
+若要啟動維護模式，可以簡單地執行 Artisan 的 `down` 指令：
 
     php artisan down
 
-你也可以給 `down` 指令提供 `message` and `retry` 選項。`message` 選項的值可用於顯示或紀錄自訂的訊息。而 `retry` 選項的值將用來當 HTTP 標頭 `Retry-After` 的值：
+你也可以給 `down` 指令提供 `message` 和 `retry` 選項。`message` 選項的值可用於顯示或記錄自訂的訊息。而 `retry` 選項的值將用來當 HTTP 標頭 `Retry-After` 的值：
 
     php artisan down --message="Upgrading Database" --retry=60
 
