@@ -42,10 +42,10 @@ Laravel 框架的所有設定檔都存放在 `config` 目錄中。每個選項�
 
     $environment = App::environment();
 
-你也可以傳遞參數到 `environment` 方法來檢查給定的值是否與本機端變數一致。如果給定的值與條件上的本機端變數之值相同，該方法就會回傳 `true`：
+你也可以傳遞參數到 `environment` 方法來檢查給定的值是否與環境變數一致。如果給定的值與條件上的環境變數之值相同，該方法就會回傳 `true`：
 
     if (App::environment('local')) {
-        // The environment is local
+        // 環境是本機端
     }
 
     if (App::environment(['local', 'staging'])) {
