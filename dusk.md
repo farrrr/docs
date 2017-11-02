@@ -1,46 +1,46 @@
-# Browser Tests (Laravel Dusk)
+# 瀏覽器測試 (Laravel Dusk)
 
-- [Introduction](#introduction)
-- [Installation](#installation)
-    - [Using Other Browsers](#using-other-browsers)
-- [Getting Started](#getting-started)
-    - [Generating Tests](#generating-tests)
-    - [Running Tests](#running-tests)
-    - [Environment Handling](#environment-handling)
-    - [Creating Browsers](#creating-browsers)
-    - [Authentication](#authentication)
-- [Interacting With Elements](#interacting-with-elements)
-    - [Dusk Selectors](#dusk-selectors)
-    - [Clicking Links](#clicking-links)
-    - [Text, Values, & Attributes](#text-values-and-attributes)
-    - [Using Forms](#using-forms)
-    - [Attaching Files](#attaching-files)
-    - [Using The Keyboard](#using-the-keyboard)
-    - [Using The Mouse](#using-the-mouse)
-    - [Scoping Selectors](#scoping-selectors)
-    - [Waiting For Elements](#waiting-for-elements)
-    - [Making Vue Assertions](#making-vue-assertions)
-- [Available Assertions](#available-assertions)
-- [Pages](#pages)
-    - [Generating Pages](#generating-pages)
-    - [Configuring Pages](#configuring-pages)
-    - [Navigating To Pages](#navigating-to-pages)
-    - [Shorthand Selectors](#shorthand-selectors)
-    - [Page Methods](#page-methods)
-- [Components](#components)
-    - [Generating Components](#generating-components)
-    - [Using Components](#using-components)
-- [Continuous Integration](#continuous-integration)
+- [介紹](#introduction)
+- [安裝](#installation)
+    - [使用其他瀏覽器](#using-other-browsers)
+- [入門](#getting-started)
+    - [產生測試](#generating-tests)
+    - [執行測試](#running-tests)
+    - [環境處理](#environment-handling)
+    - [建立瀏覽器](#creating-browsers)
+    - [認證](#authentication)
+- [與元素互動](#interacting-with-elements)
+    - [Dusk 選擇器](#dusk-selectors)
+    - [點擊連結](#clicking-links)
+    - [文本、值與屬性](#text-values-and-attributes)
+    - [使用表單](#using-forms)
+    - [附加檔案](#attaching-files)
+    - [使用鍵盤](#using-the-keyboard)
+    - [使用滑鼠](#using-the-mouse)
+    - [範圍選擇器](#scoping-selectors)
+    - [等待元素](#waiting-for-elements)
+    - [Vue 的斷言](#making-vue-assertions)
+- [可用的斷言](#available-assertions)
+- [頁面](#pages)
+    - [產生頁面](#generating-pages)
+    - [設定分頁](#configuring-pages)
+    - [導航至分頁](#navigating-to-pages)
+    - [速記選擇器](#shorthand-selectors)
+    - [頁面方法](#page-methods)
+- [元件](#components)
+    - [產生元件](#generating-components)
+    - [使用元件](#using-components)
+- [持續整合](#continuous-integration)
     - [Travis CI](#running-tests-on-travis-ci)
     - [CircleCI](#running-tests-on-circle-ci)
 
 <a name="introduction"></a>
-## Introduction
+## 介紹
 
 Laravel Dusk provides an expressive, easy-to-use browser automation and testing API. By default, Dusk does not require you to install JDK or Selenium on your machine. Instead, Dusk uses a standalone [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/home) installation. However, you are free to utilize any other Selenium compatible driver you wish.
 
 <a name="installation"></a>
-## Installation
+## 安裝
 
 To get started, you should add the `laravel/dusk` Composer dependency to your project:
 
@@ -61,7 +61,7 @@ To run your tests, use the `dusk` Artisan command. The `dusk` command accepts an
     php artisan dusk
 
 <a name="using-other-browsers"></a>
-### Using Other Browsers
+### 使用其他瀏覽器
 
 By default, Dusk uses Google Chrome and a standalone [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/home) installation to run your browser tests. However, you may start your own Selenium server and run your tests against any browser you wish.
 
@@ -93,17 +93,17 @@ Next, you may simply modify the `driver` method to connect to the URL and port o
     }
 
 <a name="getting-started"></a>
-## Getting Started
+## 入門
 
 <a name="generating-tests"></a>
-### Generating Tests
+### 產生測試
 
 To generate a Dusk test, use the `dusk:make` Artisan command. The generated test will be placed in the `tests/Browser` directory:
 
     php artisan dusk:make LoginTest
 
 <a name="running-tests"></a>
-### Running Tests
+### 執行測試
 
 To run your browser tests, use the `dusk` Artisan command:
 
@@ -143,14 +143,14 @@ In addition, if you start ChromeDriver on a port other than 9515, you should mod
     }
 
 <a name="environment-handling"></a>
-### Environment Handling
+### 環境處理
 
 To force Dusk to use its own environment file when running tests, create a `.env.dusk.{environment}` file in the root of your project. For example, if you will be initiating the `dusk` command from your `local` environment, you should create a `.env.dusk.local` file.
 
 When running tests, Dusk will back-up your `.env` file and rename your Dusk environment to `.env`. Once the tests have completed, your `.env` file will be restored.
 
 <a name="creating-browsers"></a>
-### Creating Browsers
+### 建立瀏覽器
 
 To get started, let's write a test that verifies we can log into our application. After generating a test, we can modify it to navigate to the login page, enter some credentials, and click the "Login" button. To create a browser instance, call the `browse` method:
 
@@ -222,7 +222,7 @@ The `maximize` method may be used to maximize the browser window:
     $browser->maximize();
 
 <a name="authentication"></a>
-### Authentication
+### 認證
 
 Often, you will be testing pages that require authentication. You can use Dusk's `loginAs` method in order to avoid interacting with the login screen during every test. The `loginAs` method accepts a user ID or user model instance:
 
@@ -234,10 +234,10 @@ Often, you will be testing pages that require authentication. You can use Dusk's
 > {note} After using the `loginAs` method, the user session will be maintained for all tests within the file.
 
 <a name="interacting-with-elements"></a>
-## Interacting With Elements
+## 與元素互動
 
 <a name="dusk-selectors"></a>
-### Dusk Selectors
+### Dusk 選擇器
 
 Choosing good CSS selectors for interacting with elements is one of the hardest parts of writing Dusk tests. Over time, frontend changes can cause CSS selectors like the following to break your tests:
 
@@ -260,7 +260,7 @@ Dusk selectors allow you to focus on writing effective tests rather than remembe
     $browser->click('@login-button');
 
 <a name="clicking-links"></a>
-### Clicking Links
+### 點擊連結
 
 To click a link, you may use the `clickLink` method on the browser instance. The `clickLink` method will click the link that has the given display text:
 
@@ -269,7 +269,7 @@ To click a link, you may use the `clickLink` method on the browser instance. The
 > {note} This method interacts with jQuery. If jQuery is not available on the page, Dusk will automatically inject it into the page so it is available for the test's duration.
 
 <a name="text-values-and-attributes"></a>
-### Text, Values, & Attributes
+### 文本、值與屬性
 
 #### Retrieving & Setting Values
 
@@ -294,7 +294,7 @@ Finally, the `attribute` method may be used to retrieve an attribute of an eleme
     $attribute = $browser->attribute('selector', 'value');
 
 <a name="using-forms"></a>
-### Using Forms
+### 使用表單
 
 #### Typing Values
 
@@ -338,14 +338,14 @@ To "select" a radio button option, you may use the `radio` method. Like many oth
     $browser->radio('version', 'php7');
 
 <a name="attaching-files"></a>
-### Attaching Files
+### 附加檔案
 
 The `attach` method may be used to attach a file to a `file` input element. Like many other input related methods, a full CSS selector is not required. If an exact selector match can't be found, Dusk will search for a file input with matching `name` attribute:
 
     $browser->attach('photo', __DIR__.'/photos/me.png');
 
 <a name="using-the-keyboard"></a>
-### Using The Keyboard
+### 使用鍵盤
 
 The `keys` method allows you to provide more complex input sequences to a given element than normally allowed by the `type` method. For example, you may hold modifier keys entering values. In this example, the `shift` key will be held while `taylor` is entered into the element matching the given selector. After `taylor` is typed, `otwell` will be typed without any modifier keys:
 
@@ -358,7 +358,7 @@ You may even send a "hot key" to the primary CSS selector that contains your app
 > {tip} All modifier keys are wrapped in `{}` characters, and match the constants defined in the `Facebook\WebDriver\WebDriverKeys` class, which can be [found on GitHub](https://github.com/facebook/php-webdriver/blob/community/lib/WebDriverKeys.php).
 
 <a name="using-the-mouse"></a>
-### Using The Mouse
+### 使用滑鼠
 
 #### Clicking On Elements
 
@@ -386,7 +386,7 @@ Or, you may drag an element in a single direction:
     $browser->dragDown('.selector', 10);
 
 <a name="scoping-selectors"></a>
-### Scoping Selectors
+### 範圍選擇器
 
 Sometimes you may wish to perform several operations while scoping all of the operations within a given selector. For example, you may wish to assert that some text exists only within a table and then click a button within that table. You may use the `with` method to accomplish this. All operations performed within the callback given to the `with` method will be scoped to the original selector:
 
@@ -396,7 +396,7 @@ Sometimes you may wish to perform several operations while scoping all of the op
     });
 
 <a name="waiting-for-elements"></a>
-### Waiting For Elements
+### 等待元素
 
 When testing applications that use JavaScript extensively, it often becomes necessary to "wait" for certain elements or data to be available before proceeding with a test. Dusk makes this a cinch. Using a variety of methods, you may wait for elements to be visible on the page or even wait until a given JavaScript expression evaluates to `true`.
 
@@ -486,7 +486,7 @@ Many of the "wait" methods in Dusk rely on the underlying `waitUsing` method. Yo
     }, "Something wasn't ready in time.");
 
 <a name="making-vue-assertions"></a>
-### Making Vue Assertions
+### Vue 的斷言
 
 Dusk even allows you to make assertions on the state of [Vue](https://vuejs.org) component data. For example, imagine your application contains the following Vue component:
 
@@ -524,7 +524,7 @@ You may assert on the state of the Vue component like so:
     }
 
 <a name="available-assertions"></a>
-## Available Assertions
+## 可用的斷言
 
 Dusk provides a variety of assertions that you may make against your application. All of the available assertions are documented in the table below:
 
@@ -575,14 +575,14 @@ Assertion  | Description
 Sometimes, tests require several complicated actions to be performed in sequence. This can make your tests harder to read and understand. Pages allow you to define expressive actions that may then be performed on a given page using a single method. Pages also allow you to define short-cuts to common selectors for your application or a single page.
 
 <a name="generating-pages"></a>
-### Generating Pages
+### 產生頁面
 
 To generate a page object, use the `dusk:page` Artisan command. All page objects will be placed in the `tests/Browser/Pages` directory:
 
     php artisan dusk:page Login
 
 <a name="configuring-pages"></a>
-### Configuring Pages
+### 設定分頁
 
 By default, pages have three methods: `url`, `assert`, and `elements`. We will discuss the `url` and `assert` methods now. The `elements` method will be [discussed in more detail below](#shorthand-selectors).
 
@@ -615,7 +615,7 @@ The `assert` method may make any assertions necessary to verify that the browser
     }
 
 <a name="navigating-to-pages"></a>
-### Navigating To Pages
+### 導航至分頁
 
 Once a page has been configured, you may navigate to it using the `visit` method:
 
@@ -633,7 +633,7 @@ Sometimes you may already be on a given page and need to "load" the page's selec
             ->assertSee('@create');
 
 <a name="shorthand-selectors"></a>
-### Shorthand Selectors
+### 速記選擇器
 
 The `elements` method of pages allows you to define quick, easy-to-remember shortcuts for any CSS selector on your page. For example, let's define a shortcut for the "email" input field of the application's login page:
 
@@ -670,7 +670,7 @@ After installing Dusk, a base `Page` class will be placed in your `tests/Browser
     }
 
 <a name="page-methods"></a>
-### Page Methods
+### 頁面方法
 
 In addition to the default methods defined on pages, you may define additional methods which may be used throughout your tests. For example, let's imagine we are building a music management application. A common action for one page of the application might be to create a playlist. Instead of re-writing the logic to create a playlist in each test, you may define a `createPlaylist` method on a page class:
 
@@ -713,7 +713,7 @@ Once the method has been defined, you may use it within any test that utilizes t
 Components are similar to Dusk’s “page objects”, but are intended for pieces of UI and functionality that are re-used throughout your application, such as a navigation bar or notification window. As such, components are not bound to specific URLs.
 
 <a name="generating-components"></a>
-### Generating Components
+### 產生元件
 
 To generate a component, use the `dusk:component` Artisan command. New components are placed in the `test/Browser/Components` directory:
 
@@ -786,7 +786,7 @@ As shown above, a "date picker" is an example of a component that might exist th
     }
 
 <a name="using-components"></a>
-### Using Components
+### 使用元件
 
 Once the component has been defined, we can easily select a date within the date picker from any test. And, if the logic necessary to select a date changes, we only need to update the component:
 
@@ -819,7 +819,7 @@ Once the component has been defined, we can easily select a date within the date
     }
 
 <a name="continuous-integration"></a>
-## Continuous Integration
+## 持續整合
 
 <a name="running-tests-on-travis-ci"></a>
 ### Travis CI
