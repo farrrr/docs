@@ -164,7 +164,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 
 #### 認證頻道
 
-請記得，使用者最好需要授權機制去監聽私人頻道。，我們可以在 `routes/channels.php` 定義我們頻道的授權規則。在這個範例中，我們需要驗證任何在 `order.1` 的私人頻道上嘗試監聽的使用者是否是該訂單的持有人：
+請記得，使用者需要被授權才能去監聽私人頻道。我們可以在 `routes/channels.php` 定義我們頻道的授權規則。在這個範例中，我們需要驗證任何在 `order.1` 的私人頻道上嘗試監聽的使用者是否為實際該訂單的持有人：
 
     Broadcast::channel('order.{orderId}', function ($user, $orderId) {
         return $user->id === Order::findOrNew($orderId)->user_id;
