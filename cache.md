@@ -22,7 +22,7 @@
 
 Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取驅動。這些設定放置在 `config/cache.php` 當中。在這個設定檔裡面，可以自由指定你想要用哪一個來當作你應用程式的預設快取伺服器。Laravel 支援許多熱門的快取驅動，像是 [Memcached](https://memcached.org) 和 [Redis](http://redis.io)，以及其他更多的選擇。
 
-這個快取的設定檔同時也包含了其他的選項，請確保你都有讀過這些選項的說明。Laravel 使用 `file` 作為預設快取的驅動。這個驅動儲存了序列化的快取物件在檔案系統中。建議您為大型的應用程式選用一套強勁的快取驅動，像是 Memcached 或是 Redis 等等。你可能也會想為同一個驅動設定多個設定檔。
+這個快取的設定檔同時也包含了其他的選項，請確保你都有讀過這些選項的說明。Laravel 使用 `file` 作為預設快取的驅動。這個驅動儲存了序列化的快取物件在檔案系統中。建議你為大型的應用程式選用一套強勁的快取驅動，像是 Memcached 或是 Redis 等等。你可能也會想為同一個驅動設定多個設定檔。
 
 <a name="driver-prerequisites"></a>
 ### 快取預先需求
@@ -37,11 +37,11 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
         $table->integer('expiration');
     });
 
-> {提示} 你可以使用 `php artisan cache:table` 這個 Artisan 指定來產生一個較合適的資料庫遷移結構。 
+> {tip} 你可以使用 `php artisan cache:table` 這個 Artisan 指令來產生一個較合適的資料庫遷移結構。 
 
 #### Memcached
 
-使用 Memcached 驅動需要先安裝 [Memcached PECL 套件](https://pecl.php.net/package/memcached)。 你可以在 `config/cache.php` 設定檔中列舉你所有的 Memcached 伺服器。
+使用 Memcached 驅動需要先安裝 [Memcached PECL 套件](https://pecl.php.net/package/memcached)。 你可以在 `config/cache.php` 設定檔中列出你所有的 Memcached 伺服器。
 
     'memcached' => [
         [
@@ -63,7 +63,7 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
 
 #### Redis
 
-在選擇使用 Redis 作為 Laravel 的快取前，你需要先經由 Composer 安裝 `predis/predis` 套件 (~1.0)，或是經由 PECL 安裝 PhpRedis 擴充功能。
+在選擇使用 Redis 作為 Laravel 的快取前，你需要先經由 Composer 安裝 `predis/predis` 套件（~1.0），或是經由 PECL 安裝 PhpRedis 擴充功能。
 
 更多有關設定 Redis 的資訊，請參考 [Laravel 的文件頁面](/docs/{{version}}/redis#configuration)。
 
@@ -73,9 +73,9 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
 <a name="obtaining-a-cache-instance"></a>
 ### 取得一個快取的實例
 
-`Illuminate\Contracts\Cache\Factory` 和 `Illuminate\Contracts\Cache\Repository` [contracts](/docs/{{version}}/contracts) 提供了存取 Laravel 快取服務的機制。而 `Factory` contract 則為你的應用程式提供了存取所有快取驅動的機制。`Repository` contract 是典型的快取驅動實作，它會依照你的快取設定檔變化。
+`Illuminate\Contracts\Cache\Factory` 和 `Illuminate\Contracts\Cache\Repository` [contracts](/docs/{{version}}/contracts) 提供了存取 Laravel 快取服務的機制。而 `Factory` contract 則為你的應用程式提供了存取所有快取驅動的機制。`Repository` contract 是一般的快取驅動實作，它會依照你的快取設定檔變化。
 
-然而，你可能也需要使用 `Cache` facade，我們會在整份文件中使用它。 `Cache` facade 提供了方便又簡潔的方法存取現行實作的 Laravel 快取 constracts。
+然而，你可能也需要使用 `Cache` facade，我們會在整份文件中使用它。 `Cache` facade 提供了方便又簡潔的方法存取現行實作的 Laravel 快取 constract：
 
     <?php
 
@@ -115,7 +115,7 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
 
     $value = Cache::get('key', 'default');
 
-你甚至可以傳入一個 `閉包` 作為預設值，當指定的項目不存在快取中時，閉包將會被回傳。傳入一個閉包讓你可以延後存取資料庫，或從外部服務中取出資料作為找不到快取時的預設值：
+你甚至可以傳入一個`閉包`作為預設值，當指定的項目不存在快取中時，閉包將會被回傳。傳入一個閉包讓你可以延後存取資料庫，或從外部服務中取出資料作為找不到快取時的預設值：
 
     $value = Cache::get('key', function () {
         return DB::table(...)->get();
@@ -185,7 +185,7 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
 
     Cache::forever('key', 'value');
 
-> {提示} 如果你是使用 Memcached 驅動，永久儲存的項目會在到達大小限制時被刪除。
+> {tip} 如果你是使用 Memcached 驅動，永久儲存的項目會在到達大小限制時被刪除。
 
 <a name="removing-items-from-the-cache"></a>
 ### 刪除快取中的項目
@@ -213,12 +213,12 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
 
     cache(['key' => 'value'], Carbon::now()->addSeconds(10));
 
-當你在測試中呼叫這個全域的 `cache` 輔助函式，你可以使用 `Cache::shouldReceive` 方法就像你在 [測試一個 facade](/docs/{{version}}/mocking#mocking-facades) 一樣。
+當你在測試中呼叫這個全域的 `cache` 輔助函式，你可以使用 `Cache::shouldReceive` 方法就像你在[測試一個 facade](/docs/{{version}}/mocking#mocking-facades) 一樣。
 
 <a name="cache-tags"></a>
 ## 快取標籤
 
-> {注意} 快取標籤並不支援 `file` 及 `database` 驅動。此外，當使用多個標籤以及將快取儲存成「永久」時，使用像是 memached 這樣性能較好的驅動，可以自動清除舊的歷史記錄。
+> {注意} 快取標籤並不支援 `file` 及 `database` 驅動。此外，當使用多個標籤以及將快取儲存成「永久」時，使用像是 memcached 這樣性能較好的驅動，可以自動清除舊的歷史記錄。
 
 <a name="storing-tagged-cache-items"></a>
 ### 寫入被標記的快取項目
@@ -245,7 +245,7 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
 
     Cache::tags(['people', 'authors'])->flush();
 
-相反的，下方的語法只會刪除被標記為 `authors` 的快取，所以 `Anne` 會被移除，但 `John` 不會。
+相反的，下方的語法只會刪除被標記為 `authors` 的快取，所以 `Anne` 會被移除，但 `John` 不會：
 
 	Cache::tags('authors')->flush();
 
@@ -283,7 +283,7 @@ Laravel 提供一個快速、統一的 API 方法給各式各樣不同的快取�
         return Cache::repository(new MongoStore);
     });
 
-> {提示} 如果你不知道要將你的客製化快取驅動程式碼放置在何處，你可以在你的 `app` 目錄下建立一個 `Extension` 的命名空間。但是請記住，Laravel 沒有硬性規定的應用程式結構，你可以依照你的喜好任意組織你的應用程式。
+> {tip} 如果你不知道要將你的客製化快取驅動程式碼放置在何處，你可以在你的 `app` 目錄下建立一個 `Extension` 的命名空間。但是請記住，Laravel 沒有硬性規定的應用程式結構，你可以依照你的喜好任意組織你的應用程式。
 
 <a name="registering-the-driver"></a>
 ### 註冊快取驅動
