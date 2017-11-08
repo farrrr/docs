@@ -1,4 +1,4 @@
-# 服務容器（ Container ）
+# 服務容器
 
 - [介紹](#introduction)
 - [綁定](#binding)
@@ -15,7 +15,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的強大工具。依賴注入是個花俏的名詞，實際上是指：類別的依賴透過建構子「注入」，或在某些情況下透過「setter」方法注入。
+Laravel 服務容器是管理類別依賴與執行依賴注入的強大工具。依賴注入是個花俏的名詞，實際上是指：類別的依賴透過建構子「注入」，或在某些情況下透過「setter」方法注入。
 
 讓我們看個簡單的範例：
 
@@ -61,9 +61,9 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
         }
     }
 
-在這例子中，`UserController` 需要從資料來源中取得使用者，所以我們將要**注入** `UserRepository` 該服務來取得使用者。在這種情況下，`UserRepository` 像是使用 [Eloquent](/docs/{{version}}/eloquent) 取得在資料庫中有關使用者的資訊。由於儲存庫是被注入的，因此我們才能輕易地切換其他的實作。當我們在做測試的時候，一樣也能輕易地「模擬（mock）」，或建立假的 `UserRepository` 實作來測試我們的程式。
+在這個範例中，`UserController` 需要從資料來源中取得使用者。所以我們將**注入**一個服務讓我們能取得使用者。在這個情境下，我們的 `UserRepository` 像是使用 [Eloquent](/docs/{{version}}/eloquent) 一樣，從資料庫取得使用者資訊。然而，由於 Repository 是被注入的，我們可以更容易的抽換成其他的實作。我們可以很容易的「mock」，或是建立一個假的 `UserRepository` 實作來測試我們的應用程式。
 
-深入地理解 Laravel 服務容器，對於構建功能強大的大型 Laravel 應用程式而言至關重要。甚至是貢獻 Laravel 核心的程式碼也是不可或缺的。
+深入理解 Laravel 的服務容器對於建立一個強大、大型的應用程式以及為 Laravel 核心程式碼本身做出貢獻是必要的。
 
 <a name="binding"></a>
 ## 綁定
@@ -71,11 +71,11 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 <a name="binding-basics"></a>
 ### 綁定基礎
 
-幾乎所有的服務容器綁定都會在[服務提供者](/docs/{{version}}/providers)中註冊，所以下方所有的例子將示範在該情境中使用容器。
+幾乎所有的服務容器綁定都會在[服務提供者](/docs/{{version}}/providers)中被註冊，所以下方所有的範例將示範在該情境中使用容器。
 
 > {tip} 如果類別沒有依賴任何的介面，那麼就沒有將類別綁定至容器中的必要。並不需要告訴容器如何建構這些物件，因為它會透過 PHP 的 reflection 自動解析出物件。
 
-#### 簡單的綁定
+#### 簡易綁定
 
 在服務提供者中，隨時可以透過 `$this->app` 物件屬性來取得容器。我們可以使用 `bing` 方法註冊一個綁定，並傳遞一組我們希望綁定的類別或介面名稱作為第一個參數，接著第二個參數放入用來回傳類別實例的`閉包`：
 
@@ -112,19 +112,19 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 <a name="binding-interfaces-to-implementations"></a>
 ### 綁定介面至實作
 
-服務容器有個非常強大的特色，就是將給定的實作綁定至介面。舉個例子，假設我們有個 `EventPusher` 介面以及一個 `RedisEventPusher` 實作。一旦我們撰寫玩該介面的實作 `RedisEventPusher`，就可以如下將它註冊制服務容器：
+服務容器有個非常強大的特色，就是將給定的實作綁定至介面。舉例來說，假設我們有個 `EventPusher` 介面以及一個 `RedisEventPusher` 實作。一旦我們撰寫完這個介面的 `RedisEventPusher` 實作，我們可以像是如下將它註冊至服務容器：
 
     $this->app->bind(
         'App\Contracts\EventPusher',
         'App\Services\RedisEventPusher'
     );
 
-這麼做會告知容器：當有個類別需要 `EventPusher` 的實作時，就會注入 `RedisEventPusher`。現在我們可以在建構子或任何其他透過服務容器注入依賴的地方注入 `EventPusher` 介面：
+這麼做會告知容器：當一個類別需要一個 `EventPusher` 的實作，這段程式碼告訴容器應該注入 `RedisEventPusher`。現在我們可以在建構子或透過服務容器在任何地方依賴注入 `EventPusher` 介面的類型提示。
 
     use App\Contracts\EventPusher;
 
     /**
-     * Create a new class instance.
+     * 建立新類別實例。
      *
      * @param  EventPusher  $pusher
      * @return void
@@ -137,7 +137,7 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 <a name="contextual-binding"></a>
 ### 情境綁定
 
-有時候，你可能有兩個類別使用到相同介面，但你希望每個類別能注入不同實作。例如，兩個控制器（譯註：PhotoController 和 VideoController）可能相依於 `Illuminate\Contracts\Filesystem\Filesystem` [contract](/docs/{{version}}/contracts) 的不同實作。Laravel 提供一個簡單又流利介面來定義此行為：
+有時候，你可能有兩個類別使用到相同介面，但你希望每個類別能注入不同實作。例如，兩個控制器可能依賴於 `Illuminate\Contracts\Filesystem\Filesystem` [contract](/docs/{{version}}/contracts) 的不同實作。Laravel 提供一個簡單又流利介面來定義此行為：
 
     use Illuminate\Support\Facades\Storage;
     use App\Http\Controllers\PhotoController;
@@ -159,7 +159,7 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 <a name="tagging"></a>
 ### 標記
 
-少數情況下，可能需要解析特定「分類」下的所有綁定。例如，你正在建置一個報表匯整器，它能接收多個不同 `Report` 介面實作的陣列。註冊完 Report 實作後，可以使用 `tag` 方法為它們賦予一個標籤：
+偶爾你可能需要解析特定「類別」的所有綁定。例如，也許你正在建立一個報表彙整器來接收一個不同 `Report` 介面實作的陣列 。在註冊 `Report` 實作之後，你可以使用 `tag` 方法為它們賦予一個標籤：
 
     $this->app->bind('SpeedReport', function () {
         //
@@ -191,7 +191,7 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 
     $api = resolve('HelpSpot\API');
 
-如果你有一些類別的依賴不能透過容器來解析，你可以將它們弄成一組關聯陣列傳到 `makeWith` 方法來注入：
+如果你有一些類別的依賴不能透過容器來解析，你可以將它們組成為關聯陣列傳入到 `makeWith` 方法來注入：
 
     $api = $this->app->makeWith('HelpSpot\API', ['id' => 1]);
 
@@ -200,7 +200,7 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 
 此外，也是最常用的，你可以簡單地在類別的建構子中對依賴「型別提示」來解析出容器中物件，包含[控制器](/docs/{{version}}/controllers)、[事件監聽器](/docs/{{version}}/events)、[隊列任務](/docs/{{version}}/queues)、[中介層](/docs/{{version}}/middleware)及其他等等。在實際情形中，這就是為何大部分的物件都是由容器中解析。
 
-舉個例子，你可以在控制器的建構子中對應用程式中定義的儲存庫進行型別提示。儲存庫會自動被解析及注入至類別中：
+例如，你可以透過你應用程式控制器的建構子型別提示一個被定義的 Repository。Repository 將自動地被解析並注入到類別中：
 
     <?php
 
@@ -241,17 +241,17 @@ Laravel 服務容器（Container）是管理類別依賴與執行依賴注入的
 <a name="container-events"></a>
 ## 容器事件
 
-每當服務容器解析一個物件時就會觸發事件。你可以使用 `resolving` 方法監聽這個事件：
+當容器解析任何的類型物件時被呼叫。你可以使用 `resolving` 方法監聽這個事件：
 
     $this->app->resolving(function ($object, $app) {
-        // Called when container resolves object of any type...
+        // 當容器解析任何的類型物件時被呼叫...
     });
 
     $this->app->resolving(HelpSpot\API::class, function ($api, $app) {
-        // Called when container resolves objects of type "HelpSpot\API"...
+        // 當容器解析「HelpSpot\API」的類型物件時被呼叫...
     });
 
-如你所見，被解析的物件會被傳遞至回呼函式中，從而允許你在傳遞給消費者之前，設置任何額外的屬性至物件。
+如你所見，被解析的物件會被傳遞至回呼函式中，在它被提供給它的消費者之前，允許你在物件上設定任何額外的屬性。
 
 <a name="psr-11"></a>
 ## PSR-11
