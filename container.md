@@ -30,14 +30,14 @@ Laravel 服務容器是管理類別依賴與執行依賴注入的強大工具。
     class UserController extends Controller
     {
         /**
-         * The user repository implementation.
+         * 使用者 repository 的實作。
          *
          * @var UserRepository
          */
         protected $users;
 
         /**
-         * Create a new controller instance.
+         * 建立新控制器實例。
          *
          * @param  UserRepository  $users
          * @return void
@@ -48,7 +48,7 @@ Laravel 服務容器是管理類別依賴與執行依賴注入的強大工具。
         }
 
         /**
-         * Show the profile for the given user.
+         * 顯示給定使用者個資。
          *
          * @param  int  $id
          * @return Response
@@ -211,12 +211,12 @@ Laravel 服務容器是管理類別依賴與執行依賴注入的強大工具。
     class UserController extends Controller
     {
         /**
-         * The user repository instance.
+         * 使用者 repository 的實作。
          */
         protected $users;
 
         /**
-         * Create a new controller instance.
+         * 建立新控制器實例。
          *
          * @param  UserRepository  $users
          * @return void
@@ -227,7 +227,7 @@ Laravel 服務容器是管理類別依賴與執行依賴注入的強大工具。
         }
 
         /**
-         * Show the user with the given ID.
+         * 顯示給定 ID 的使用者。
          *
          * @param  int  $id
          * @return Response
