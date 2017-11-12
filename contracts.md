@@ -3,7 +3,7 @@
 - [介紹](#introduction)
     - [Contracts Vs. Facades](#contracts-vs-facades)
 - [何時使用 Contracts](#when-to-use-contracts)
-    - [低耦合](#loose-coupling)
+    - [鬆散耦合](#loose-coupling)
     - [簡單性](#simplicity)
 - [如何使用 Contracts](#how-to-use-contracts)
 - [Contract 的參考清單](#contract-reference)
@@ -15,7 +15,7 @@ Laravel 的 Contracts 是一組定義了框架核心服務的介面。例如，`
 
 框架對於每個 contract 都有提供對應的實作，例如，Laravel 提供各種驅動程式的隊列實作，以及由 [SwiftMailer](https://swiftmailer.symfony.com/) 提供的 mailer 實作。
 
-Laravel 所有的 contracts 都放在[各自的 GitHub 儲存庫](https://github.com/illuminate/contracts)。除了提供所有可用的 contracts 一個快速的參考，也可以單獨作為一個低耦合的套件讓其他套件開發者使用。
+Laravel 所有的 contracts 都放在[各自的 GitHub 儲存庫](https://github.com/illuminate/contracts)。除了提供所有可用的 contracts 一個快速的參考，也可以單獨作為一個鬆散耦合的套件讓其他套件開發者使用。
 
 <a name="contracts-vs-facades"></a>
 ### Contracts Vs. Facades
@@ -31,12 +31,12 @@ Laravel 的 [facades](/docs/{{version}}/facades) 和輔助方法提供一個簡�
 
 如上所討論的，大部分決定使用 facades 或 contracts 取決於個人或開發團隊的喜好。facades 或 contracts 這兩者都可以建立強健的、好測試的 Laravel 應用程式。只要保持的類別專注單一職責，你會發現使用 facades 或 contracts 沒有多大的實質差別。
 
-然而，你可能對於 contracts 仍舊有許多的疑惑。例如，為何全部使用介面？使用介面的話不是更複雜嗎？讓我們用下面的論點來解釋使用介面的原因：低耦合和簡單性。
+然而，你可能對於 contracts 仍舊有許多的疑惑。例如，為何全部使用介面？使用介面的話不是更複雜嗎？讓我們用下面的論點來解釋使用介面的原因：鬆散耦合和簡單性。
 
 <a name="loose-coupling"></a>
-### 低耦合
+### 鬆散耦合
 
-讓我們來檢視這一段和快取功能有高耦合的程式碼。思考以下程式碼：
+讓我們來檢視這一段和快取功能有緊密耦合的程式碼。思考以下程式碼：
 
     <?php
 
@@ -74,7 +74,7 @@ Laravel 的 [facades](/docs/{{version}}/facades) 和輔助方法提供一個簡�
         }
     }
 
-在這個類別中，程式和給定的快取實作有高耦合，因為我們從套件 vendor 依賴一個具體的快取類別。
+在這個類別中，程式和給定的快取實作有緊密耦合，因為我們從套件 vendor 依賴一個具體的快取類別。
 
 同樣的，如果想要將底層的快取技術（Memcached）抽換成另一種（Redis），我們需要再次修改我們的 Repository。我們的 Repository 不應該知道由誰提供了資料，或是如何提供的細節。
 
