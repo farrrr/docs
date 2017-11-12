@@ -1,7 +1,7 @@
 # CSRF 保護
 
 - [介紹](#csrf-introduction)
-- [排除 CSRF](#csrf-excluding-uris)
+- [排除 URI](#csrf-excluding-uris)
 - [X-CSRF-Token](#csrf-x-csrf-token)
 - [X-XSRF-Token](#csrf-x-xsrf-token)
 
