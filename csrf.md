@@ -1,7 +1,7 @@
 # CSRF 保護
 
 - [介紹](#csrf-introduction)
-- [CSRF 白名單](#csrf-excluding-uris)
+- [排除 CSRF](#csrf-excluding-uris)
 - [X-CSRF-Token](#csrf-x-csrf-token)
 - [X-XSRF-Token](#csrf-x-xsrf-token)
 
@@ -10,7 +10,7 @@
 
 Laravel 可以輕易地保護你的應用程式免受到[跨網站偽造請求攻擊](https://en.wikipedia.org/wiki/Cross-site_request_forgery)（CSRF）。跨網站偽造請求是一種惡意的攻擊，會偽造已認證的使用者執行未授權的指令。
 
-Laravel 會自動給每個在線使用者產生一組 CSRF「token」。這個 token 用於驗證已認證使用者是否是自願向應用程式發出請求。
+Laravel 透過應用程式自動產生一個 CSRF「token」來管理每個活躍的使用者 session。這個 token 用於驗證已認證使用者是否實際向應用程式發出請求。
 
 在你每次定義 HTML 表單的時候，應該在表單中插入隱藏的 CSRF token，這樣用於預防 CSRF 攻擊的中介層可以驗證表單請求。你可以使用 `csrf_field` 輔助函式來產生 token 到表單中：
 
@@ -23,10 +23,10 @@ Laravel 會自動給每個在線使用者產生一組 CSRF「token」。這個 t
 
 #### CSRF Tokens 與 JavaScript
 
-建構 JavaScript 應用程式的時候，可以用很便利的方式讓你的 JavaScript HTTP 程式庫也能自動附加 CSRF token 到每個對外的請求。預設上，`resources/assets/js/bootstrap.js` 檔案註冊了已寫入 `csrf-token` 屬性標籤值的 Axios HTTP 程式庫。如果你不要使用這個程式庫，則需要為應用程式手動設定此行為。
+建構 JavaScript 應用程式的時候，可以用很便利的方式讓你的 JavaScript HTTP 函式庫也能自動附加 CSRF token 到每個對外的請求。預設上，`resources/assets/js/bootstrap.js` 檔案註冊了已寫入 `csrf-token` 屬性標籤值的 Axios HTTP 函式庫。如果你不要使用這個函式庫，則需要為應用程式手動設定此行為。
 
 <a name="csrf-excluding-uris"></a>
-## CSRF 白名單
+## 從 CSRF 保護中排除 URI
 
 有些時候，你可能希望從 CSRF 保護範圍中忽略一組 URI。舉例來說，如果你正使用 [Stripe](https://stripe.com) 來處理付款且還使用他們的 webhook 系統，你會需要從 CSRF 保護範圍中忽略 Stripe 的處理路由，因為 Stripe 不會知道要發 CSRF token 給你的路由。
 
@@ -57,7 +57,7 @@ Laravel 會自動給每個在線使用者產生一組 CSRF「token」。這個 t
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-然後，一旦你建好 `meta` 標籤，就能指示類似 jQuery 的程式庫自動新增 token 到每個請求標頭。這能為你的 AJAX 應用程式提供既簡單又便利的 CSRF 保護：
+然後，一旦你建好 `meta` 標籤，就能指示類似 jQuery 的函式庫自動新增 token 到每個請求標頭。這能為你的 AJAX 應用程式提供既簡單又便利的 CSRF 保護：
 
     $.ajaxSetup({
         headers: {
@@ -65,11 +65,11 @@ Laravel 會自動給每個在線使用者產生一組 CSRF「token」。這個 t
         }
     });
 
-> {tip} 預設上，`resources/assets/js/bootstrap.js` 檔案會使用 Axios HTTP 程式庫來註冊 `csrf-token` meta 標籤的值。如果你想使用這個程式庫，則需要為應用程式手動設定此行為。
+> {tip} 預設上，`resources/assets/js/bootstrap.js` 檔案會使用 Axios HTTP 函式庫來註冊 `csrf-token` meta 標籤的值。如果你想使用這個函式庫，則需要為應用程式手動設定此行為。
 
 <a name="csrf-x-xsrf-token"></a>
 ## X-XSRF-TOKEN
 
 Laravel 會在每個由框架產生的回應中包含一組 `XSRF-TOKEN` cookie，並將當前的 CSRF token 儲存於此。你能使用 cookie 的值去設定 `X-XSRF-TOKEN` 的請求標頭。
 
-之所以這個 cookie 能方便地被發送，主要是因為一些 JavaScript 框架和程式庫（像是 Angular 和 Axios）會自動將其值放入 `X-XSRF-TOKEN` 標頭。
+之所以這個 cookie 能方便地被發送，主要是因為一些 JavaScript 框架和函式庫（像是 Angular 和 Axios）會自動將其值放入 `X-XSRF-TOKEN` 標頭。
