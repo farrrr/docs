@@ -22,7 +22,7 @@ Laravel 所有的 contracts 都放在[各自的 GitHub 儲存庫](https://github
 
 Laravel 的 [facades](/docs/{{version}}/facades) 和輔助方法提供一個簡單的方法來使用服務，而不需要使用型別提示和在服務容器之外解析 contracts。在大部分情況下，facade 有等價的 contract。
 
-facade 不需要在類別的建構子中注入，而 contract 提供你在類別的建構子中明確地注入依賴。有些開發者更喜歡這種明確地定義相依性的方式，而有些開發者希歡 facade 的便利性。
+與 facades 不同，contracts 不會要求你在類別建構子內引入，它讓你定義類別明確的依賴。有些開發者偏好明確定義它們的依賴關係，因此使用 contracts，而有些開發者則享受 facades 的便利性。
 
 > {tip} 大部分的程式不介意你使用的是 facades 或 contracts。然而，如果你正在開發套件的話，強烈建議使用 contracts，它在你的套件中將更容易地被測試。
 
@@ -36,7 +36,7 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
 <a name="loose-coupling"></a>
 ### 低耦合
 
-首先，讓我們來檢視這一段和快取功能有高耦合的程式碼，如下：
+讓我們來檢視這一段和快取功能有高耦合的程式碼。思考以下程式碼：
 
     <?php
 
@@ -45,12 +45,12 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
     class Repository
     {
         /**
-         * The cache instance.
+         * 快取實例。
          */
         protected $cache;
 
         /**
-         * Create a new repository instance.
+         * 建立新 repository 實例。
          *
          * @param  \SomePackage\Cache\Memcached  $cache
          * @return void
@@ -61,7 +61,7 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
         }
 
         /**
-         * Retrieve an Order by ID.
+         * 透過 ID 取得訂單。
          *
          * @param  int  $id
          * @return Order
@@ -74,11 +74,11 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
         }
     }
 
-在此類別中，程式和快取實作之間是高耦合。因為它是依賴於套件庫的特定快取類別。一旦這個套件的 API 更改了，我們的程式碼也要跟著改變。
+在這個類別中，程式和給定的快取實作有高耦合，因為我們從套件 vendor 依賴一個具體的快取類別。
 
-同樣的，如果想要將底層的快取技術（比如 Memcached ）抽換成另一種（像 Redis ），又一次的我們必須修改這個 repository 類別。我們的儲存庫不應該知道這麼多關於誰提供了資料，或是如何提供等等細節。
+同樣的，如果想要將底層的快取技術（Memcached）抽換成另一種（Redis），我們需要再次修改我們的 Repository。我們的 Repository 不應該知道由誰提供了資料，或是如何提供的細節。
 
-**比起上面的做法，我們可以改用一個簡單、和套件無關的介面來改進程式碼：**
+**比起以上的做法，我們可以透過一個簡單、和套件無關的程式碼來改善我們的程式碼：**
 
     <?php
 
@@ -89,12 +89,12 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
     class Repository
     {
         /**
-         * The cache instance.
+         * 快取實例。
          */
         protected $cache;
 
         /**
-         * Create a new repository instance.
+         * 建立新 repository 實例。
          *
          * @param  Cache  $cache
          * @return void
@@ -134,12 +134,12 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
     class CacheOrderInformation
     {
         /**
-         * The Redis database implementation.
+         * Redis 資料庫的實作。
          */
         protected $redis;
 
         /**
-         * Create a new event handler instance.
+         * 建立新事件處理器實例。
          *
          * @param  Database  $redis
          * @return void
@@ -150,7 +150,7 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
         }
 
         /**
-         * Handle the event.
+         * 處理事件。
          *
          * @param  OrderWasPlaced  $event
          * @return void
@@ -161,7 +161,7 @@ facade 不需要在類別的建構子中注入，而 contract 提供你在類別
         }
     }
 
-當事件監聽被解析時，服務容器會經由類別建構子參數的型別提示，注入適當的值。要知道怎麼註冊更多服務容器，參考[這份文件](/docs/{{version}}/container).
+當事件監聽被解析時，服務容器會經由類別建構子參數的型別提示，注入適當的值。要知道怎麼註冊更多服務容器，參考[這份文件](/docs/{{version}}/container)。
 
 <a name="contract-reference"></a>
 ## Contract 的參考清單
