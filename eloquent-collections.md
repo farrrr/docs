@@ -98,7 +98,7 @@ Eloquent 回傳的所有多結果集都會是 `Illuminate\Database\Eloquent\Coll
 [mode](/docs/{{version}}/collections#method-mode)
 [nth](/docs/{{version}}/collections#method-nth)
 [only](/docs/{{version}}/collections#method-only)
-[pad](docs/{{version}}/collections#method-pad)
+[pad](/docs/{{version}}/collections#method-pad)
 [partition](/docs/{{version}}/collections#method-partition)
 [pipe](/docs/{{version}}/collections#method-pipe)
 [pluck](/docs/{{version}}/collections#method-pluck)
