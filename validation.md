@@ -1110,8 +1110,7 @@ Laravel 提供多種有用的驗證規則；但你可能想要定義一些自己
 
     // 其餘的驗證錯誤訊息...
 
-在建立自訂的驗證規則時，你可能需要幫錯誤訊息定義自訂的佔位符。用如上所述的方式建立自訂的驗證器後，呼叫 `Validator` facade 的 `replacer` 方法。
-你可以建立自訂的驗證器，像上面所描述的透過 Validator facade 來使用 replacer 的方法。可以在[服務提供者](/docs/{{version}}/providers)中的 `boot` 方法這麼做來做這些事：
+在建立自訂的驗證規則時，你可能需要幫錯誤訊息定義自訂的佔位符。用如上所述的方式建立自訂的驗證器後，呼叫 `Validator` facade 的 `replacer` 方法。可以在[服務提供者](/docs/{{version}}/providers)中的 `boot` 方法來做這些事：
 
     /**
      * 啟動所有應用程式服務。
