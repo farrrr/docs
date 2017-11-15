@@ -12,7 +12,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-當你準備部署 Laravel 應用程式到正式上線主機時，你能執行一些操作，用來確保你的應用程式能更有效的執行。在這個搵間中，我們將介紹如何用很棒的方式來部署應用程式。
+當你準備部署 Laravel 應用程式到正式上線主機時，你能執行一些操作，用來確保你的應用程式能更有效的執行。在這個文件中，我們將介紹如何用很棒的方式來部署應用程式。
 
 <a name="server-configuration"></a>
 ## 伺服器設定
@@ -80,7 +80,7 @@
 <a name="optimizing-route-loading"></a>
 ### 優化路由的載入
 
-如果你正在建構一個很多路由的大型應用程式時，你應該記得在你部署過程中有執行 Artisan 指令的 `route:cache`：
+如果你正在建構一個很多路由的大型應用程式時，你應該確保在部署過程中執行 Artisan 的 `route：cache` 命令：
 
     php artisan route:cache
 
@@ -93,4 +93,4 @@
 
 如果你還沒有準備好管理自己的伺服器設定，又或者不太會設定執行強大的 Laravel 應用程式所需的各種服務，[Laravel Forge](https://forge.laravel.com) 會是一個不錯的選擇。
 
-Laravel Forge 能在各種伺服器服務的提供商（像是 DigitalOcean、Linode 或 AWS等等）上建立伺服器。除此之外，Forge 也可以安裝和管理建構 Laravel 應用程式所需的所有工具，像是 Nginx、MySQL、Redis、Memcached 和 Beanstalk 等。
+Laravel Forge 能在各種伺服器服務的提供商（像是 DigitalOcean、Linode 或 AWS 等等）上建立伺服器。除此之外，Forge 也可以安裝和管理建構 Laravel 應用程式所需的所有工具，像是 Nginx、MySQL、Redis、Memcached 和 Beanstalk 等。
