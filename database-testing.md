@@ -216,6 +216,6 @@ Laravel 為你 [PHPUnit](https://phpunit.de/) 測試提供了幾個資料庫斷�
 
 Method  | 說明
 ------------- | -------------
-`$this->assertDatabaseHas($table, array $data);`  |  Assert that a table in the database contains the given data.
-`$this->assertDatabaseMissing($table, array $data);`  |  Assert that a table in the database does not contain the given data.
-`$this->assertSoftDeleted($table, array $data);`  |  Assert that the given record has been soft deleted.
+`$this->assertDatabaseHas($table, array $data);`  |  斷言資料庫中的資料表是否有給定的資料。
+`$this->assertDatabaseMissing($table, array $data);`  |  斷言資料庫中的資料表是否沒有給定的資料。
+`$this->assertSoftDeleted($table, array $data);`  |  斷言給定的紀錄是否被軟刪除。
