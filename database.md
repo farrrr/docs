@@ -1,17 +1,17 @@
-# 資料庫：入們
+# 資料庫：入門
 
 - [介紹](#introduction)
     - [設定](#configuration)
     - [連線的寫入與讀取](#read-and-write-connections)
     - [使用多個資料庫的連線](#using-multiple-database-connections)
-- [執行原始 SQL 查詢](#running-queries)
+- [執行原生 SQL 查詢](#running-queries)
     - [監聽查詢事件](#listening-for-query-events)
-- [資料庫事務](#database-transactions)
+- [資料庫交易](#database-transactions)
 
 <a name="introduction"></a>
 ## 介紹
 
-Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries)，以及還有 [Eloquent ORM](/docs/{{version}}/eloquent) 都可以非常簡單的操作各種資料庫後端系統。目前 Laravel 支援四種資料庫：
+Laravel 使用原生 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries)，以及 [Eloquent ORM](/docs/{{version}}/eloquent) 讓操作各種後端資料庫非常的容易。目前 Laravel 支援四種資料庫：
 
 <div class="content-list" markdown="1">
 - MySQL
@@ -23,7 +23,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
 <a name="configuration"></a>
 ### 設定
 
-資料庫的設定檔放在 `config/database.php`。在這個設定檔內你可以定義所有的資料庫連接，以及指定預設使用哪個連接。在這個檔案內提供了大多數支援的資料庫系統範例。
+資料庫的設定檔放在你應用程式的 `config/database.php`。在這個設定檔內你可以定義所有的資料庫連接，以及指定預設使用哪個連接。在這個檔案內提供了大多數支援的資料庫系統範例。
 
 預設來說，Laravel 的[環境設定](/docs/{{version}}/installation#environment-configuration)範例是使用 [Laravel Homestead](/docs/{{version}}/homestead)，在開發 Laravel 時，這是相當便利的本機虛擬機器。當然，你可以因應需求隨時修改你本機端的資料庫設定。
 
@@ -35,9 +35,9 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
     DB_DATABASE=/absolute/path/to/database.sqlite
 
 <a name="read-and-write-connections"></a>
-### 分開讀與寫的連接
+### 連接的讀寫分離
 
-有時你可能希望為使用一個連線來處理查詢，其他的連線用來處理 寫入、更新和刪除。Laravel 使他變得輕而一舉，無論你使用原始查詢、查詢產生器或是 Eloquent ORM 都是可以使用的。
+有時候你可能希望使用一個資料庫連線來處理查詢，另一個用來處理寫入、更新和刪除。Laravel 讓這變得輕而易舉，無論你使用原生查詢、查詢產生器或是 Eloquent ORM 都會使用正確的連線。
 
 如何設定讀取與寫入的連接，讓我們看看這個例子：
 
@@ -64,7 +64,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
 
 #### `sticky` 選項
 
-`sticky` 選項是可選擇的值，是被用來請求週期為終止前立即讀取剛寫入資料庫的資料。如果啟動了 `sticky` 選項，並且在請求週期終止前對資料庫進行「寫入」操作，那麼任何的「讀取」操作將會使用「寫入」的連線。這樣保證了在請求週期中寫入的任何資料可以在週期結束前立即從資料庫讀取剛寫入的資料。可以根據你的應用程式需求而決定是否要使用這個選項。
+`sticky` 選項是一個*可選*的值，可以被用於立即讀取在目前請求週期內已寫入資料庫的記錄。如果啟動了 `sticky` 選項，而且已經在目前的請求週期間對資料庫執行了「寫入」操作，任何進一步的「讀取」操作都將使用「寫入」連線。這樣保證了在請求週期中寫入的任何資料可以在週期結束前立即從資料庫讀取剛寫入的資料。可以根據你的應用程式需求而決定是否要使用這個選項。
 
 <a name="using-multiple-database-connections"></a>
 ### 使用多個資料庫的連線
@@ -74,18 +74,18 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
 
     $users = DB::connection('foo')->select(...);
 
-你也可以在連接的實例使用 `getPdo` 方法存取原始的底層 PDO 實例：
+你也可以在連接的實例使用 `getPdo` 方法存取原生的底層 PDO 實例：
 
     $pdo = DB::connection()->getPdo();
 
 <a name="running-queries"></a>
-## 執行原始 SQL 查詢
+## 執行原生 SQL 查詢
 
 一旦你設定好了資料庫連線，你可以使用 `DB` facade 進行查詢。`DB` facade 提供每個類型的查詢方法：`select`、`update`、`insert`、`delete`、`statement`。
 
-#### 執行 Select 查詢
+#### 執行一個 Select 查詢
 
-執行一個基本查詢，你可以在 `DB` facade 使用 `select`：
+要執行一個基礎查詢，你可以在 `DB` facade 使用 `select`：
 
     <?php
 
@@ -97,7 +97,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
     class UserController extends Controller
     {
         /**
-         * Show a list of all of the application's users.
+         * 顯示所有應用程式的使用者清單。
          *
          * @return Response
          */
@@ -109,7 +109,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
         }
     }
 
-傳遞給 `select` 方法的第一個參數是原始 SQL 查詢，而第二個參數是任何查詢需要的參數綁定。通常，這些是 `where` 子句的限定值。參數綁供了保護，為防止 SQL 注入。
+傳遞給 `select` 方法的第一個參數是原生 SQL 查詢，而第二個參數是任何查詢需要的參數綁定。通常，這些是 `where` 子句的限定值。參數綁定提供了保護，防止 SQL 的注入。
 
 `select` 方法總是回傳結果的`陣列`。陣列中的每個結果將是一個 PHP `StdClass` 物件，讓你能夠存取結果的值：
 
@@ -123,25 +123,25 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
 
     $results = DB::select('select * from users where id = :id', ['id' => 1]);
 
-#### 執行 Insert
+#### 執行一個 Insert 陳述式
 
-若要執行 `insert` 語法，你可以在 `DB` facade 使用 `insert` 方法。如同 `select`，這個方法第一個參數是使用原始 SQL 查詢，第二個參數則是綁定：
+若要執行 `insert` 語法，你可以在 `DB` facade 使用 `insert` 方法。如同 `select`，這個方法第一個參數是使用原生 SQL 查詢，第二個參數則是綁定：
 
     DB::insert('insert into users (id, name) values (?, ?)', [1, 'Dayle']);
 
-#### 執行 Update
+#### 執行一個 Update 陳述式
 
 `update` 方法用於更新已經存在於資料庫的記錄。將會回傳該語法影響的行數：
 
     $affected = DB::update('update users set votes = 100 where name = ?', ['John']);
 
-#### 執行 Delete
+#### 執行一個 Delete 陳述式
 
 `delete` 方法用於刪除已經存在於資料庫的記錄。如同 `update`，受影響的行數將會被回傳：
 
     $deleted = DB::delete('delete from users');
 
-#### 執行一般語法
+#### 執行一般陳述式
 
 某些資料庫語句不應該回傳任何值。對於這種類型的操作，你可以在 `DB` facade 使用 `statement` 方法：
 
@@ -151,7 +151,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
 <a name="listening-for-query-events"></a>
 ### 監聽查詢事件
 
-如果你希望能夠收到來自於你的應用程式每一筆 SQL 查詢，你可以使用 `listen` 方法。這個方法對於紀錄查詢跟除錯非常有用。你可以在[服務容器](/docs/{{version}}/providers)註冊你的查詢監聽器：
+如果你希望能夠接收到應用程式的每一筆 SQL 查詢，你可以使用 `listen` 方法。這個方法對於記錄查詢跟除錯非常有用你可以在[服務容器](/docs/{{version}}/providers)註冊你的查詢監聽器：
 
     <?php
 
@@ -163,7 +163,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
     class AppServiceProvider extends ServiceProvider
     {
         /**
-         * Bootstrap any application services.
+         * 啟動任何應用程式服務。
          *
          * @return void
          */
@@ -177,7 +177,7 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
         }
 
         /**
-         * Register the service provider.
+         * 註冊該服務提供者。
          *
          * @return void
          */
@@ -198,9 +198,9 @@ Laravel 使用原始 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
         DB::table('posts')->delete();
     });
 
-#### 處理死結
+#### 處理 Deadlock
 
-`transaction` 方法接受一個可選的第二個參數，它定義了當發生死結時交易應該重新嘗試的次數。一旦嘗試的次數被用完，將會拋出異常：
+`transaction` 方法接受一個可選的第二個參數，它定義了當發生 deadlock 時，交易應該重新嘗試的次數。一旦嘗試的次數被用完，將會拋出異常：
 
     DB::transaction(function () {
         DB::table('users')->update(['votes' => 1]);
