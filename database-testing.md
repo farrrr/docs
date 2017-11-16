@@ -18,7 +18,7 @@ Laravel 提供了各種有用的工具，可以輕鬆的測試資料庫驅動。
 
     public function testDatabase()
     {
-        // Make call to application...
+        // 進行呼叫應用程式...
 
         $this->assertDatabaseHas('users', [
             'email' => 'sally@example.com'
@@ -60,7 +60,7 @@ Laravel 提供了各種有用的工具，可以輕鬆的測試資料庫驅動。
         use RefreshDatabase;
 
         /**
-         * A basic functional test example.
+         * 一個基本的功能測試範例。
          *
          * @return void
          */
@@ -123,12 +123,12 @@ Laravel 提供了各種有用的工具，可以輕鬆的測試資料庫驅動。
     {
         $user = factory(App\User::class)->make();
 
-        // Use model in tests...
+        // 在測試中使用模型...
     }
 
 你也可以建立多個模型集合或建立給定類型的模型：
 
-    // Create three App\User instances...
+    // 建立三個 App\User 實例...
     $users = factory(App\User::class, 3)->make();
 
 #### 應用工廠狀態
@@ -154,13 +154,13 @@ Laravel 提供了各種有用的工具，可以輕鬆的測試資料庫驅動。
 
     public function testDatabase()
     {
-        // Create a single App\User instance...
+        // 建立一個 App\User 實例...
         $user = factory(App\User::class)->create();
 
-        // Create three App\User instances...
+        // 建立三個 App\User 實例...
         $users = factory(App\User::class, 3)->create();
 
-        // Use model in tests...
+        // 在測試中使用模型...
     }
 
 你可以在模型上傳遞一組陣列到 `create` 方法來覆蓋屬性：
