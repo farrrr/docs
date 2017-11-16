@@ -35,7 +35,7 @@ Laravel 使用原生 SQL 和[流暢的查詢產生器](/docs/{{version}}/queries
     DB_DATABASE=/absolute/path/to/database.sqlite
 
 <a name="read-and-write-connections"></a>
-### 連接的讀寫分離
+### 讀寫分離
 
 有時候你可能希望使用一個資料庫連線來處理查詢，另一個用來處理寫入、更新和刪除。Laravel 讓這變得輕而易舉，無論你使用原生查詢、查詢產生器或是 Eloquent ORM 都會使用正確的連線。
 
