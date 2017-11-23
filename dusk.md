@@ -12,7 +12,7 @@
 - [與元素互動](#interacting-with-elements)
     - [Dusk 選擇器](#dusk-selectors)
     - [點擊連結](#clicking-links)
-    - [文本、值與屬性](#text-values-and-attributes)
+    - [文字、值與屬性](#text-values-and-attributes)
     - [使用表單](#using-forms)
     - [附加檔案](#attaching-files)
     - [使用鍵盤](#using-the-keyboard)
@@ -25,7 +25,7 @@
     - [產生頁面](#generating-pages)
     - [設定分頁](#configuring-pages)
     - [導航至分頁](#navigating-to-pages)
-    - [速記選擇器](#shorthand-selectors)
+    - [快捷選擇器](#shorthand-selectors)
     - [頁面方法](#page-methods)
 - [元件](#components)
     - [產生元件](#generating-components)
@@ -47,7 +47,7 @@ Laravel Dusk 提供了一個可讀性高且易於瀏覽器自動化測試 API。
 
     composer require --dev laravel/dusk
 
-Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服務給服務提供者。通常，這會透過 Laravel 的服務提供者自動完成註冊。
+一旦安裝了 Dusk，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 給服務提供者通常，這會透過 Laravel 的服務提供者自動完成註冊。
 
 > {note} 如果你正在手動註冊 Dusk 的服務提供者，你千萬別在你的正式環境上註冊它們，因為這麼做可能會導致任意使用者能夠使用你的應用程式進行身份驗證。
 
@@ -119,7 +119,7 @@ Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服
 預設的 Dusk 會自己嘗試啟動 ChromeDriver。如果這不適用於你的系統，你可以在手動啟動 ChromeDriver 之前執行 `dusk` 指令。如果你選擇手動啟動 ChromeDriver ，你應該在 `tests/DuskTestCase.php` 檔案把下列範例的那行註解取消掉：
 
     /**
-     * Prepare for Dusk test execution.
+     * 準備執行 Dusk 測試。
      *
      * @beforeClass
      * @return void
@@ -132,7 +132,7 @@ Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服
 此外，如果你在 Port 9515 以外啟動 ChromeDriver，你應該修改一些類別的 `driver` 方法：
 
     /**
-     * Create the RemoteWebDriver instance.
+     * 建立 RemoteWebDriver 實例。
      *
      * @return \Facebook\WebDriver\Remote\RemoteWebDriver
      */
@@ -153,7 +153,7 @@ Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服
 <a name="creating-browsers"></a>
 ### 建立瀏覽器
 
-讓我們編寫一個測試，就從測試我們是否可以登入到自己的應用程式開始吧！產生一個測試之後，我們可以修改成讓它導航到登入頁面，並輸入一些憑證和點擊「登入」的按鈕。呼叫 `browse` 方法來建立一個瀏覽器實例：
+讓我們撰寫一個測試，就從測試我們是否可以登入到自己的應用程式開始吧！產生一個測試之後，我們可以修改成讓它導航到登入頁面，並輸入一些憑證和點擊「登入」的按鈕。呼叫 `browse` 方法來建立一個瀏覽器實例：
 
     <?php
 
@@ -225,7 +225,7 @@ Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服
 <a name="authentication"></a>
 ### 認證
 
-如果你經常要測試需要認證的頁面，你可以使用 Dusk 的 `loginAs` 方法，以避免每次在測試的時候與登入畫面發生衝突。`loginAs` 方法接受 user ID 或 使用者模型實例：
+如果你經常要測試需要認證的頁面，你可以使用 Dusk 的 `loginAs` 方法，以避免每次在測試的時候與登入畫面發生衝突。`loginAs` 方法接受使用者 ID 或使用者模型實例：
 
     $this->browse(function ($first, $second) {
         $first->loginAs(User::find(1))
@@ -240,7 +240,7 @@ Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服
 <a name="dusk-selectors"></a>
 ### Dusk 選擇器
 
-選擇好的 CSS 選擇器與元素互動是邊寫 Dusk 測試最艱難的其中一部分。隨著時間的推移，前端的更動可能導致像下面這樣，CSS擇器器會破壞你的測試：
+選擇好的 CSS 選擇器與元素互動是寫 Dusk 測試最艱難的其中一部分。隨著時間的推移，前端的更動可能導致像下面這樣，CSS 選擇器會破壞你的測試：
 
     // HTML...
 
@@ -250,7 +250,7 @@ Dusk 安裝好了的話，你應該註冊 `Laravel\Dusk\DuskServiceProvider` 服
 
     $browser->click('.login-page .container div > button');
 
-Dusk 選擇器可以讓你專心在編寫有效的測試，而不是死記 CSS 選擇器。可以新增 `dusk` 屬性到你的 HTML 元素來定義選擇器。然後，在 Dusk 測試中的附加元素上使用 `@` 前綴到要操作的選擇器上：
+Dusk 選擇器可以讓你專心撰寫有效的測試，而不是死記 CSS 選擇器。可以新增 `dusk` 屬性到你的 HTML 元素來定義選擇器。然後，在 Dusk 測試中的附加元素上使用 `@` 前綴到要操作的選擇器上：
 
     // HTML...
 
@@ -270,11 +270,11 @@ Dusk 選擇器可以讓你專心在編寫有效的測試，而不是死記 CSS �
 > {note} 這個方法與 jQuery 互相影響。如果 jQuery 在頁面上不能用，Dusk 會自動注入，以便在測試期間使用。
 
 <a name="text-values-and-attributes"></a>
-### 文本、值與屬性
+### 文字、值與屬性
 
-#### Retrieving & Setting Values
+#### 取得和設定值
 
-Dusk 提供了幾種與當前顯示文本、值和元素屬性在頁面上互相作用的方法。例如，要拿到與給定選擇器匹配的元素值，可以使用 `value` 方法：
+Dusk 提供了幾種與目前顯示文字、值和元素屬性在頁面上互相作用的方法。例如，要拿到與給定選擇器匹配的元素值，可以使用 `value` 方法：
 
     // 取得值...
     $value = $browser->value('selector');
@@ -282,9 +282,9 @@ Dusk 提供了幾種與當前顯示文本、值和元素屬性在頁面上互相
     // 設定值...
     $browser->value('selector', 'value');
 
-#### 取得 Text
+#### 取得文字
 
-`text` 方法可用於取得與給定選擇器匹配的元素所顯示的 text：
+`text` 方法可用於取得與給定選擇器匹配的元素所顯示的文字：
 
     $text = $browser->text('selector');
 
@@ -299,13 +299,13 @@ Dusk 提供了幾種與當前顯示文本、值和元素屬性在頁面上互相
 
 #### 輸入值
 
-Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓我們看一下在輸入自斷中所輸入的文字的範例：
+Dusk 提供了多種與表單和輸入元素互動的方法。首先，讓我們看一下輸入文字到輸入欄位：
 
     $browser->type('email', 'taylor@laravel.com');
 
-注意一下，儘管該方法會在必要的時候接受它，我們就不需要在把 CSS 選擇器傳入該類型方法。如果沒有提供 CSS 選擇器，Dusk 會尋找具有給定名稱屬性的輸入字段。最後，Dusk 會嘗試找到具有給定 `name` 屬性的 `textarea`。
+注意一下，儘管該方法會在必要的時候接受它，我們就不需要在把 CSS 選擇器傳入該類型方法。如果沒有提供 CSS 選擇器，Dusk 會尋找具有給定名稱屬性的輸入欄位。最後，Dusk 會嘗試找到具有給定 `name` 屬性的 `textarea`。
 
-要將文本附加到字段，又不清除它的內容，你可以使用 `append` 方法：
+要將文字附加到欄位而不清除它的內容，你可以使用 `append` 方法：
 
     $browser->type('tags', 'foo')
             ->append('tags', ', bar, baz');
@@ -316,7 +316,7 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 
 #### 下拉選單
 
-你可以使用 `select` 方法在你的下拉選擇許澤一個值。像是 `type` 方法和 `select` 方法不需要完整的 CSS 選擇器。要傳入值給 `select` 方法時，你應該傳入底層選項值，而不是顯示 text：
+你可以使用 `select` 方法在你的下拉選擇一個值。像是 `type` 方法和 `select` 方法不需要完整的 CSS 選擇器。當傳送值給 `select` 方法時，你應該傳入底層選項值，而不是顯示文字：
 
     $browser->select('size', 'Large');
 
@@ -326,15 +326,15 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 
 #### 複選框
 
-你可以使用 "check" 方法來「點擊」複選框。像其他許多輸入相關的方法，其實並不需要完整的 CSS 選擇器。如果找不到準確的選擇器匹配，Dusk 會尋找與 `name` 屬性匹配的複選框：
+要「勾選」一個複選欄位，你可以使用 `check` 方法。像其他許多輸入相關的方法，其實並不需要完整的 CSS 選擇器。如果找不到準確的選擇器匹配，Dusk 會尋找與 `name` 屬性匹配的複選框：
 
     $browser->check('terms');
 
     $browser->uncheck('terms');
 
-#### 單選題
+#### 單選按鈕
 
-你可以使用 `radio` 方法來「選擇」一個單選題的選項。像是其他許多輸入相關方法，其實並不需要完整的 CSS 選擇器。如果找不到準確的選擇器匹配，Dusk 會尋找與 `name` 和 `value` 屬性匹配的單選題：
+你可以使用 `radio` 方法來「選擇」一個單選按鈕的選項。像是其他許多輸入相關方法，其實並不需要完整的 CSS 選擇器。如果找不到準確的選擇器匹配，Dusk 會尋找與 `name` 和 `value` 屬性匹配的單選按鈕：
 
     $browser->radio('version', 'php7');
 
@@ -389,7 +389,7 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 <a name="scoping-selectors"></a>
 ### 範圍選擇器
 
-有時你可能希望執行給定選擇器範圍內的所有操作。例如，你可能希望斷言某些僅存於一個表格中的 text，然後點擊該表單中的一個按鈕。你可以使用 `with` 方法來達成目的。在給定的 `with` 方法回呼中，將執行原始選擇器範圍中的所有操作：
+有時你可能希望執行給定選擇器範圍內的所有操作。例如，你可能希望斷言某些僅存於一個表格中的文字，然後點擊該表單中的一個按鈕。你可以使用 `with` 方法來達成目的。在給定的 `with` 方法回呼中，將執行原始選擇器範圍中的所有操作：
 
     $browser->with('.table', function ($table) {
         $table->assertSee('Hello World')
@@ -399,7 +399,7 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 <a name="waiting-for-elements"></a>
 ### 等待元素
 
-在使用 JavaScript 大量測試應用程式時，通常在進行測時前，必須「等待」載入一些元素和資料。Dusk 將這個問題弄的很簡單。使用各種方法時，你可以等待元素在頁面上呈現，甚至等待給定的 JavaScript 表達式計算結果為 `ture`。
+當廣泛使用 JavaScript 大量測試應用程式時，通常在進行測時前，必須「等待」載入一些元素和資料。Dusk 將這個問題弄的很簡單。使用各種方法時，你可以等待元素在頁面上呈現，等待給定的 JavaScript 表達式計算結果為 `true`。
 
 #### 等待
 
@@ -425,21 +425,21 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 
 #### 可用的範圍選擇器
 
-有時你可能希望等待給定的選擇器，然後與選擇器匹配的元素互相影響。例如，你可能希望等待模型視窗，然後案下模型中的「確定」按鈕。在這種情況下，可以使用 `whenAvailable` 方法。在給定的回呼中，只會執行原始選擇器範圍內的所有元素操作：
+有時你可能希望等待給定的選擇器，然後與選擇器匹配的元素互相交互。例如，你可能希望等待模型視窗，然後案下模型中的「確定」按鈕。在這種情況下，可以使用 `whenAvailable` 方法。在給定的回呼中，只會執行原始選擇器範圍內的所有元素操作：
 
     $browser->whenAvailable('.modal', function ($modal) {
         $modal->assertSee('Hello World')
               ->press('OK');
     });
 
-#### 等待 Text
+#### 等待文字
 
-`waitForText` 方法可被用於等待給定的 Text 被顯示在頁面上：
+`waitForText` 方法可被用於等待給定的文字被顯示在頁面上：
 
-    // 最多等待 Text 五秒鐘...
+    // 最多等待文字五秒鐘...
     $browser->waitForText('Hello World');
 
-    // 最多等待 Text 一秒鐘...
+    // 最多等待文字一秒鐘...
     $browser->waitForText('Hello World', 1);
 
 #### 等待連結
@@ -458,9 +458,9 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 
     $browser->waitForLocation('/secret');
 
-#### 等待頁面重載
+#### 等待頁面重新載入
 
-如果你需要在頁面重載後才開始斷言，可以使用 `waitForReload` 方法：
+如果你需要在頁面重新載入後才開始斷言，可以使用 `waitForReload` 方法：
 
     $browser->click('.some-action')
             ->waitForReload()
@@ -470,12 +470,12 @@ Dusk 提供了多種與表單和輸入元素互相影響的方法。首先，讓
 
 有時你可能希望暫停執行一個測試，一直到一個給定的 JavaScript 表達式的計算結果為 `true`。你可以使用 `waitUntil` 方法來輕鬆完成此操作。將表達式傳入給此方法時，不需要使用 `return` 關鍵字或結尾用的分號：
 
-    // 最多等待表達式結果為真五秒鐘...
+    // 最多等待五秒鐘，表達式結果為 true...
     $browser->waitUntil('App.dataLoaded');
 
     $browser->waitUntil('App.data.servers.length > 0');
 
-    // 最多等待表達式結果為真一秒鐘...
+    // 最多等待一秒鐘，表達式結果為 true...
     $browser->waitUntil('App.data.servers.length > 0', 1);
 
 #### 等待與回呼
@@ -509,10 +509,10 @@ Dusk 甚至可以讓你斷言 [Vue](https://vuejs.org) 的元件資料狀態。�
         }
     });
 
-你可以在 Vue 元件的狀態上宣告如下：
+你可以在 Vue 元件的狀態上像是這樣斷言：
 
     /**
-     * A basic Vue test example.
+     * 一個基礎的 Vue 測試範例。
      *
      * @return void
      */
@@ -531,12 +531,12 @@ Dusk 為你的應用程式提供了各式各樣的斷言。所有可用的斷言
 
 斷言  | 說明
 ------------- | -------------
-`$browser->assertTitle($title)`  |  斷言頁面標題是否與給定 text 匹配。
-`$browser->assertTitleContains($title)`  |  斷言頁面標題是否包含給定的 text。
-`$browser->assertPathBeginsWith($path)`  |  斷言當前的 URL 路徑是否開始於給定的路徑。
-`$browser->assertPathIs('/home')`  |  斷言當前路徑是否與給定路徑匹配。
-`$browser->assertPathIsNot('/home')`  |  斷言當前路徑是否不與給定路徑匹配。
-`$browser->assertRouteIs($name, $parameters)`  |  斷言當前 URL 是否與給定名稱路由的 URL 匹配。
+`$browser->assertTitle($title)`  |  斷言頁面標題是否與給定文字匹配。
+`$browser->assertTitleContains($title)`  |  斷言頁面標題是否包含給定的文字。
+`$browser->assertPathBeginsWith($path)`  |  斷言目前的 URL 路徑是否開始於給定的路徑。
+`$browser->assertPathIs('/home')`  |  斷言目前路徑是否與給定路徑匹配。
+`$browser->assertPathIsNot('/home')`  |  斷言目前路徑是否不與給定路徑匹配。
+`$browser->assertRouteIs($name, $parameters)`  |  斷言目前 URL 是否與給定名稱路由的 URL 匹配。
 `$browser->assertQueryStringHas($name, $value)`  |  斷言給定查詢字串參數是否存在給定的值。
 `$browser->assertQueryStringMissing($name)`  |  斷言給定字串參數使否遺失。
 `$browser->assertHasQueryStringParameter($name)`  |  斷言給定字串參數是否存在。
@@ -544,11 +544,11 @@ Dusk 為你的應用程式提供了各式各樣的斷言。所有可用的斷言
 `$browser->assertCookieMissing($name)`  |  斷言給定 Cookie 是否不存在。
 `$browser->assertCookieValue($name, $value)`  |  斷言 Cookie 是否有給定的值。
 `$browser->assertPlainCookieValue($name, $value)`  |  斷言未加密的 Cookie 是否有給定的值。
-`$browser->assertSee($text)`  |  斷言給定的 Text 是否在頁面上存在。
-`$browser->assertDontSee($text)`  |  斷言給定的 Text 是否在頁面上不存在。
-`$browser->assertSeeIn($selector, $text)`  |  斷言給定的 Text 是否在選擇器中存在。
-`$browser->assertDontSeeIn($selector, $text)`  |  斷言給定的 Text 是否在選擇器中不存在。
-`$browser->assertSourceHas($code)`  |  斷言給定原始碼是否在頁面上存在。
+`$browser->assertSee($text)`  |  斷言給定的文字是否在頁面上存在。
+`$browser->assertDontSee($text)`  |  斷言給定的文字是否在頁面上不存在。
+`$browser->assertSeeIn($selector, $text)`  |  斷言給定的文字是否在選擇器中存在。
+`$browser->assertDontSeeIn($selector, $text)`  |  斷言給定的文字是否在選擇器中不存在。
+`$browser->assertSourceHas($code)`  |  斷言給定的文字是否在選擇器中不存在。
 `$browser->assertSourceMissing($code)`  |  斷言給定原始碼是否在頁面上不存在。
 `$browser->assertSeeLink($linkText)`  |  斷言給定連結是否在頁面上存在。
 `$browser->assertDontSeeLink($linkText)`  |  斷言給定連結是否在頁面上不存在。
@@ -585,7 +585,7 @@ Dusk 為你的應用程式提供了各式各樣的斷言。所有可用的斷言
 <a name="configuring-pages"></a>
 ### 設定 Page
 
-預設 Page 會有三個方法：`url`、`assert` 和 `elements`。我們現在開始討論 `url` 和 `assert` 方法。`elements` 方法會[在下面更詳細地討論discussed in more detail below](#shorthand-selectors).
+預設 Page 會有三個方法：`url`、`assert` 和 `elements`。我們現在開始討論 `url` 和 `assert` 方法。`elements` 方法會[在下面更詳細地討論](#shorthand-selectors).
 
 #### `url` 方法
 
@@ -606,7 +606,7 @@ Dusk 為你的應用程式提供了各式各樣的斷言。所有可用的斷言
 `assert` 方法可以做出任何必要的斷言來驗證瀏覽器是否在給定的頁面上，所以沒必要完成這個方法。然而，如果你希望，你可以自由地做出這些斷言。導航到頁面時，這些斷言會自動執行：
 
     /**
-     * Assert that the browser is on the page.
+     * 斷言瀏覽器是否在此頁面
      *
      * @return void
      */
@@ -634,12 +634,12 @@ Dusk 為你的應用程式提供了各式各樣的斷言。所有可用的斷言
             ->assertSee('@create');
 
 <a name="shorthand-selectors"></a>
-### 速記選擇器
+### 快捷選擇器
 
-Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定義既快速又好記的快速方式。列如，讓我們為應用程式登入頁面的「email」輸入字段定義一個快速方式：
+Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定義既快速又好記的快捷方式。例如，讓我們為應用程式登入頁面的「email」輸入字段定義一個快捷方式：
 
     /**
-     * Get the element shortcuts for the page.
+     * 取得該頁面元素的快捷方式。
      *
      * @return array
      */
@@ -650,16 +650,16 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
         ];
     }
 
-現在，你可以在任何地方使用這個速寫選擇器來使用完整的 CSS 選擇器：
+現在，你可以在任何地方使用這個快捷選擇器來使用完整的 CSS 選擇器：
 
     $browser->type('@email', 'taylor@laravel.com');
 
-#### 全域速寫選擇器
+#### 全域快捷選擇器
 
-安裝 Dusk 之後，基本的 `Page` 類別會放置在 `tests/Browser/Pages` 目錄中。這個類別包含一個 `siteElements` 方法，可被用來定義應用程式中每個 Page 都可以用的全域速寫選擇器：
+安裝 Dusk 之後，基本的 `Page` 類別會放置在 `tests/Browser/Pages` 目錄中。這個類別包含一個 `siteElements` 方法，可被用來定義應用程式中每個 Page 都可以用的全域快捷選擇器：
 
     /**
-     * Get the global element shortcuts for the site.
+     * 取得該網站的全域元素快捷方式。
      *
      * @return array
      */
@@ -683,7 +683,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
 
     class Dashboard extends Page
     {
-        // Other page methods...
+        // 其他 page 方法...
 
         /**
          * 建立新播放清單。
@@ -711,7 +711,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
 <a name="components"></a>
 ## 元件
 
-元件類似 Dusk 的「頁面物件」，但能讓整個應用程式的 UI 和 功能可被重複使用，像是導航列或通知視窗。因此，組建並不會綁定到特定的 URL。
+元件類似 Dusk 的「頁面物件」，但能讓整個應用程式的 UI 和 功能可被重複使用，像是導航列或通知視窗。因此，元件並不會綁定到特定的 URL。
 
 <a name="generating-components"></a>
 ### 產生元件
@@ -720,7 +720,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
 
     php artisan dusk:component DatePicker
 
-如上所示，「日期選擇器」是可能存在於整個應用程式中各種頁面上的組件的範例。在整個測試套件中，手動編寫數十個瀏覽器自動化測試邏輯來選擇日期，這將顯得麻煩。所以，我們可以定義一組 Dusk 元件來表示日期選擇器，從而讓我們將該邏輯封裝在元件中：
+如上所示，「日期選擇器」是可能存在於整個應用程式中各種頁面上的組件的範例。在整個測試套件中，手動撰寫數十個瀏覽器自動化測試邏輯來選擇日期，這顯得繁瑣。所以，我們可以定義一組 Dusk 元件來表示日期選擇器，從而讓我們將該邏輯封裝在元件中：
 
     <?php
 
@@ -732,7 +732,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
     class DatePicker extends BaseComponent
     {
         /**
-         * Get the root selector for the component.
+         * 取得元件的根目錄選擇器。
          *
          * @return string
          */
@@ -742,7 +742,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
         }
 
         /**
-         * Assert that the browser page contains the component.
+         * 斷言瀏覽器頁面包含的元件。
          *
          * @param  Browser  $browser
          * @return void
@@ -753,7 +753,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
         }
 
         /**
-         * Get the element shortcuts for the component.
+         * 取得元件的元素快捷方式。
          *
          * @return array
          */
@@ -767,7 +767,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
         }
 
         /**
-         * Select the given date.
+         * 選擇給定的日期。
          *
          * @param  \Laravel\Dusk\Browser  $browser
          * @param  int  $month
@@ -803,7 +803,7 @@ Page 的 `elements` 方法，可以讓你為頁面上的任何 CSS 選擇器定�
     class ExampleTest extends DuskTestCase
     {
         /**
-         * A basic component test example.
+         * 一個基本元件測試範例。
          *
          * @return void
          */
