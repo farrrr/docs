@@ -2,7 +2,7 @@
 
 - [介紹](#introduction)
 - [設定](#configuration)
-- [使用加密器](#using-the-encrypter)
+- [加密一個值](#using-the-encrypter)
 
 <a name="introduction"></a>
 ## 介紹
@@ -32,7 +32,7 @@ Laravel 的加密器是使用 OpenSSL 來提供 AES-256 和 AES-128。強烈建�
     class UserController extends Controller
     {
         /**
-         * 為使用者儲存秘密訊息。
+         * 為使用者儲存私人訊息。
          *
          * @param  Request  $request
          * @param  int  $id
@@ -58,7 +58,7 @@ Laravel 的加密器是使用 OpenSSL 來提供 AES-256 和 AES-128。強烈建�
 
     $decrypted = Crypt::decryptString($encrypted);
 
-#### 將加密的值給解碼
+#### 解密一個值
 
 你可以使用 `decrypt` 輔助函式來將值給解碼。如果這個值還沒準備解碼，像是當 MAC 是無效時，會拋出 `Illuminate\Contracts\Encryption\DecryptException` ：
 
