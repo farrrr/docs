@@ -1,8 +1,8 @@
-# Envoy 任務執行器Task Runner
+# Envoy Task Runner
 
 - [介紹](#introduction)
     - [安裝](#installation)
-- [編寫任務](#writing-tasks)
+- [撰寫任務](#writing-tasks)
     - [建立](#setup)
     - [變數](#variables)
     - [Story](#stories)
@@ -24,9 +24,9 @@
 
     composer global require laravel/envoy
 
-由於全域的 Composer 程式庫有時會導致套件版本衝突，你或許會考慮使用 `cgr`，這可直接替換 `composer global require` 指令。`cgr` 程式庫的安裝介紹能在 [GitHub 上找到](https://github.com/consolidation-org/cgr)。
+由於全域的 Composer 函式庫有時會導致套件版本衝突，你或許會考慮使用 `cgr`，這可直接替換 `composer global require` 指令。`cgr` 程式庫的安裝介紹能在 [GitHub 上找到](https://github.com/consolidation-org/cgr)。
 
-> {note} 需要確認 `~/.composer/vendor/bin` 目錄有放置在 PATH 中，以便在終端機執行 `envoy` 指令時可以找到可執行的 `envoy`。
+> {note} 確認 `~/.composer/vendor/bin` 目錄有放置在 PATH 中，以便在終端機執行 `envoy` 指令時可以找到可執行的 `envoy`。
 
 #### 更新 Envoy
 
@@ -35,7 +35,7 @@
     composer global update
 
 <a name="writing-tasks"></a>
-## 編寫任務
+## 撰寫任務
 
 你所有的 Envoy 任務必須定義在專案根目錄的 `Envoy.blade.php` 檔案中。這裡有個範例可以幫助你瞭解：
 
@@ -53,7 +53,6 @@
 
 <a name="setup"></a>
 ### 建立
-
 
 有時，你可能想在執行任務前執行一些 PHP 程式碼。你可以使用 ```@setup``` 指令在 Envoy 檔案裡宣告變數及執行一般的 PHP 程式：
 
@@ -129,9 +128,9 @@ Envoy 可以讓你輕鬆的在多個伺服器上執行。首先，增加額外�
         php artisan migrate
     @endtask
 
-#### 水平執行
+#### 平行執行
 
-預設的任務會在每個伺服器上垂直執行。也就是說，一個任務必須在第一個伺服器完成執行後，才會在第二台伺服器上執行。如果你想在多個伺服器上同時執行任務，只要簡單的在任務宣告裡加上 `parallel` 選項：
+預設的任務會在每個伺服器上連續執行。也就是說，一個任務必須在第一個伺服器完成執行後，才會在第二台伺服器上執行。如果你想在多個伺服器上同時執行任務，只要簡單的在任務宣告裡加上 `parallel` 選項：
 
     @servers(['web-1' => '192.168.1.1', 'web-2' => '192.168.1.2'])
 
@@ -151,7 +150,7 @@ Envoy 可以讓你輕鬆的在多個伺服器上執行。首先，增加額外�
 <a name="confirming-task-execution"></a>
 ### 確認任務執行
 
-如果你希望在伺服器上執行給定任務之前提醒你確認，你應該將 `confirm` 指令新增到你的任務宣告中。這個選項對於不可逆的操作特別好用：
+如果你希望在伺服器上執行給定任務之前提醒你確認，你應該將 `confirm` 指令新增到你的任務宣告中。這個選項對於不可逆的操作特別有幫助：
 
     @task('deploy', ['on' => 'web', 'confirm' => true])
         cd site
