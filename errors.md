@@ -1,7 +1,7 @@
 # 錯誤與日誌
 
 - [介紹](#introduction)
-- [Configuration](#configuration)
+- [設定檔](#configuration)
     - [錯誤細節](#error-detail)
     - [日誌儲存](#log-storage)
     - [日誌的嚴重性級別](#log-severity-levels)
@@ -11,7 +11,7 @@
     - [Render 方法](#render-method)
     - [可報告與可見的例外](#renderable-exceptions)
 - [HTTP 例外](#http-exceptions)
-    - [自訂 HTTP 錯誤頁面
+    - [自訂 HTTP 錯誤頁面](#custom-http-error-pages)
 - [日誌](#logging)
 
 <a name="introduction"></a>
@@ -19,7 +19,7 @@
 
 當你開始一個新的 Laravel 專案時，都已經為你設定好錯誤與異常處理。`App\Exceptions\Handler` 類別是記錄應用程式所觸發的所有異常並將其呈現給使用者的地方。在這個文件中，我們將會深入這個類別。
 
-關於日誌，Laravel 使用 [Monolog](https://github.com/Seldaek/monolog) 程式庫，它提供了支援各種強大日誌的處理程序。Laravel 為你設定了其中幾個處理程序，可以讓你在單一或多個日誌檔案，或將錯誤訊息寫入系統日誌之間做選擇。
+關於日誌，Laravel 使用 [Monolog](https://github.com/Seldaek/monolog) 函式庫，它提供了支援各種強大日誌的處理程序。Laravel 為你設定了其中幾個處理程序，可以讓你在單一或多個日誌檔案，或將錯誤訊息寫入系統日誌之間做選擇。
 
 <a name="configuration"></a>
 ## 設定
@@ -34,7 +34,7 @@
 <a name="log-storage"></a>
 ### 日誌儲存
 
-Laravel 提供立即可用的日誌模式，支援寫入日誌資訊到 `single` 檔案、`daily` 檔案、`syslog` 和 `errorlog`。要設定 Laravel 使用的儲存系統，你應該在 `config/app.php` 設定檔修改 `log` 選項。例如，如果你希望使用 daily 記錄檔而不是單個檔案，你應該將 `app` 設定檔的 `log` 值設定為 `daily`：
+Laravel 提供立即可用的日誌模式，支援寫入日誌資訊到 `single` 檔案、`daily` 檔案、`syslog` 和 `errorlog`。要設定 Laravel 使用的儲存系統，你應該在 `config/app.php` 設定檔修改 `log` 選項。例如，如果你希望使用 `daily` 記錄檔而不是單個檔案，你應該將 `app` 設定檔的 `log` 值設定為 `daily`：
 
     'log' => 'daily'
 
@@ -116,7 +116,7 @@ Laravel 提供立即可用的日誌模式，支援寫入日誌資訊到 `single`
 
 #### 依類型忽略例外
 
-異常處理器的 `$dontReport` 屬性會包含一組例外類型的陣列不會被記錄。例如，404錯誤導致的例外以及其它類型的錯誤將不會寫入你的日誌中。可以根據實際的需要來新增其他例外類型到這組陣列：
+異常處理器的 `$dontReport` 屬性會包含一組例外類型的陣列不會被記錄。例如，404 錯誤導致的例外以及其它類型的錯誤將不會寫入你的日誌中。可以根據實際的需要來新增其他例外類型到這組陣列：
 
     /**
      * 不該被回報的例外類型清單。
@@ -190,25 +190,25 @@ Laravel 提供立即可用的日誌模式，支援寫入日誌資訊到 `single`
 <a name="http-exceptions"></a>
 ## HTTP 例外
 
-有些例外會寫說 HTTP 錯誤代碼來自伺服器。例如，這可能是「找不到頁面」的 404 錯誤代碼，「未授權的錯誤」的 401 錯誤代碼或者是開發者產生的 500 錯誤代碼。為了在你應用程式的任何地方產生這樣的回應，你可以使用 `abort` 輔助函式：
+有些例外會描述 HTTP 錯誤代碼來自伺服器。例如，這可能是「找不到頁面」的 404 錯誤代碼，「未授權的錯誤」的 401 錯誤代碼或者是開發者產生的 500 錯誤代碼。為了在你應用程式的任何地方產生這樣的回應，你可以使用 `abort` 輔助函式：
 
     abort(404);
 
-`abort` 輔助函式會馬上喚起異常處理器即將渲染的例外。或者，你可以提供回應的文字內容：
+`abort` 輔助函式會馬上發出異常處理器即將渲染的例外。或者，你可以提供回應的文字內容：
 
     abort(403, 'Unauthorized action.');
 
 <a name="custom-http-error-pages"></a>
 ### 自訂 HTTP 錯誤頁面
 
-Laravel 為各種的 HTTP 狀態碼所要顯示的自訂錯誤頁面給設計的很容易。例如，如果你希望自訂 HTTP 404 錯誤代碼頁面，而去建立 `resources/views/errors/404.blade.php`。這個檔案會為應用程式產生所有的 404 錯誤代碼而服務。在這個目錄中的視圖應該命名與 HTTP 狀態碼一致。`abort` 函式喚起的 `HttpException` 實例會作為 `$exception` 變數傳入視圖：
+Laravel 很容易為各種的 HTTP 狀態碼設計所要顯示的自訂錯誤頁面。例如，如果你希望自訂 HTTP 404 錯誤代碼頁面，而去建立 `resources/views/errors/404.blade.php`。這個檔案會為應用程式產生所有的 404 錯誤代碼而服務。在這個目錄中的視圖應該命名與 HTTP 狀態碼一致。透過 `abort` 函式發出的 `HttpException` 實例會作為 `$exception` 變數傳入視圖：
 
     <h2>{{ $exception->getMessage() }}</h2>
 
 <a name="logging"></a>
 ## 日誌
 
-Laravel 在強大的 [Monolog](https://github.com/seldaek/monolog) 程式庫上提供了一個簡單的抽象層。預設的 Laravel 已設定好在 `storage/logs` 目錄中建立日誌檔案。你可以使用 `Log` [facade](/docs/{{version}}/facades) 撰寫資訊到日誌中：
+Laravel 在強大的 [Monolog](https://github.com/seldaek/monolog) 函式庫上提供了一個簡單的抽象層。預設的 Laravel 已設定好在 `storage/logs` 目錄中建立日誌檔案。你可以使用 `Log` [facade](/docs/{{version}}/facades) 撰寫資訊到日誌中：
 
     <?php
 
@@ -221,7 +221,7 @@ Laravel 在強大的 [Monolog](https://github.com/seldaek/monolog) 程式庫上�
     class UserController extends Controller
     {
         /**
-         * 為給定的使用者顯示個資。
+         * 顯示給定使用者的個人資料。
          *
          * @param  int  $id
          * @return Response
@@ -245,9 +245,9 @@ Laravel 在強大的 [Monolog](https://github.com/seldaek/monolog) 程式庫上�
     Log::info($message);
     Log::debug($message);
 
-#### 情境資訊
+#### Context 資訊
 
-情境資料的陣列也可以被傳入 `Log` 方法。這個情境資料會被格式化並顯示日誌訊息：
+Context 資料的陣列也可以被傳入 `Log` 方法。這個 Context 資料會被格式化並顯示日誌訊息：
 
     Log::info('User failed to login.', ['id' => $user->id]);
 
