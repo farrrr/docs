@@ -1,4 +1,4 @@
-# Validation
+# 驗證
 
 - [介紹](#introduction)
 - [驗證快速上手](#validation-quickstart)
