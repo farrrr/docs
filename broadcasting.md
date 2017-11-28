@@ -103,7 +103,7 @@ Redis 廣播器會使用 Redis 發佈/訂閱 功能來廣播訊息。然而，�
         host: window.location.hostname + ':6001'
     });
 
-最後，你將要執行一個相容於 Socket.IO 的伺服器。Laravel 不會引入一個 Socket.IO 伺服器的實作；然而，一個受到社群驅使所開發的 Socket.IO 伺服目前維護在 Github 的 [tlaverdure/laravel-echo-server](https://github.com/tlaverdure/laravel-echo-server) Repository。
+最後，你將要執行一個相容於 Socket.IO 的伺服器。Laravel 不會引入一個 Socket.IO 伺服器的實作；然而，一個受到社群驅使所開發的 Socket.IO 伺服器目前維護在 Github 的 [tlaverdure/laravel-echo-server](https://github.com/tlaverdure/laravel-echo-server) Repository。
 
 #### Queue 先決條件
 
@@ -112,7 +112,7 @@ Redis 廣播器會使用 Redis 發佈/訂閱 功能來廣播訊息。然而，�
 <a name="concept-overview"></a>
 ## 概念簡述
 
-Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 Laravel 事件廣播給前端 JavaScript 應用程式。目前，Laravel 內建了 [Pusher](https://pusher.com) 和 Redis 的驅動。在前端使用 [Laravel Echo](#installing-laravel-echo) Javascript 的套件，可以更簡單的處理事件
+Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 Laravel 事件廣播給前端 JavaScript 應用程式。目前，Laravel 內建了 [Pusher](https://pusher.com) 和 Redis 的驅動。在前端使用 Javascript 的 [Laravel Echo](#installing-laravel-echo) 套件，可以更簡單的處理事件
 
 事件通過「頻道」來廣播，頻道可以被指定為公開或私人的。你的應用程式的任何訪客都可以訂閱公共頻道，且不需要在認證身份或檢查授權。然而，如果為了訂閱一個私人頻道，使用者就必須認證身份與通過授權才可以監聽該頻道。
 
@@ -121,13 +121,13 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 
 在深入廣播事件的每個元件前，讓我們用電子商務作為較完整的例子。在這邊，我們不會討論如何設定 [Pusher](https://pusher.com) 或 [Laravel Echo](#installing-laravel-echo)，因為這些內容會在其他部分的技術文件做詳細討論。
 
-在我們的應用程式中，假設我們有一個頁面，提供給使用者查看訂單的運送狀況。讓我們假設當透過應用程式處理更新運輸狀態時，會觸發 `ShippingStatusUpdated` 的事件：
+在我們的應用程式中，假設我們有一個頁面，提供給使用者查看訂單的運送狀況。讓我們假設在應用程式處理更新出貨進度時，會觸發 `ShippingStatusUpdated` 的事件：
 
     event(new ShippingStatusUpdated($update));
 
 ####  `ShouldBroadcast` 介面
 
-當使用者正在查看其中一個訂單時，我們並不想要讓他們透過重新整理這個頁面的方式來檢視狀態更新與否。相反的，我們想要在他們建立訂單時透過廣播去更新狀態。所以，我們需要在 `ShouldBroadcast` 介面標記 `ShippingStatusUpdated` 事件。這會讓 Laravel 在事件被觸發時，廣播這個事件：
+當使用者正在查看其中一個訂單時，我們並不想要讓他們透過重新整理這個頁面的方式來檢視狀態更新與否。相反的，我們想要在他們建立訂單時透過廣播去更新狀態。所以，我們需要在 `ShippingStatusUpdated` 事件中實作`ShouldBroadcast` 介面。這會讓 Laravel 在事件被觸發時，廣播這個事件：
 
     <?php
 
@@ -143,7 +143,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
     class ShippingStatusUpdated implements ShouldBroadcast
     {
         /**
-         * Information about the shipping status update.
+         * 關於更新出貨進度的資訊。
          *
          * @var string
          */
@@ -208,7 +208,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
         public $user;
 
         /**
-         * Create a new event instance.
+         * 建立一個新的事件實例。
          *
          * @return void
          */
@@ -218,7 +218,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
         }
 
         /**
-         * Get the channels the event should broadcast on.
+         * 取得事件會被廣播的頻道。
          *
          * @return Channel|array
          */
@@ -396,7 +396,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 <a name="installing-laravel-echo"></a>
 ### 安裝 Laravel Echo
 
-Laravel Echo 是一個 JavaScript 程式庫，它可以透過 Laravel 無痛的訂閱頻道與監聽事件廣播。你可以透過 NPM 套件管理器來安裝 Echo。在這個範例中，我們也會安裝 `pusher-js` 套件，因為我們會使用 Pusher 來廣播：
+Laravel Echo 是一個 JavaScript 程式庫，它可以透過 Laravel 無痛的訂閱頻道與監聽事件廣播。你可以透過 NPM 套件管理器來安裝 Echo。在這個範例中，我們也會安裝 `pusher-js` 套件，因此我們會使用 Pusher 來廣播：
 
     npm install --save laravel-echo pusher-js
 
@@ -557,3 +557,5 @@ Presence 可以像私人或是公開頻道一樣接收事件。使用一個聊�
         });
 
 在這個範例中，凡是透過廣播頻道發送到 `App\User` 實例的所有通知都將會被回呼所接收。`App.User.{id}` 頻道的授權回呼已載入到預設的 `BroadcastServiceProvider`。
+
+
