@@ -9,7 +9,7 @@
 - [隊列事件監聽器](#queued-event-listeners)
     - [手動存取隊列](#manually-accessing-the-queue)
     - [處理失敗的任務](#handling-failed-jobs)
-- [指派事件](#dispatching-events)
+- [調度事件](#dispatching-events)
 - [事件訂閱者](#event-subscribers)
     - [撰寫事件訂閱者](#writing-event-subscribers)
     - [註冊事件訂閱者](#registering-event-subscribers)
@@ -24,10 +24,10 @@ Laravel 的事件提供了簡單的觀察者實作，可以讓你訂閱並監聽
 <a name="registering-events-and-listeners"></a>
 ## 註冊事件與監聽器
 
-已引入 Laravel 應用程式中的 `EventServiceProvider` 會提供一個便捷的地方來註冊應用程式的所有事件監聽器。`listen` 屬性包含一組所有事件（鍵）和它們的監聽器（值）的陣列。當然，你可以盡量新增多個事件到這組陣列來滿足應用程式的需求。例如，讓我們新增 `OrderShipped` 事件：
+Laravel 應用程式中引入的 `EventServiceProvider` 提供一個便捷的地方來註冊應用程式的所有事件監聽器。`listen` 屬性包含一組所有事件（鍵）和它們的監聽器（值）的陣列。當然，你可以盡量新增多個事件到這組陣列來滿足應用程式的需求。例如，讓我們新增 `OrderShipped` 事件：
 
     /**
-     * 為應用程式的事件監聽器測繪
+     * 應用程式的事件監聽器映射。
      *
      * @var array
      */
@@ -186,7 +186,7 @@ Laravel 的事件提供了簡單的觀察者實作，可以讓你訂閱並監聽
         public $connection = 'sqs';
 
         /**
-         * 任務會發送到該連線名稱。
+         * 隊列會發送到該連線名稱。
          *
          * @var string|null
          */
@@ -253,7 +253,7 @@ Laravel 的事件提供了簡單的觀察者實作，可以讓你訂閱並監聽
         }
 
         /**
-         * 處理失敗的任務Handle a job failure.
+         * 處理失敗的任務
          *
          * @param  \App\Events\OrderShipped  $event
          * @param  \Exception  $exception
@@ -266,9 +266,9 @@ Laravel 的事件提供了簡單的觀察者實作，可以讓你訂閱並監聽
     }
 
 <a name="dispatching-events"></a>
-## 指派事件
+## 調度事件
 
-想要指派一個事件，你可以傳入一個事件實例到 `event` 輔助函式。輔助函式會指派事件到它註冊的所有監聽器。因為 `event` 輔助函式是全域可用的，你可以在應用程式的任何地方呼叫它：
+想要調度一個事件，你可以傳入一個事件實例到 `event` 輔助函式。輔助函式會指派事件到它註冊的所有監聽器。因為 `event` 輔助函式是全域可用的，你可以在應用程式的任何地方呼叫它：
 
     <?php
 
@@ -290,7 +290,7 @@ Laravel 的事件提供了簡單的觀察者實作，可以讓你訂閱並監聽
         {
             $order = Order::findOrFail($orderId);
 
-            // 這裡放訂單出貨的邏輯...
+            // 訂單出貨的邏輯...
 
             event(new OrderShipped($order));
         }
@@ -356,7 +356,7 @@ Laravel 的事件提供了簡單的觀察者實作，可以讓你訂閱並監聽
     class EventServiceProvider extends ServiceProvider
     {
         /**
-         * 為應用程式的事件監聽器測繪。
+         * 應用程式的事件監聽器映射。
          *
          * @var array
          */
