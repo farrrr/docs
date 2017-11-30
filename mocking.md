@@ -12,14 +12,14 @@
 <a name="introduction"></a>
 ## 介紹
 
-測試 Laravel 應用程式時，你可能希望「模擬」應用程式的某些功能，而不會在特定的測試中實際執行它們。例如，測試控制器的觸發事件，你可能希望模擬物事件監聽器，而不是真的在測試中執行它們。這可以讓你只測試控制器的 HTTP 回應，而不用擔憂事件監聽器的執行，因為事件監聽器能在自己的測試案例中被測試。
+當你測試 Laravel 應用程式時，你可能希望「mock」應用程式的某些功能，而不是在特定的測試中實際執行它們。例如，測試控制器的觸發事件，你可能希望 mock 事件監聽器，而不是真的在測試中執行它們。這可以讓你只測試控制器的 HTTP 回應，而不用擔憂事件監聽器的執行，因為事件監聽器能在自己的測試案例中被測試。
 
-Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式。這些輔助函式主要提供方便的 Mockery 層，所以你不用手動寫些複雜的 Mockery 方法呼叫。當然，你可以自由使用 [Mockery](http://docs.mockery.io/en/latest/) 或 PHPUnit 來建立自己的 Mockery。
+Laravel 為 mock 事件、任務和 facade 提供可立即使用的輔助函式。這些輔助函式主要提供方便的 Mockery 層，所以你不用手動寫些複雜的 Mockery 方法呼叫。當然，你可以自由使用 [Mockery](http://docs.mockery.io/en/latest/) 或 PHPUnit 來建立自己的 Mockery。
 
 <a name="bus-fake"></a>
 ## 假 Bus
 
-你可以使用 `Bus` facade 的 `fake` 方法作為 Mockery 的其中一個選擇，並用來預防任務真的被觸發。使用 `fake` 時，會等到測試的程式碼被執行後進行斷言：
+你可以使用 `Bus` facade 的 `fake` 方法作為 Mockery 的其中一個選擇，並用來防止任務被觸發。當使用 `fake` 時，會等到測試的程式碼被執行後進行斷言：
 
     <?php
 
@@ -43,7 +43,7 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
                 return $job->order->id === $order->id;
             });
 
-            // 斷言任務是否沒被觸發...
+            // 斷言任務沒有被觸發...
             Bus::assertNotDispatched(AnotherJob::class);
         }
     }
@@ -86,7 +86,7 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
 <a name="mail-fake"></a>
 ## 假郵件
 
-你可以使用 `Mail` facade 的 `fake` 方法來預防郵件真的被寄出。你可以斷言 [mailables](/docs/{{version}}/mail) 有沒有寄給使用者，甚至是檢查它們接收的資料。使用 `fake` 時，會等到測試的程式碼被執行後進行斷言：
+你可以使用 `Mail` facade 的 `fake` 方法來防止郵件被寄出。你可以斷言 [mailables](/docs/{{version}}/mail) 有沒有寄給使用者，甚至是檢查它們接收的資料。使用 `fake` 時，會等到測試的程式碼被執行後進行斷言：
 
     <?php
 
@@ -117,10 +117,10 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
                        $mail->hasBcc('...');
             });
 
-            // 斷言 mailable 是否寄了兩次...
+            // 斷言 mailable 寄出了兩次...
             Mail::assertSent(OrderShipped::class, 2);
 
-            // 斷言 mailable 是否沒寄出...
+            // 斷言 mailable 沒有寄出...
             Mail::assertNotSent(AnotherMailable::class);
         }
     }
@@ -161,12 +161,12 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
                 }
             );
 
-            // 斷言通知是否發送給特定使用者...
+            // 斷言通知發送給特定使用者...
             Notification::assertSentTo(
                 [$user], OrderShipped::class
             );
 
-            // 斷言通知是否沒送出...
+            // 斷言通知沒有送出...
             Notification::assertNotSentTo(
                 [$user], AnotherNotification::class
             );
@@ -200,13 +200,13 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
                 return $job->order->id === $order->id;
             });
 
-            // 斷言任務是否被推送到特定隊列...
+            // 斷言任務被推送到特定隊列...
             Queue::assertPushedOn('queue-name', ShipOrder::class);
 
-            // 斷言任務是否被推送兩次...
+            // 斷言任務被推送兩次...
             Queue::assertPushed(ShipOrder::class, 2);
 
-            // 斷言任務是否沒被退送...
+            // 斷言任務沒有被推送...
             Queue::assertNotPushed(AnotherJob::class);
         }
     }
@@ -236,10 +236,10 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
                 'avatar' => UploadedFile::fake()->image('avatar.jpg')
             ]);
 
-            // 斷言檔案使否被儲存...
+            // 斷言檔案被儲存...
             Storage::disk('avatars')->assertExists('avatar.jpg');
 
-            // 斷言檔案是否存在...
+            // 斷言檔案不存在...
             Storage::disk('avatars')->assertMissing('missing.jpg');
         }
     }
@@ -249,7 +249,7 @@ Laravel 為模擬事件、任務和 facade 提供可立即使用的輔助函式�
 <a name="mocking-facades"></a>
 ## Facades
 
-Facade 不像是傳統靜態方法的呼叫方式，[Facade](/docs/{{version}}/facades) 是可以被模擬的。這為傳統靜態方法提供一個很大的優點，並為你提供與使用依賴注入一樣的可測試性。你可能經常想模擬在控制器中呼叫 Laravel facade。例如，請參考以下控制器的操作：
+不像傳統靜態方法的呼叫方式，Facade 可以被 mock 的。這相較傳統的靜態方法提供了一個很大的優點，如果你使用依賴注入，則可以為你提供相同的可測試性。當在進行測試時，你可能經常想模擬在控制器中呼叫 Laravel facade。例如，考慮以下控制器的操作：
 
     <?php
 
@@ -272,7 +272,7 @@ Facade 不像是傳統靜態方法的呼叫方式，[Facade](/docs/{{version}}/f
         }
     }
 
-我們能使用 `shouldReceive` 來模擬呼叫 `Cache` facade，這會回傳 [Mockery](https://github.com/padraic/mockery) 模擬實例。因為 facades 實際上是被 Laravel [服務容器](/docs/{{version}}/container)所管理與解析，它們比典型的靜態類別更具可測試性。例如，讓我們模擬呼叫 `Cache` facade 的 `get` 方法：
+我們可以使用 `shouldReceive` 來 mock 呼叫 `Cache` facade，這會回傳 [Mockery](https://github.com/padraic/mockery) mock 實例。因為 facades 實際上是被 Laravel [服務容器](/docs/{{version}}/container)所管理與解析，它們比典型的靜態類別更具可測試性。例如，讓我們模擬呼叫 `Cache` facade 的 `get` 方法：
 
     <?php
 
@@ -298,4 +298,4 @@ Facade 不像是傳統靜態方法的呼叫方式，[Facade](/docs/{{version}}/f
         }
     }
 
-> {note} 你不應該模擬 `Request` facade。而是傳入你想要的輸入到 HTTP 輔助函式方法，像是在執行測試時的 `get` 和 `post`。同樣地，不要模擬 `Config` facade，只要在你的測試中呼叫 `Config::set` 方法。
+> {note} 你不應該 mock `Request` facade。而是在你在執行測試時，請改用 `get` 和 `post` 或其他可用的 HTTP 輔助函式方法來傳入你想要的資料。也請你別 mock `Config` facade，而是直接在你的測試中呼叫 `Config::set` 方法。
