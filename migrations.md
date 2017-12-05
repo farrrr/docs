@@ -28,11 +28,11 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 <a name="generating-migrations"></a>
 ## 產生遷移
 
-使用 [Artisan 指令](/docs/{{version}}/artisan) 的 `make:migration` 來建立遷移：
+使用 [Artisan](/docs/{{version}}/artisan) 的 `make:migration` 指令來建立遷移：
 
     php artisan make:migration create_users_table
 
-新遷移會放置於 `database/migrations` 目錄中。每個遷移的檔名會包含時間戳，可以 Laravel 確定遷移的順序。
+新遷移會放置於 `database/migrations` 目錄中。每個遷移的檔名會包含時間戳，可以讓 Laravel 確定遷移的順序。
 
 `--table` 和 `--create` 選項也可以被用於指定資料表名稱和是否依遷移內容建立新資料表。這些選項只在剛產生遷移時填入指定的資料表：
 
@@ -45,7 +45,7 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 <a name="migration-structure"></a>
 ## 遷移結構
 
-遷移類別會有兩個方法：`up` 和 `down`。 `up` 方法被用於新增新資料表，欄位，或索引到你的資料庫，而 `down` 方法則會回朔 `up` 的執行操作。
+遷移類別會有兩個方法：`up` 和 `down`。`up` 方法被用於新增新資料表、欄位、或索引到你的資料庫，而 `down` 方法則會回朔 `up` 的執行操作。
 
 你可以在這兩種方法中使用 Laravel schema 建構器來建立和修改的資料表。想學習 `Schema` 建構器可用的所有方法，[請查看該文件](#creating-tables)。例如，這個遷移範例會建立 `flights` 資料表：
 
@@ -94,18 +94,18 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 
 #### 在正式上線環境強制執行遷移
 
-有些遷移操作是不可逆的，也就意味著這些操作可能會導致你遺失資料。為了預防你在正式上線的資料庫上執行這些指令，系統會在執行指令前詢問你是否要執行該指令。想不用被提示的情況下強制執行指令，可使用 `--force` 選項：
+有些遷移操作是不可逆的，也就意味著這些操作可能會導致你遺失資料。為了防止你在正式上線的資料庫上執行這些指令，系統會在執行指令前詢問你是否要執行該指令。要強制命令在沒有提示的情況下執行，可以使用 `--force` 選項：
 
     php artisan migrate --force
 
 <a name="rolling-back-migrations"></a>
 ### 還原遷移
 
-你可以使用 `rollback` 指令來還原最後的遷移操作。這個指令還原最後批次的遷移，這可能包含多個遷移檔案：
+你可以使用 `rollback` 指令來還原最後的遷移操作。這個指令還原最後「批次」的遷移，這可能包含多個遷移檔案：
 
     php artisan migrate:rollback
 
-你可以提供在 `rollback` 指令加上 `step` 選項來還原限定次數的遷移。例如，以下的指令會還原最後五次遷移：
+你可以在 `rollback` 指令提供 `step` 選項來限制遷移的次數。例如，以下的指令會還原最後五次遷移：
 
     php artisan migrate:rollback --step=5
 
@@ -119,10 +119,10 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 
     php artisan migrate:refresh
 
-    // 覆寫資料庫並執行資料庫填充...
+    // 刷新資料庫並執行資料庫填充...
     php artisan migrate:refresh --seed
 
-你可以在 `refresh` 中提供 `step` 選項來指定次數的還原與重新遷移。例如，以下指令會還原與重新遷移最後五次的遷移：
+你可以在 `refresh` 中提供 `step` 選項來限制還原和重新遷移的次數。例如，以下指令會還原和重新遷移最後五次的遷移：
 
     php artisan migrate:refresh --step=5
 
@@ -140,17 +140,17 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 <a name="creating-tables"></a>
 ### 建立資料表
 
-在 `Schema` facade 上使用 `create` 方法來建立新的資料表。`create` 方法可接受兩個參數：其一是資料表名稱，其二是`閉包`。閉包可接收被用於定義新資料表的 `Blueprint` 物件：
+要建立一個新的資料表，可以使用 `Schema` facade 的 `create` `方法。create` 方法可接受兩個參數。第一個是資料表的名稱，第二個是 `Closure`，它接收一個可用於定義新資料表的 `Blueprint` 物件：
 
     Schema::create('users', function (Blueprint $table) {
         $table->increments('id');
     });
 
-當然，你可以在建立資料表的時候，使用任何 schema 建構器的[欄位方法](#creating-columns)來定義資料表的欄位。
+當然，當你建立資料表時，你可以使用 schema 建構器任何的[欄位方法](#creating-columns)來定義資料表的欄位。
 
 #### 檢查資料表與欄位是否存在
 
-你可以使用 `hasTable` 和 `hasColumn` 方法來輕易地檢查資料表或欄位是否存在：
+你可以輕鬆的使用 `hasTable` 和 `hasColumn` 方法來檢查資料表或欄位是否存在：
 
     if (Schema::hasTable('users')) {
         //
@@ -160,21 +160,22 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
         //
     }
 
-#### 連線與儲存的引擎
+#### 連線與資料表選項
 
-如果你想對非預設的資料庫連線執行 schema 操作，可使用 `connection` 方法：
+如果你想要在資料庫連線上執行一個非預設的 schema 操作，你可以使用 `connection` 方法：
 
     Schema::connection('foo')->create('users', function (Blueprint $table) {
         $table->increments('id');
     });
 
-你可以在 schema 建構器上使用 `engine` 屬性來定義資料表的儲存引擎：
+你可以在 Schema 建構器上使用以下指令來定義資料表的選項：
 
-    Schema::create('users', function (Blueprint $table) {
-        $table->engine = 'InnoDB';
-
-        $table->increments('id');
-    });
+指令  |  描述
+-------  |  -----------
+`$table->engine = 'InnoDB';`  |  指令資料表儲存引擎（僅限 MySQL）。
+`$table->charset = 'utf8';`  |  指定資料表的預設字元編碼（僅限 MySQL）。
+`$table->collation = 'utf8_unicode_ci';`  |  指定資料表的預設排序規則（僅限 MySQL）。
+`$table->temporary();`  |  建立一個臨時資料表（SQL Server 除外）。
 
 <a name="renaming-and-dropping-tables"></a>
 ### 重新命名與移除資料表
@@ -191,7 +192,7 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 
 #### 重新命名已有外鍵的資料表
 
-在重新命名資料表前，你應該驗證在資料表上的任何外鍵約束在遷移檔案中都有明確的名稱，而不是讓 Laravel 發給你的基本約束名稱。否則外鍵約束名稱會沿用舊資料表。
+在重新命名資料表前，你應該驗證在資料表上的任何外鍵約束在遷移檔案中都有明確的名稱，而不是由 Laravel 分配一個基於約束的名稱。否則外鍵約束名稱會沿用舊資料表。
 
 <a name="columns"></a>
 ## 欄位
@@ -199,7 +200,7 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 <a name="creating-columns"></a>
 ### 建立欄位
 
-在 `Schema` facade 上的 `table` 方法可被用於更新已存在的資料表。像是 `create` 方法、`table` 方法可接受兩個參數：資料表名稱和`閉包`，然後閉包可接受一個 `Blueprint` 實例，可用於新增欄位到資料表：
+在 `Schema` facade 上的 `table` 方法可被用於更新已存在的資料表。像是 `create` 方法、`table` 方法可接受兩個參數：第一個是資料表的名稱，第二個是 `Closure`，它接收一個可用於定義新資料表的 `Blueprint` 物件：
 
     Schema::table('users', function (Blueprint $table) {
         $table->string('email');
@@ -207,22 +208,22 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 
 #### 可用的欄位型別
 
-當然，schema 建構器包含各種欄位類型，你可以在建構資料表的時候指定這些方法：
+當然，schema 建構器包含各種欄位的類型，當你在建立資料表時可以指定這些方法：
 
-指令  | 說明
+指令  | 描述
 ------------- | -------------
-`$table->bigIncrements('id');`  |  自動遞增相當於 UNSIGNED BIGINT（主鍵）欄位。
+`$table->bigIncrements('id');`  |  使用「UNSIGNED BIG INTEGER」相當於自動遞增 ID（主鍵）。
 `$table->bigInteger('votes');`  |  相當於 BIGINT 欄位。
 `$table->binary('data');`  |  相當於 BLOB 欄位。
 `$table->boolean('confirmed');`  |  相當於 BOOLEAN 欄位
-`$table->char('name', 100);`  |  相當於 CHAR 欄位並可選擇長度。
+`$table->char('name', 100);`  |  相當於 CHAR 欄位並可指定長度。
 `$table->date('created_at');`  |  相當於 DATE 欄位。
-`$table->dateTime('created_at');`  |  相當於 DATETIME 對等欄位。
+`$table->dateTime('created_at');`  |  相當於 DATETIME 欄位。
 `$table->dateTimeTz('created_at');`  |  相當於 DATETIME （含時區） 欄位。
-`$table->decimal('amount', 8, 2);`  |  相當於 DECIMAL 欄位，並帶有精度（整數位長度）與基數（小數點長度）。
-`$table->double('amount', 8, 2);`  |  相當於 DOUBLE 欄位，並帶有精度（整數位長度）與基數（小數點長度）。
+`$table->decimal('amount', 8, 2);`  |  相當於 DECIMAL 欄位，並帶有精度（整數位長度）與奇數（小數點長度）。
+`$table->double('amount', 8, 2);`  |  相當於 DOUBLE 欄位，並帶有精度（整數位長度）與奇數（小數點長度）。
 `$table->enum('level', ['easy', 'hard']);`  |  相當於 ENUM 欄位。
-`$table->float('amount', 8, 2);`  |  相當於 FLOAT 欄位，並帶有精度（整數位長度）與基數（小數點長度）。
+`$table->float('amount', 8, 2);`  |  相當於 FLOAT 欄位，並帶有精度（整數位長度）與奇數（小數點長度）。
 `$table->geometry('positions');`  |  相當於 GEOMETRY 欄位。
 `$table->geometryCollection('positions');`  |  相當於 GEOMETRYCOLLECTION 欄位。
 `$table->increments('id');`  |  自動遞增相當於 UNSIGNED INTEGER（主鍵）欄位。
@@ -233,34 +234,34 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 `$table->lineString('positions');`  |  相當於 LINESTRING 欄位。
 `$table->longText('description');`  |  相當於 LONGTEXT 欄位。
 `$table->macAddress('device');`  |  相當於 MAC 位址欄位。
-`$table->mediumIncrements('id');`  |  自動遞增相當於 UNSIGNED MEDIUMINT（主鍵）欄位。
+`$table->mediumIncrements('id');`  |  使用「UNSIGNED BIG INTEGER」相當於自動遞增 ID（主鍵）。
 `$table->mediumInteger('votes');`  |  相當於 MEDIUMINT 欄位。
 `$table->mediumText('description');`  |  相當於 MEDIUMTEXT 欄位。
-`$table->morphs('taggable');`  |  新增相當於 `taggable_id` 的 UNSIGNED INTEGER 和 `taggable_type` 的 VARCHAR 欄位。
+`$table->morphs('taggable');`  |  加入無符號的 INTEGER `taggable_id` 和 STRING `taggable_type。`
 `$table->multiLineString('positions');`  |  相當於 MULTILINESTRING 欄位。
 `$table->multiPoint('positions');`  |  相當於 MULTIPOINT 欄位。
 `$table->multiPolygon('positions');`  |  相當於 MULTIPOLYGON 欄位。
-`$table->nullableMorphs('taggable');`  |  新增可以 null 的 `morphs()` 欄位版本。
-`$table->nullableTimestamps();`  |  新增可以 null 的 `timestamps()` 欄位版本。
+`$table->nullableMorphs('taggable');`  |  Nullable 版本的 `morphs()` 欄位。
+`$table->nullableTimestamps();`  |  `timestamps()` 方法的別名。
 `$table->point('position');`  |  相當於 POINT 欄位。
 `$table->polygon('positions');`  |  相當於 POLYGON 欄位。
-`$table->rememberToken();`  |  相當於新增可以 null 的 `remember_token` VARCHAR(100) 欄位。
-`$table->smallIncrements('id');`  |  自動遞增相當於 UNSIGNED SMALLINT（主鍵）欄位。
+`$table->rememberToken();`  |  相當於新增 nullable 的 `remember_token` VARCHAR(100) 欄位。
+`$table->smallIncrements('id');`  |  使用「UNSIGNED SMALL INTEGER」相當於自動遞增 ID（主鍵）。
 `$table->smallInteger('votes');`  |  相當於 SMALLINT 欄位。
-`$table->softDeletes();`  |  相當於為緩刪除新增可以 null 的 `deleted_at` 時間戳欄位。
-`$table->softDeletesTz();`  |  相當於為緩刪除新增可以 null 的 `deleted_at` 時間戳（含時區）欄位。
-`$table->string('name', 100);`  |  相當於 VARCHAR 欄位並可選擇長度。
+`$table->softDeletes();`  |  相當於為軟刪除新增 nullable 的 `deleted_at` 時間戳欄位。
+`$table->softDeletesTz();`  |  相當於為軟刪除新增 nullable 的 `deleted_at` 時間戳（含時區）欄位。
+`$table->string('name', 100);`  |  相當於 VARCHAR 欄位並可指定長度。
 `$table->text('description');`  |  相當於 TEXT 欄位。
 `$table->time('sunrise');`  |  相當於 TIME 欄位。
 `$table->timeTz('sunrise');`  |  相當於 TIME（含時區）欄位。
 `$table->timestamp('added_on');`  |  相當於 TIMESTAMP 欄位。
 `$table->timestampTz('added_on');`  |  相當於 TIMESTAMP（含時區）欄位。
-`$table->timestamps();`  |  相當於新增可以 null 的 `created_at` 和 `updated_at` 時間戳欄位。
-`$table->timestampsTz();`  |  相當於新增可以 null 的 `created_at` 和 `updated_at` 時間戳（含時區）欄位。
+`$table->timestamps();`  |  相當於新增 nullable 的 `created_at` 和 `updated_at` 時間戳欄位。
+`$table->timestampsTz();`  |  相當於新增 nullable 的 `created_at` 和 `updated_at` 時間戳（含時區）欄位。
 `$table->tinyIncrements('id');`  |  自動遞增相當於 UNSIGNED TINYINT（主鍵）欄位。
 `$table->tinyInteger('votes');`  |  相當於 TINYINT 欄位欄位。
 `$table->unsignedBigInteger('votes');`  |  相當於 UNSIGNED BIGINT 欄位。
-`$table->unsignedDecimal('amount', 8, 2);`  |  相當於 UNSIGNED DECIMAL 欄位，並帶有精度（整數位長度）與基數（小數點長度）。
+`$table->unsignedDecimal('amount', 8, 2);`  |  相當於 UNSIGNED DECIMAL 欄位，並帶有精度（整數位長度）與奇數（小數點長度）。
 `$table->unsignedInteger('votes');`  |  相當於 UNSIGNED INTEGER 欄位。
 `$table->unsignedMediumInteger('votes');`  |  相當於 UNSIGNED MEDIUMINT 欄位。
 `$table->unsignedSmallInteger('votes');`  |  相當於 UNSIGNED SMALLINT 欄位。
@@ -270,35 +271,35 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 <a name="column-modifiers"></a>
 ### 欄位修飾
 
-除了以上的欄位類型清單，這有幾個欄位「修飾」可以用於新增欄位到資料表。例如，你可以使用 `nullable` 方法來使欄位「nullable」：
+除了上面列出的欄位類型之外，這有還有一些欄位「修飾」可用於新增欄位到資料表。例如，你可以使用 `nullable` 方法來使欄位為「nullable」：
 
     Schema::table('users', function (Blueprint $table) {
         $table->string('email')->nullable();
     });
 
-以下是所有可用的欄位修飾清單，這個清單不含 [索引修飾](#creating-indexes)：
+以下是所有可用欄位修飾的列表，這個清單不包含[索引修飾](#creating-indexes)：
 
 修飾方法  | 說明
 ------------- | -------------
-`->after('column')`  |  將該欄位放置其他欄位「之後」。（MySQL 限定）
+`->after('column')`  |  將該欄位放置其他欄位「之後」。（僅限 MySQL）
 `->autoIncrement()`  |  設定 INTEGER 欄位能自動遞增（主鍵）
-`->charset('utf8')`  |  為欄位指定字元編碼。（MySQL 限定）
-`->collation('utf8_unicode_ci')`  |  為欄位指定序。（MySQL 與 SQL 伺服器限定）
-`->comment('my comment')`  |  為欄位新增註解。 （MySQL 限定）
+`->charset('utf8')`  |  指定欄位編碼。（僅限 MySQL）
+`->collation('utf8_unicode_ci')`  |  指定欄位排序規則（僅限 MySQL 和 SQL Server）
+`->comment('my comment')`  |  為欄位新增註解。 （僅限 MySQL）
 `->default($value)`  |  為欄位指定「預設」值。
-`->first()`  |  將此欄位放置於資料表的「第一個」。（MySQL 限定）
+`->first()`  |  將欄位放置於資料表的「第一欄」。（僅限 MySQL）
 `->nullable($value = true)`  |  讓欄位預設允許寫入 NULL 值。
-`->storedAs($expression)`  |  建立一個儲存產生的欄位。（MySQL 限定）
-`->unsigned()`  |  設定 INTEGER 欄位為 UNSIGNED。 （MySQL 限定）
-`->useCurrent()`  |  設定 TIMESTAMP 欄位要使用 CURRENT_TIMESTAMP 作為預設值。
-`->virtualAs($expression)`  |  建立一個虛擬產生的欄位。（MySQL 限定）
+`->storedAs($expression)`  |  建立一個儲存產生的欄位。（僅限 MySQL）
+`->unsigned()`  |  設定 INTEGER 欄位為 UNSIGNED。 （僅限 MySQL）
+`->useCurrent()`  |  設定 TIMESTAMP 欄位使用 CURRENT_TIMESTAMP 作為預設值。
+`->virtualAs($expression)`  |  建立一個虛擬產生的欄位。（僅限 MySQL）
 
 <a name="modifying-columns"></a>
 ### 修改欄位
 
 #### 必要條件
 
-在修改欄位之前，請務必在你的 `composer.json` 檔案新增 `doctrine/dbal` 依賴。Doctrine DBAL 函式庫被用於判斷當前欄位狀態與建立調整指定欄位的 SQL 查詢：
+在修改欄位之前，請務必在你的 `composer.json` 檔案新增 `doctrine/dbal` 依賴。Doctrine DBAL 函式庫被用於判斷目前欄位狀態，並建立調整指定欄位的 SQL 查詢：
 
     composer require doctrine/dbal
 
@@ -316,11 +317,11 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
         $table->string('name', 50)->nullable()->change();
     });
 
-> {note} 以下欄位類型不能被「更改」：char、double、enum、mediumInteger、timestamp、tinyInteger、ipAddress、json、jsonb、macAddress、mediumIncrements、morphs、nullableMorphs、nullableTimestamps、softDeletes、timeTz、timestampTz、timestamps、timestampsTz、unsignedMediumInteger、unsignedTinyInteger、uuid。
+> {note} 只有以下欄位類型能被「更改」：bigInteger、binary、boolean、date、dateTime、dateTimeTz、decimal、integer、json、longText、mediumText、smallInteger、string、text、time、unsignedBigInteger、unsignedInteger 和 unsignedSmallInteger.
 
 #### 重新命名欄位
 
-你可以在 Schema 建構器上使用 `renameColumn` 方法來重新命名欄位。再重新命名欄位之前，請務必在你的 `composer.json` 檔案上新增 `doctrine/dbal` 依賴：
+要重新命名欄位，你可以使用 Schema 建構器的 `renameColumn` 方法。在重新命名欄位之前，請務必在你的 `composer.json` 檔案上加入 `doctrine/dbal` 依賴：
 
     Schema::table('users', function (Blueprint $table) {
         $table->renameColumn('from', 'to');
@@ -331,13 +332,13 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 <a name="dropping-columns"></a>
 ### 移除欄位
 
-你可以在 Schema 建構器上使用 `dropColumn` 方法來移除欄位。從 SQLite 資料庫移除欄位之前，你會需要在你的 `composer.json` 檔案上新增 `doctrine/dbal` 依賴，並在你的終端機執行 `composer update`來安裝該函式庫：
+你可以在 Schema 建構器上使用 `dropColumn` 方法來移除欄位。在 SQLite 資料庫移除欄位之前，你會需要在你的 `composer.json` 檔案上新增 `doctrine/dbal` 依賴，並在你的終端機執行 `composer update`來安裝該函式庫：
 
     Schema::table('users', function (Blueprint $table) {
         $table->dropColumn('votes');
     });
 
-你可以從資料表的上傳入欄位名稱陣列到 `dropColumn` 方法來移除多個欄位：
+你可以透過傳送一組欄位名稱陣列給 `dropColumn` 方法來刪除資料表中多個欄位：
 
     Schema::table('users', function (Blueprint $table) {
         $table->dropColumn(['votes', 'avatar', 'location']);
@@ -345,13 +346,23 @@ Laravel `Schema` [facade](/docs/{{version}}/facades) 為所有 Laravel 支援的
 
 > {note} 當使用 SQLite 資料庫時，並不支援在單一遷移中移除或修改多個欄位。
 
+#### 可用的指令別名
+
+指令  |  描述
+-------  |  -----------
+`$table->dropRememberToken();`  |  刪掉 `remember_token` 欄位。
+`$table->dropSoftDeletes();`  |  刪掉 `deleted_at` 欄位。
+`$table->dropSoftDeletesTz();`  |  `dropSoftDeletes()` 方法的別名。
+`$table->dropTimestamps();`  |  刪掉 `created_at` 和 `updated_at` 欄位。
+`$table->dropTimestampsTz();` |  `dropTimestamps()` 方法的別名。
+
 <a name="indexes"></a>
 ## 索引
 
 <a name="creating-indexes"></a>
 ### 建立索引
 
-schema 建構器支援幾個索引類型。首先，讓我們看一下指定欄位的值必須是 unique 的範例。要建立索引，我們可以只鏈結 `unique` 方法到欄位定義上：
+Schema 建構器支援多種類型的索引。要建立索引，我們可以簡單地將 `unique` 方法鏈結到欄位定義上：
 
     $table->string('email')->unique();
 
@@ -359,11 +370,11 @@ schema 建構器支援幾個索引類型。首先，讓我們看一下指定欄�
 
     $table->unique('email');
 
-你甚至可以將欄位的陣列傳入 `index` 方法來建立複合索引：
+你甚至可以將一組陣列傳給一個 `index` 方法來建立一個複合索引：
 
     $table->index(['account_id', 'created_at']);
 
-Laravel 會自動產生一個合理的索引名稱，但你可以指定你要的名稱作為第二參數，並傳入該方法：
+Laravel 將會自動產生一個合理的索引名稱，但是你可以傳送第二個參數到方法來指定索引的名稱：
 
     $table->unique('email', 'unique_email');
 
@@ -371,20 +382,20 @@ Laravel 會自動產生一個合理的索引名稱，但你可以指定你要的
 
 指令  | 說明
 ------------- | -------------
-`$table->primary('id');`  |  新增主鍵。
+`$table->primary('id');`  |  新增一個主鍵。
 `$table->primary(['id', 'parent_id']);`  |  新增複合鍵。
-`$table->unique('email');`  |  新增唯一的索引。
-`$table->index('state');`  |  新增基本的索引。
-`$table->spatialIndex('location');`  |  新增空間索引。（MySQL 限定）
+`$table->unique('email');`  |  新增一個唯一的索引。
+`$table->index('state');`  |  新增一個基本的索引。
+`$table->spatialIndex('location');`  |  新增一個空間索引（SQLite 除外）
 
-#### 索引長度與 MySQL 與 MariaDB
+#### 索引長度與 MySQL / MariaDB
 
-Laravel 預設使用 `utf8mb4` 字元編碼， 包括支援在資料庫中儲存「表情符號」。如果你執行的 MySQL 版本比 5.5.7 版本還舊，或 MariaDB 還沒升級至 10.2.2 以上，又想要在遷移被產生時 MySQL 能順利的為它們建立索引，你需要手動設定預設字串長度。你可以在 `AppServiceProvider` 中呼叫 `Schema::defaultStringLength` 方法來設定：
+Laravel 預設使用 `utf8mb4` 字元編碼， 包括支援在資料庫中儲存「表情符號」。如果你執行的 MySQL 是早於 5.7.7 版本或者是 MariaDB 是早於 10.2.2 版本的，則可能需要手動設定由遷移產生的預設字串長度，方便 MySQL 為它們建立索引。你可以在 `AppServiceProvider` 中呼叫 `Schema::defaultStringLength` 方法來設定：
 
     use Illuminate\Support\Facades\Schema;
 
     /**
-     * 引導任何應用程式服務。
+     * 啟動任何應用程式服務。
      *
      * @return void
      */
@@ -400,13 +411,14 @@ Laravel 預設使用 `utf8mb4` 字元編碼， 包括支援在資料庫中儲存
 
 要移除索引，你必須指定該索引的名稱。Laravel 預設會自動為索引分配一個合理的名稱。只要將資料表名稱、索引欄位名稱和索引類型連接再一起。這裡有一些範例：
 
-指令  | 說明
+指令  | 描述
 ------------- | -------------
 `$table->dropPrimary('users_id_primary');`  |  從「users」資料表移除主鍵。
 `$table->dropUnique('users_email_unique');`  |  從「users」資料表移除唯一索引。
 `$table->dropIndex('geo_state_index');`  |  從「geo」資料表移除基本的索引。
+`$table->dropSpatialIndex('geo_location_spatialindex');`  |  從「geo」資料表中移除一個空間索引。（SQLite 除外）。
 
-如果你傳入欄位陣列到 `dropIndex` 方法，會根據資料表名稱、欄位和鍵的類型來產生要移除的預設索引名稱：
+如果將一個欄位陣列傳給一個刪除索引的方法，會根據資料表名稱、欄位和鍵的類型來產生要移除的預設索引名稱：
 
     Schema::table('geo', function (Blueprint $table) {
         $table->dropIndex(['state']); // 移除 'geo_state_index' 索引
@@ -423,7 +435,7 @@ Laravel 也為建立外鍵約束提供支援，這是用於在資料庫層面強
         $table->foreign('user_id')->references('id')->on('users');
     });
 
-你也可以指定約束的「on delete」及「on update」作為所需的操作：
+你也可以為約束的「on delete」和「on update」屬性指定所需的操作：
 
     $table->foreign('user_id')
           ->references('id')->on('users')
