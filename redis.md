@@ -11,7 +11,7 @@
 <a name="introduction"></a>
 ## 簡介
 
-[Redis](http://redis.io) 是一個開源、優異的 key-value 儲存。通常 Redis 被用來作為數據結構服務器的一種，其中資料的 key 可以包含 [字串](http://redis.io/topics/data-types#strings)、[雜湊](http://redis.io/topics/data-types#hashes)、[清單](http://redis.io/topics/data-types#lists)、[集合](http://redis.io/topics/data-types#sets)以及[排序集合](http://redis.io/topics/data-types#sorted-sets)。
+[Redis](https://redis.io) 是一個開源、優異的 key-value 儲存。通常 Redis 被用來作為資料結構伺服器的一種，其中資料的 key 可以包含 [strings](https://redis.io/topics/data-types#strings)、[hashes](https://redis.io/topics/data-types#hashes)、[lists](https://redis.io/topics/data-types#lists)、[sets](https://redis.io/topics/data-types#sets)以及[sorted sets](https://redis.io/topics/data-types#sorted-sets)。
 
 在 Laravel 使用 Redis 前，必須先使用 Composer 安裝 `predis/predis` 套件：
 
@@ -22,7 +22,7 @@
 <a name="configuration"></a>
 ### 設定
 
-應用程式所需的 Redis 設定檔案位於 `config/database.php`，在這個檔案中，你會看到名為 `redis` 的陣列包含了為你應用程式使用 Redis 服務器所需要設定選項：
+應用程式所需的 Redis 設定檔案位於 `config/database.php`，在這個檔案中，你會看到一組包含你應用程式使用 Redis 伺服器的 `redis` 陣列：
 
     'redis' => [
 
@@ -37,7 +37,7 @@
 
     ],
 
-預設的伺服器設定檔案應足以滿足開發環境所需，不過，你仍可以輕鬆的透過修改這個陣列來符合你的執行環境。每個 Redis 服務器設定定義，都必須有 `name`、`host`、`port`。
+預設的伺服器設定檔案應足以滿足開發環境所需，不過，你仍可以輕鬆的透過修改這個陣列來符合你的執行環境。在你設定檔案內，每個被定義的 Redis 伺服器必須有一個 `name`、`host`、`port`。
 
 #### 設定 Clusters
 
@@ -60,7 +60,7 @@
 
     ],
 
-預設的情況下，clusters 會在你的所有節點進行 client-side sharding，允許你建立 node pool 操作大量的可用記憶體。然而，請注意在 client-side 的 sharding 操作是不會處理故障轉移的。因此，Redis cluster 主要適用於從另一個主要的資料儲存進行資料的快取。如果你想要使用原生的 Redis clustering，你可以在設定檔內使用 `options` 選項進行相關的設定。
+預設的情況下，clusters 會在你的所有節點進行 client-side sharding，允許你匯集節點並建立一個大量可用的記憶體。然而，請注意在 client-side 的 sharding 操作是不會處理故障轉移的。因此，Redis cluster 主要適用於從另一個主要的資料儲存進行資料的快取。如果你想要使用原生的 Redis clustering，你可以在設定檔內使用 `options` 選項進行相關的設定。
 
     'redis' => [
 
@@ -79,7 +79,7 @@
 <a name="predis"></a>
 ### Predis
 
-對於設定檔案內預設的 `host`、`port`、`database` 以及 `password` 選項，Predis 支援了額外的[連線參數](https://github.com/nrk/predis/wiki/Connection-Parameters)，這可以在 Redis 服務器內定義。要使用這些額外的設定選項，你可以在 `config/database.php` 直接新增這些參數至你的 Redis 服務器設定：
+對於設定檔案內預設的 `host`、`port`、`database` 以及 `password` 選項，Predis 支援了額外的[連線參數](https://github.com/nrk/predis/wiki/Connection-Parameters)，這可以在 Redis 伺服器內定義。要使用這些額外的設定選項，你可以在 `config/database.php` 直接新增這些參數至你的 Redis 伺服器設定：
 
     'default' => [
         'host' => env('REDIS_HOST', 'localhost'),
@@ -92,7 +92,7 @@
 <a name="phpredis"></a>
 ### PhpRedis
 
-> {note} 如果你透過 PECL 安裝 PhpRedis 擴充套件，你必須在 `config/app.php` 設定檔內重新設定 `Redis` 對應的設定。
+> {note} 如果你透過 PECL 安裝 PhpRedis 擴充套件，你將需要在 `config/app.php` 設定檔內重新命名 `Redis` 的別名。
 
 如果是使用 PhpRedis 擴充套件，你可以在 Redis 設定檔將 `client` 選項更改為 `phpredis`。這個選項可以在 `config/database.php` 設定檔中找到：
 
@@ -100,10 +100,10 @@
 
         'client' => 'phpredis',
 
-        // Rest of Redis configuration...
+        // Redis 其餘的設定...
     ],
 
-此外對於預設的 `host`、`port`、`database` 以及 `password` 伺服器設定選項，PhpRedis 支援了以下額外的連線參數：`persistent`、`prefix`、`read_timeout` 以及 `timeout`，你可以在 `config/database.php` 設定檔內設定這些 Redis 服務器相關的選項：
+此外對於預設的 `host`、`port`、`database` 以及 `password` 伺服器設定選項，PhpRedis 支援了以下額外的連線參數：`persistent`、`prefix`、`read_timeout` 以及 `timeout`，你可以在 `config/database.php` 設定檔內設定這些 Redis 伺服器相關的選項：
 
     'default' => [
         'host' => env('REDIS_HOST', 'localhost'),
@@ -116,14 +116,14 @@
 <a name="interacting-with-redis"></a>
 ## 與 Redis 互動
 
-你可以透過呼叫多個在 `Redis` [facade](/docs/{{version}}/facades) 的方法來與 Redis 互動。`Redis` facade 支援了動態方法，意味著呼叫任何 facade 內的 [Redis 指令](http://redis.io/commands) 會直接傳遞至 Redis。在這個範例中，我們會藉由使用在 `Redis` facade 中的 `get` 方法來執行 Redis 的 `GET` 指令：
+你可以透過呼叫多個在 `Redis` [facade](/docs/{{version}}/facades) 的方法來與 Redis 互動。`Redis` facade 支援了動態方法，意味著呼叫任何 facade 內的 [Redis 指令](https://redis.io/commands) 會直接傳遞至 Redis。在這個範例中，我們會藉由使用在 `Redis` facade 中的 `get` 方法來執行 Redis 的 `GET` 指令：
 
     <?php
 
     namespace App\Http\Controllers;
 
-    use Illuminate\Support\Facades\Redis;
     use App\Http\Controllers\Controller;
+    use Illuminate\Support\Facades\Redis;
 
     class UserController extends Controller
     {
@@ -141,7 +141,7 @@
         }
     }
 
-當然，如上述所描述的，你可以在 `Redis` facade 上執行任何的 Redis 指令。Laravel 使用了 magic methods 傳遞這些指令至 Redis 服務器。所以很容易的直接將 Redis 操作傳遞至參數內即可：
+當然，如上述所描述的，你可以在 `Redis` facade 上執行任何的 Redis 指令。Laravel 使用了 magic methods 傳遞這些指令至 Redis 伺服器。所以只需傳遞 Redis 命令期望的參數：
 
     Redis::set('name', 'Taylor');
 
@@ -164,8 +164,7 @@ This will give you an instance of the default Redis server. You may also pass th
 <a name="pipelining-commands"></a>
 ### Pipelining Commands
 
-當你要以單一操作傳送多個指令至服務器時可以使用 Pipelining 的方式執行。`pipeline` 方法接受一個參數：`Closure` 接受一個 Redis 實例，你可以傳遞所有指令至 Redis 實例，這些指令只需要一個操作內完成：
-Pipelining should be used when you need to send many commands to the server in one operation. The `pipeline` method accepts one argument: a `Closure` that receives a Redis instance. You may issue all of your commands to this Redis instance and they will all be executed within a single operation:
+當你要以單一操作傳送多個指令至伺服器時可以使用 Pipelining 的方式執行。`pipeline` 方法接受一個參數：一個接收 Redis 實例的 Closure。你可以將所有的命令發送到這個 Redis 實例，它們將在一個操作中被執行：
 
     Redis::pipeline(function ($pipe) {
         for ($i = 0; $i < 1000; $i++) {
@@ -176,9 +175,9 @@ Pipelining should be used when you need to send many commands to the server in o
 <a name="pubsub"></a>
 ## Pub / Sub
 
-Laravel 提供了一個方便的介面操作 Redis 的 `publish` 及 `subscribe` 指令。這些 Redis 指令允許你在指定的「頻道」上監聽訊息，你可以透過這些頻道從其它的應用程式推播訊息，或是使用其他的程式語言，方便在應用程式和進程間溝通。
+Laravel 提供了一個方便的介面操作 Redis 的 `publish` 及 `subscribe` 指令。這些 Redis 指令允許你在指定的「頻道」上監聽訊息。你可以從其他的應用程式，甚至使用其他的程式語言來推播訊息到頻道，讓你方便的在應用程式和進程之間溝通。
 
-首先，必須先使用 `subscribe` 方法設定頻道監聽。因為呼叫 `subscribe` 方法是一個持續執行的進程，我們會使用 [Artisan command](/docs/{{version}}/artisan) 呼叫這個方法：
+首先，必須先使用 `subscribe` 方法設定頻道監聽。因為呼叫 `subscribe` 方法是一個持續執行的進程，我們將會調用 [Artisan 命令](/docs/{{version}}/artisan) 呼叫這個方法：
 
     <?php
 
@@ -216,8 +215,7 @@ Laravel 提供了一個方便的介面操作 Redis 的 `publish` 及 `subscribe`
         }
     }
 
-然後，你可以透過使用 `publish` 方法在頻道上推播訊息。
-Now we may publish messages to the channel using the `publish` method:
+現在，我們可以使用 `publish` 方法在頻道上推播訊息。
 
     Route::get('publish', function () {
         // Route logic...
@@ -225,7 +223,7 @@ Now we may publish messages to the channel using the `publish` method:
         Redis::publish('test-channel', json_encode(['foo' => 'bar']));
     });
 
-#### 全頻訂閱
+#### 通配字元訂閱
 
 你可以使用 `psubscribe` 方法來訂閱全部的頻道，這在需要獲取特定匹配的頻道時是非常實用的。參數 `$channel` 會作為頻道名稱以第二參數的形式，利用 callback `Closure` 的方式傳入：
 
