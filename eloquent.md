@@ -6,8 +6,8 @@
 - [取得模型](#retrieving-models)
     - [集合](#collections)
     - [分塊結果](#chunking-results)
-- [取得單一模型或合計](#retrieving-single-models)
-    - [取得合計](#retrieving-aggregates)
+- [取得單一模型或 Aggregate](#retrieving-single-models)
+    - [取得 Aggregate](#retrieving-aggregates)
 - [插入與更新模型](#inserting-and-updating-models)
     - [插入](#inserts)
     - [更新](#updates)
@@ -27,7 +27,7 @@
 
 Laravel 的 Eloquent ORM 提供了漂亮、簡潔的 ActiveRecord 實作來和資料庫互動。每個資料庫表有一個對應的「模型」可以用來跟資料表互動。你可以透過模型查詢資料表內的資料，以及新增記錄到資料表中。
 
-在開始之前，請確認有設定你的資料庫連結在 `config/database.php` 檔案內。更多資料庫的設定資訊，請查看[資料庫設定](/docs/{{version}}/database#configuration)。
+在開始之前，一定要在 `config/database.php` 中設定一個資料庫連接。更多資料庫的設定資訊，請查看[資料庫設定](/docs/{{version}}/database#configuration)。
 
 <a name="defining-models"></a>
 ## 定義模型
@@ -38,7 +38,7 @@ Laravel 的 Eloquent ORM 提供了漂亮、簡潔的 ActiveRecord 實作來和�
 
     php artisan make:model User
 
-假設當你生成一個模型時，想要產生一個[資料庫遷移](/docs/{{version}}/schema#database-migrations)，可以使用 `--migration` 或 `-m` 選項：
+假設當你產生一個模型時，想要產生一個[資料庫遷移](/docs/{{version}}/schema#database-migrations)，可以使用 `--migration` 或 `-m` 選項：
 
     php artisan make:model User --migration
 
@@ -60,7 +60,7 @@ Laravel 的 Eloquent ORM 提供了漂亮、簡潔的 ActiveRecord 實作來和�
         //
     }
 
-#### 資料表名字
+#### 資料表名稱
 
 請注意，我們並沒有告訴 Eloquent `Flight` 模型該使用哪一個資料表。依照慣例，除非明確地指定其他名稱，不然類別的小寫、底線、複數形式會拿來當作資料表的表單名稱。所以，這個案例中，Eloquent 將會假設 `Flight` 模型儲存記錄在 `flights` 資料表。你可以在模型上定義一個 `table` 屬性，用來指定自訂的資料表：
 
@@ -86,7 +86,7 @@ Eloquent 也會假設每個資料表有一個主鍵欄位叫做 `id`。你可以
 
 此外，Eloquent 會假設主鍵是一個遞增的整數值，這表示預設的主鍵位自動轉換成 `int`。如果你希望使用非遞增或非數字的主鍵，務必把模型上的 `public $incrementing` 屬性設定為 `false`。如果你的主鍵不是一個整數，你應該將模型上的 `protected $keyType` 屬性設定為 `string`。
 
-#### 時間戳
+#### 時間戳記
 
 預設的 Eloquent 會預期你的資料表會有 `created_at` 和 `updated_at` 欄位。如果你不希望 Eloquent 自動管理這些欄位，請將模型上的 `$timestamps` 屬性設定為 `false`：
 
@@ -99,7 +99,7 @@ Eloquent 也會假設每個資料表有一個主鍵欄位叫做 `id`。你可以
     class Flight extends Model
     {
         /**
-         * 表示模型使否應該被戳記時間。
+         * 說明模型是否應該被戳記時間。
          *
          * @var bool
          */
@@ -124,7 +124,7 @@ Eloquent 也會假設每個資料表有一個主鍵欄位叫做 `id`。你可以
         protected $dateFormat = 'U';
     }
 
-如果你需要自訂欄位名稱，並用來儲存時間戳，你可以在模型中設定 `CREATED_AT` 和 `UPDATED_AT` 常數：
+如果你需要自訂欄位名稱，並用來儲存時間戳記，你可以在模型中設定 `CREATED_AT` 和 `UPDATED_AT` 常數：
 
     <?php
 
@@ -189,7 +189,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
         return $flight->cancelled;
     });
 
-當然，你也可以只對集合執行迴圈，像是疊代陣列：
+當然，你也可以像陣列一樣簡單地遍歷集合：
 
     foreach ($flights as $flight) {
         echo $flight->name;
@@ -217,7 +217,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
     }
 
 <a name="retrieving-single-models"></a>
-## 取得單一模型或合計
+## 取得單一模型或 Aggregate
 
 當然，除了取得給定資料表的所有記錄，你還可以使用 `find` 或 `first` 來取得單一記錄。這些方法會回傳單一模型實例，而非回傳模型的集合：
 
@@ -231,24 +231,24 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
     $flights = App\Flight::find([1, 2, 3]);
 
-#### 因找不到而拋出的例外
+#### Not Found 拋出例外
 
-有時你可能希望因為找不到模型而拋出例外。這在路由或控制器特別好用。`findOrFail` 和 `firstOrFail` 方法會取得查詢的第一個結果。然而，如果未能找到結果，`Illuminate\Database\Eloquent\ModelNotFoundException` 會拋出例外：
+有時你可能希望因為找不到模型而拋出例外。這在路由或控制器中特別有用。`findOrFail` 和 `firstOrFail` 方法會取得查詢的第一個結果。然而，如果未能找到結果，`Illuminate\Database\Eloquent\ModelNotFoundException` 會拋出例外：
 
     $model = App\Flight::findOrFail(1);
 
     $model = App\Flight::where('legs', '>', 100)->firstOrFail();
 
-如果沒抓到例外，則會自動發送 `404` HTTP 會應給使用者。在使用這些方法時，不必仔細撰寫檢查要回傳的 `404` 回應：
+如果沒有捕獲例外，則會自動發送 `404` HTTP 會應給使用者。在使用這些方法時，不必仔細撰寫檢查要回傳的 `404` 回應：
 
     Route::get('/api/flights/{id}', function ($id) {
         return App\Flight::findOrFail($id);
     });
 
 <a name="retrieving-aggregates"></a>
-### 取得合計
+### 取得 Aggregate
 
-你也可以使用[查詢建構器](/docs/{{version}}/queries)提供的 `count`、`sum`、`max` 和其他[合計方法](/docs/{{version}}/queries#aggregates)。這些方法會回傳適當的純量值，而不是完整的模型實例：
+你也可以使用[查詢建構器](/docs/{{version}}/queries)提供的 `count`、`sum`、`max` 和其他 [aggregate 方法](/docs/{{version}}/queries#aggregates)。這些方法會回傳確切的純量值，而不是完整的模型實例：
 
     $count = App\Flight::where('active', 1)->count();
 
@@ -318,12 +318,11 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 <a name="mass-assignment"></a>
 ### 批量賦值
 
-你也可以在同一行上使用 `create` 方法來儲存新模型。被插入的模型實例會從該方法回傳給你。然而在這之前，你會需要在模型上指定 `fillable` 或 `guarded` 這兩種屬性選擇一種，因為所有的 Eloquent 模型預設會針對批量賦值作保護。
+你也可以在使用 `create` 方法來儲存一個新的模型。被插入的模型實例會從該方法回傳給你。然而，在這之前，你將需要在你的模型上指定一個 `fillable` 或是 `guarded` 屬性，所有的 Eloquent 模型預設會針對批量賦值作保護。
 
-當使用者傳入的請求有你沒料想到的 HTTP 參數，並且該參數會非預期竄改資料庫中的欄位，會發生批量賦值的漏洞。例如，一個惡意的使用者硬是要發送包含 `is_admin` 參數的 HTTP 請求，然後映射到你模型的 `create` 方法，藉此同意使用者升級到管理者權限。
+當使用者透過請求傳入一個非預期的 HTTP 參數時，該參數會非預期竄改資料庫中的欄位，發生批量賦值的漏洞。例如，一個惡意的使用者透過 HTTP 請求發送一個 `is_admin` 參數，接著被傳送到你模型的 `create` 方法，讓使用者可以把自己提升為一位管理員。
 
-所以，你應該開始定義想要被批量賦值的模型屬性。你可以在模型上使用 `$fillable` 屬性來達到這點。例如讓我們實際去做 `Flight` 模型的 `name`
-屬性的批量賦值：
+所以，你應該開始定義想要被批量賦值的模型屬性。你可以在模型上使用 `$fillable` 屬性來達到這點。例如讓我們實際去做 `Flight` 模型的 `name` 屬性的批量賦值：
 
     <?php
 
@@ -383,7 +382,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
 #### `firstOrCreate` 和 `firstOrNew`
 
-你可以透過批量賦值屬性到另外兩種方法來建立模型：`firstOrCreate` 和 `firstOrNew`。`firstOrCreate` 方法會嘗試使用給定的欄位與值來找資料庫記錄。如果在資料庫中無法找到該模型，會從屬性的第一個參數以及那些可選的參數第二個參數中插入一筆記錄。
+你還可以使用其他兩種方法透過批量賦值屬性來建立模型：`firstOrCreate` 和 `firstOrNew`。`firstOrCreate` 方法會嘗試使用給定的欄位與值來找資料庫記錄。如果在資料庫中無法找到該模型，會從屬性的第一個參數以及那些可選的參數第二個參數中插入一筆記錄。
 
 `firstOrNew` 方法類似 `firstOrCreate`，會嘗試在資料庫查詢符合給定屬性的記錄。然而，如果沒找到模型，將會回傳一個新模型。該注意 `firstOrNew` 回傳的模型還未存到資料庫，你還需要手動呼叫 `save` 來儲存它：
 
@@ -423,7 +422,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
     $flight->delete();
 
-#### 依鍵號刪除已存在的模型
+#### 透過主鍵刪除存在的模型
 
 在上述範例中，我們會在呼叫 `delete` 方法前，從資料庫取得模型。然而，如果你知道該模型的主鍵，你可以沒有取得模型就刪除它。呼叫 `destroy` 方法來達成：
 
@@ -433,7 +432,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
     App\Flight::destroy(1, 2, 3);
 
-#### 依查詢來刪除模型
+#### 透過查詢來刪除模型
 
 當然，你也可以在一組模型上執行刪除的語法。在這個範例中，我們會刪除所有被標記無效的航班。批量刪除類似批量更新，不會觸發刪除模型的任何模型事件：
 
@@ -473,7 +472,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
 現在，當你在模型上呼叫 `delete` 方法時，`deleted_at` 欄位會設定當前日期與時間。還有，查詢有使用軟刪除的模型時，被軟刪除的模型會自動從所有查詢結果中排除。
 
-若要確定給定的模型實例是否被軟刪除，請使用 `trashed` 方法：
+如果要確定給定的模型實例是否被軟刪除，請使用 `trashed` 方法：
 
     if ($flight->trashed()) {
         //
@@ -502,13 +501,13 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
                     ->where('airline_id', 1)
                     ->get();
 
-#### 取得被軟刪除的模型
+#### 恢復被軟刪除的模型
 
 有時你可能希望「取消刪除」被軟刪除的模型。要把被軟刪除的資料恢復到一般狀態，請在模型實例上使用 `restore` 方法：
 
     $flight->restore();
 
-你也可以在查詢中使用 `restore` 方法來快速恢復多筆資料。就像其他「批量」操作，這不會在恢復資料的時候觸發任何模型實踐：
+你也可以在查詢中使用 `restore` 方法來快速恢復多筆資料。就像其他「批量」操作，這不會在恢復資料的時候觸發任何模型實例：
 
     App\Flight::withTrashed()
             ->where('airline_id', 1)
@@ -529,14 +528,14 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
     $flight->history()->forceDelete();
 
 <a name="query-scopes"></a>
-## 查詢 Scopes
+## 查詢 Scope
 
 <a name="global-scopes"></a>
-### 全域的 Scopes
+### 全域的 Scope
 
-全域的 Scopes 可以讓你為給定模型新增條件到所有查詢。Laravel 自己的[軟刪除](#soft-deleting) 功能利用全域的 Scopes 能從資料庫中只取出「未刪除」模型。撰寫自己全域的 Scopes 能提供更方便且簡單的方式來確保給定模型的每個查詢都能受到一定的限制。
+全域的 Scope 可以讓你為給定模型新增條件到所有查詢。Laravel 自己的[軟刪除](#soft-deleting) 功能利用全域的 Scope 能從資料庫中只取出「未刪除」模型。撰寫自己全域的 Scope 能提供更方便且簡單的方式來確保給定模型的每個查詢都能受到一定的限制。
 
-#### 撰寫全域的 Scopes
+#### 撰寫全域的 Scope
 
 撰寫全域的 scope 是相當簡單的事情。定義實作 `Illuminate\Database\Eloquent\Scope` 介面的類別。這個介面會要求你實作 `apply` 方法，`apply` 方法可以根據需要來新增 `where` 來查詢：
 
@@ -565,7 +564,7 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
 > {tip} 如果你的全域的 Scope 正在新增欄位到查詢的 select 子句，你應該使用 `addSelect` 方法，而非 `select`。這可避免不小心換掉現有的查詢 select 子句。
 
-#### 應用在全域的 Scopes
+#### 應用在全域的 Scope
 
 要指派全域的 Scope 到模型，你應該覆寫給定模型的 `boot` 方法並使用 `addGlobalScope` 方法：
 
@@ -595,9 +594,9 @@ Eloquent 的 `all` 方法會回傳在模型資料表中所有的結果。由於�
 
     select * from `users` where `age` > 200
 
-#### 匿名全域的 Scopes
+#### 匿名全域的 Scope
 
-Eloquent 也可以讓你使用閉包來定義全域的，這在簡單的作用域內相當的有用，但是不保證在獨立的類別內：
+Eloquent 也可以讓你使用閉包來定義全域的，這對於簡單的作用域內相當的有用，但是不保證在獨立的類別內：
 
     <?php
 
@@ -623,26 +622,26 @@ Eloquent 也可以讓你使用閉包來定義全域的，這在簡單的作用�
         }
     }
 
-#### 移除全域的 Scopes
+#### 移除全域的 Scope
 
 如果你想要為給定的查詢移除全域的 Scope，你可以使用 `withoutGlobalScope` 方法。該方法接受全域的 Scope 的類別名稱作為唯一參數：
 
     User::withoutGlobalScope(AgeScope::class)->get();
 
-如果你想要移除幾個或甚至所有的全域的 Scopes，你可以使用 `withoutGlobalScopes` 方法：
+如果你想要移除幾個或甚至所有的全域的 Scope，你可以使用 `withoutGlobalScopes` 方法：
 
-    // 移除所有的全域的 Scopes...
+    // 移除所有的全域的 Scope...
     User::withoutGlobalScopes()->get();
 
-    // 移除某些全域的 Scopes...
+    // 移除某些全域的 Scope...
     User::withoutGlobalScopes([
         FirstScope::class, SecondScope::class
     ])->get();
 
 <a name="local-scopes"></a>
-### 局部的 Scopes
+### 局部的 Scope
 
-局部的 Scopes 讓你定義限制的共用集合，它可以輕鬆地在你的應用程式重複使用。例如，你可能需要頻繁地取得所有被認為是「受歡迎的」使用者。要定義的 Scopes，必須簡單地在 Eloquent 模型方法前面加上前綴 `scope`
+局部的 Scope 讓你定義限制的共用集合，它可以輕鬆地在你的應用程式重複使用。例如，你可能需要頻繁地取得所有被認為是「受歡迎的」使用者。要定義的 Scope，必須簡單地在 Eloquent 模型方法前面加上前綴 `scope`
 
 Scopes 總是會回傳一個查詢建構器的實例：
 
@@ -655,7 +654,7 @@ Scopes 總是會回傳一個查詢建構器的實例：
     class User extends Model
     {
         /**
-         * Scope 只查詢受歡迎的使用者。
+         * 只查詢受歡迎使用者的 Scope。
          *
          * @param \Illuminate\Database\Eloquent\Builder $query
          * @return \Illuminate\Database\Eloquent\Builder
@@ -666,7 +665,7 @@ Scopes 總是會回傳一個查詢建構器的實例：
         }
 
         /**
-         * Scopes 只查詢活躍的使用者。
+         * 只查詢活躍使用者的 Scope。
          *
          * @param \Illuminate\Database\Eloquent\Builder $query
          * @return \Illuminate\Database\Eloquent\Builder
@@ -683,9 +682,9 @@ Scope 一旦被定義，你可以在查詢模型時呼叫 scope 的方法。然�
 
     $users = App\User::popular()->active()->orderBy('created_at')->get();
 
-#### 動態 Scopes
+#### 動態 Scope
 
-有時你可能希望去定義一個接受參數的 Scope。只要開始新增額外參數到你的 Scope。Scope 參數應該在 `$query` 參數之後被定義：
+有時你可能希望去定義一個接受參數的 Scope。開始之前，只要新增額外參數到你的 Scope。Scope 參數應該在 `$query` 參數之後被定義：
 
     <?php
 
@@ -696,7 +695,7 @@ Scope 一旦被定義，你可以在查詢模型時呼叫 scope 的方法。然�
     class User extends Model
     {
         /**
-         * Scopes查詢只有引入給定類型的使用者。
+         * 查詢只有引入給定類型使用者的 Scope。
          *
          * @param \Illuminate\Database\Eloquent\Builder $query
          * @param mixed $type
@@ -719,7 +718,7 @@ Eloquent 模型可以讓你觸發下列模型的生命週期幾個時間點的�
 
 從資料庫中取得已存在的資料時，會觸發 `retrieved` 事件。當新的資料被第一次儲存時，會觸發 `creating` 和 `created` 事件。如果資料已經存在於資料庫，並呼叫 `save`，就會觸發 `updating` 和 `updated` 事件。然而，這兩種案例都會觸發 `saving` 和 `saved` 事件。
 
-請開始在你的 Eloquent 模型上定義 `$dispatchesEvents` 屬性，會映射 Eloquent 模型的生命週期的各個時間點到你的[事件類別](/docs/{{version}}/events):
+開始之前，在你的 Eloquent 模型上定義 `$dispatchesEvents` 屬性，它會映射 Eloquent 模型的生命週期到你的[事件類別](/docs/{{version}}/events):
 
     <?php
 
@@ -748,7 +747,7 @@ Eloquent 模型可以讓你觸發下列模型的生命週期幾個時間點的�
 <a name="observers"></a>
 ### Observer
 
-如果你在給定模型上監聽多個事件，你可以使用 Observer 來組織你的所有監聽器到單一個類別。Observer 類別有個方法名稱，會反映你想監聽的 Eloquent 事件。這些方法中的每一個都會接收模型作為它們的參數。Laravel 預設並不沒有 Observers 的目錄，不過你可以建立任何你想要的目錄來放置 Observer 類別：
+如果你在給定模型上監聽多個事件，你可以使用 Observer 來組織你的所有監聽器到單一個類別。Observer 類別有個方法名稱，會反射你想監聽的 Eloquent 事件。這些方法中的每一個都會接收模型作為它們的參數。Laravel 預設並沒有 Observer 的目錄，不過你可以建立任何你想要的目錄來放置 Observer 類別：
 
     <?php
 
@@ -781,7 +780,7 @@ Eloquent 模型可以讓你觸發下列模型的生命週期幾個時間點的�
         }
     }
 
-在模型上使用 `observe` 方法來註冊想要的 observer。你可以在一個服務提供者中使用 `boot` 方法來註冊 Observer。在這個範例中，我們會在 `AppServiceProvider` 中註冊 Observer：
+要註冊一個 observer，在你想觀察的模型上使用 observe 方法。你可以在一個服務提供者中使用 `boot` 方法來註冊 Observer。在這個範例中，我們會在 `AppServiceProvider` 中註冊 Observer：
 
     <?php
 
