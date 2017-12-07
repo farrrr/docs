@@ -7,9 +7,9 @@
 <a name="introduction"></a>
 ## 介紹
 
-Eloquent 回傳的所有多結果集都會是 `Illuminate\Database\Eloquent\Collection` 物件的實例，包括透過 `get` 方法取得或透過關聯存取的結果。Eloquent 集合物件繼承 Laravel [基礎集合](/docs/{{version}}/collections)，所以它也就順其自然的繼承了數十種用於與底層 Eloquent 模型陣列的優雅方法。
+Eloquent 回傳的所有多結果集都會是 `Illuminate\Database\Eloquent\Collection` 物件的實例，包括透過 `get` 方法取得或透過關聯存取的結果。Eloquent 集合物件繼承 Laravel [基礎集合](/docs/{{version}}/collections)，所以它也自然的繼承了幾十種用於與底層 Eloquent 模型陣列的優雅方法。
 
-當然，所有的集合也都可以作為迭代器，可以讓你疊代它們就像簡單的 PHP 陣列：
+當然，所有的集合也都可以作為迭代器，可以讓你迭代他們就像是簡單的 PHP 陣列：
 
     $users = App\User::where('active', 1)->get();
 
