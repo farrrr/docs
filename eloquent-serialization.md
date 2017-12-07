@@ -5,13 +5,13 @@
     - [序列化成陣列](#serializing-to-arrays)
     - [序列化成 JSON](#serializing-to-json)
 - [從 JSON 隱藏屬性](#hiding-attributes-from-json)
-- [附值到 JSON](#appending-values-to-json)
+- [將值附加到 JSON](#appending-values-to-json)
 - [日期序列化](#date-serialization)
 
 <a name="introduction"></a>
 ## 介紹
 
-建構 JSON API 時，你經常會需要將模型和關聯轉換成陣列或 JSON。Eloquent 已包含了這些用來轉換的方便方法，以及控制序列化中應該包含哪些屬性。
+建構 JSON API 時，你經常會需要將模型和關聯轉換成陣列或 JSON。Eloquent 已經包含了這些用來轉換的方便方法，以及控制序列化中應該包含哪些屬性。
 
 <a name="serializing-models-and-collections"></a>
 ## 序列化模型與集合
@@ -73,7 +73,7 @@
         protected $hidden = ['password'];
     }
 
-> {note} 隱藏關聯時，請使用關聯的方法名稱。
+> {note} 當隱藏關聯時，使用關聯方法名稱。
 
 或者，你可以使用 `visible` 屬性來定義應該被包含在模型的陣列或 JSON 的屬性的白名單。當模型被轉換成陣列或 JSON 時，所有未包含的屬性將會被隱藏：
 
@@ -93,7 +93,7 @@
         protected $visible = ['first_name', 'last_name'];
     }
 
-#### 暫時修改屬性的能見度
+#### 暫時修改屬性的可見性
 
 如果你想要在給定模型實例上顯示原先被隱藏的屬性，你可以使用 `makeVisible` 方法。`makeVisible` 方法會回傳模型實例，讓你可以方便鏈結方法：
 
@@ -104,9 +104,9 @@
     return $user->makeHidden('attribute')->toArray();
 
 <a name="appending-values-to-json"></a>
-## 附值到 JSON
+## 將值附加到 JSON
 
-有時將模型轉換成陣列或 JSON 的時候，你可能希望在資料庫中新增沒有相應欄位的屬性。要達到此目的，首先為這個值定義 [存取器](/docs/{{version}}/eloquent-mutators)：
+有時候，將模型轉換為陣列或JSON 時，你可能希望在資料庫中新增沒有相應欄位的屬性。要達到此目的，首先為這個值定義[存取器](/docs/{{version}}/eloquent-mutators)：
 
     <?php
 
