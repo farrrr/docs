@@ -6,14 +6,14 @@
     - [定義修改器](#defining-a-mutator)
 - [日期修改器](#date-mutators)
 - [轉換屬性](#attribute-casting)
-    - [轉換成陣列或 JSON](#array-and-json-casting)
+    - [陣列和 JSON 轉換](#array-and-json-casting)
 
 <a name="introduction"></a>
 ## 介紹
 
 存取器和修改器可以讓你在模型實例上取得或設定它們的時候格式化 Eloquent 屬性的值。例如，你可能想要使用 [Laravel 加密器](/docs/{{version}}/encryption)來對正要被儲存在資料庫的值加密，並且你在 Eloquent 模型上存取他時自動解密該屬性。
 
-除了自訂存取器和修改器，Eloquent 還能自動將日期轉換成 [Carbon](https://github.com/briannesbitt/Carbon) 實例或甚至是[將文本轉換成 JSON](#attribute-casting)。
+除了自訂的存取器和修改器外，Eloquent 也會自動將日期欄位型別轉換成 [Carbon](https://github.com/briannesbitt/Carbon) 實例或甚至[將文字欄位型別轉換成 JSON](#attribute-casting)。
 
 <a name="accessors-and-mutators"></a>
 ## 存取器與修改器
@@ -21,7 +21,7 @@
 <a name="defining-an-accessor"></a>
 ### 定義存取器
 
-要定義存取器，請在你的模型上建立一個 `getFooAttribute` 方法，其中 `Foo` 的地方是你想要存取的欄位，並要使用「駝峰式」命名。在本範例中，我們會定義一個專門給 `first_name` 屬性的存取器。當 Eloquent 在嘗試取得 `first_name` 屬性的值時，該存取器就會自動被呼叫：
+要定義一個存取器，請在你的模型上建立一個 `getFooAttribute` 方法，其中 `Foo` 是你想要存取的欄位，並要使用「駝峰式」命名。在本範例中，我們會定義一個專門給 `first_name` 屬性的存取器。當 Eloquent 在嘗試取得 `first_name` 屬性的值時，該存取器就會自動被呼叫：
 
     <?php
 
@@ -64,7 +64,7 @@
 <a name="defining-a-mutator"></a>
 ### 定義修改器
 
-要定義修改器，請在你的模型上定義 `setFooAttribute` 方法，其中 `Foo` 的地方是你想要存取的欄位，並要使用「駝峰式」命名。所以，又要再說一次，讓我們為 `first_name` 定義修改器。當我們嘗試在模型上設定 `first_name` 屬性的值時，會自動呼叫這個修改器：
+要定義修改器，請在你的模型上定義 `setFooAttribute` 方法，其中 `Foo` 是你想要存取的欄位，並要使用「駝峰式」命名。所以，再一次讓我們為 `first_name` 屬性定義修改器。當我們嘗試在模型上設定 `first_name` 屬性的值時，會自動呼叫這個修改器：
 
     <?php
 
@@ -97,7 +97,7 @@
 <a name="date-mutators"></a>
 ## 日期修改器
 
-預設的 Eloquent 會將 `created_at` 和 `updated_at` 欄位轉會成 [Carbon](https://github.com/briannesbitt/Carbon)的實例，該套件擴充了 PHP `DateTime` 類別，並提供各種好用的方法。你可以自訂哪些日期需要自動被修改，甚至完全禁止這個修改，只要覆寫模型的 `$dates` 屬性：
+預設的 Eloquent 會將 `created_at` 和 `updated_at` 欄位轉會成 [Carbon](https://github.com/briannesbitt/Carbon)的實例，套件擴充了 PHP `DateTime` 類別，並提供各種有用的方法。你可以自訂哪些日期需要自動被修改，甚至完全禁止這個修改，只要覆寫模型的 `$dates` 屬性：
 
     <?php
 
@@ -119,7 +119,7 @@
         ];
     }
 
-當欄位是被轉換過的日期，你可以將它的值設定成 UNIX 時間戳，時間字串，日期字串(`Y-m-d`)、日期與時間字串，和 date-time string, 當然還有 `DateTime` / `Carbon` 實例，然後日期的值會如預期的自動儲存在你的資料庫中：
+當然欄位被當作是一個日期時，你也可以將它的值設定成 UNIX 時間戳記、日期字串（`Y-m-d`）、日期字串，而且當然可以是一個 `DateTime`/`Carbon` 的實例，然後日期的值會自動正確的儲存在你的資料庫中：
 
     $user = App\User::find(1);
 
@@ -135,7 +135,7 @@
 
 #### 日期格式
 
-預設的時間戳被格式化成 `'Y-m-d H:i:s'`。如果你需要自訂時間戳格式，請在你的模型上設定 `$dateFormat` 屬性。這個屬性決定了在資料庫中如何儲存資料屬性，以及當模型被序列化成陣列或 JSON 時決定它們的格式：
+預設的時間戳記被格式化成 `'Y-m-d H:i:s'`。如果你需要自訂時間戳格式，請在你的模型上設定 `$dateFormat` 屬性。這個屬性決定了在資料庫中如何儲存資料屬性，以及當模型被序列化成陣列或 JSON 時決定它們的格式：
 
     <?php
 
@@ -187,9 +187,9 @@
     }
 
 <a name="array-and-json-casting"></a>
-### 轉換成陣列或 JSON
+### 陣列和 JSON 轉換
 
-如果原本欄位儲存的為被序列化的 JSON 時，那麼 `array` 型別轉換將會特別的有用。例如，如果你的資料庫有被序列化成 JSON 的 `JSON` 或 `TEXT` 字段類型，而且對該屬性新增了 `array` 型別轉換，當你在 Eloquent 模型上存取該屬性時，它會自動被反序列化成一組 PHP 的陣列：
+當處理以序列化 JSON 形式儲存的欄位時，`array` 型別轉換將會特別的有用。例如，如果你的資料庫有被序列化成 JSON 的 `JSON` 或 `TEXT` 欄位類型，當你在 Eloquent 模型上存取屬性時，將 `array` 新增到該屬性將自動反序列化為一個 PHP 陣列：
 
     <?php
 
@@ -209,7 +209,7 @@
         ];
     }
 
-`$cast` 一旦被定義，你可以存取 `options` 屬性，並且自動將它從 JSON 反序列化成一組 PHP 陣列。當你在設定 `options` 屬性值的時候，給定的陣列會自動被序列化成 JSON，然後被儲存：
+一旦 `$cast` 被定義，你可以存取 `options` 屬性，並且自動將它從 JSON 反序列化成一組 PHP 陣列。當你在設定 `options` 屬性值的時候，給定的陣列會自動被序列化成 JSON，然後被儲存：
 
     $user = App\User::find(1);
 
