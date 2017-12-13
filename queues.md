@@ -1,8 +1,8 @@
-# Queues
+# 隊列
 
-- [Introduction](#introduction)
-    - [Connections Vs. Queues](#connections-vs-queues)
-    - [Driver Prerequisites](#driver-prerequisites)
+- [簡介](#introduction)
+    - [連接 Vs. 隊列](#connections-vs-queues)
+    - [隊列驅動基本要求](#driver-prerequisites)
 - [Creating Jobs](#creating-jobs)
     - [Generating Job Classes](#generating-job-classes)
     - [Class Structure](#class-structure)
@@ -25,37 +25,37 @@
 - [Job Events](#job-events)
 
 <a name="introduction"></a>
-## Introduction
+## 簡介
 
-> {tip} Laravel now offers Horizon, a beautiful dashboard and configuration system for your Redis powered queues. Check out the full [Horizon documentation](/docs/{{version}}/horizon) for more information.
+> {tip} Laravel 目前支援了 Horizon。為 Redis 運作的隊列提供一個美觀儀表板介面的設定系統。查看完整的 [Horizon 文件](/docs/{{version}}/horizon) 以取得更多的資訊。
 
-Laravel queues provide a unified API across a variety of different queue backends, such as Beanstalk, Amazon SQS, Redis, or even a relational database. Queues allow you to defer the processing of a time consuming task, such as sending an email, until a later time. Deferring these time consuming tasks drastically speeds up web requests to your application.
+Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API，像是 Beanstalk、Amazon SQS、Redis 甚至是關聯式資料庫。隊列允許你抽離需要花較多時間處理的任務，例如經過一段時間後寄送一封 email。抽離這些較為耗時的任務能夠明顯地為你的網站應用程式加快處理每一個網頁請求。
 
-The queue configuration file is stored in `config/queue.php`. In this file you will find connection configurations for each of the queue drivers that are included with the framework, which includes a database, [Beanstalkd](https://kr.github.io/beanstalkd/), [Amazon SQS](https://aws.amazon.com/sqs/), [Redis](https://redis.io),  and a synchronous driver that will execute jobs immediately (for local use). A `null` queue driver is also included which simply discards queued jobs.
+隊列的設定檔位於 `config/queue.php`。在這個檔案內你可以馬上找到隊列連接的相關驅動設定，包含框架、資料庫、[Beanstalkd](https://kr.github.io/beanstalkd/)、[Amazon SQS](https://aws.amazon.com/sqs/)、[Redis](https://redis.io) 和以本機同步驅動執行任務的設定。使用 `null` 隊列驅動則可以很容易的丟棄所有隊列任務。
 
 <a name="connections-vs-queues"></a>
-### Connections Vs. Queues
+### 連接 Vs. 隊列
 
-Before getting started with Laravel queues, it is important to understand the distinction between "connections" and "queues". In your `config/queue.php` configuration file, there is a `connections` configuration option. This option defines a particular connection to a backend service such as Amazon SQS, Beanstalk, or Redis. However, any given queue connection may have multiple "queues" which may be thought of as different stacks or piles of queued jobs.
+在使用 Laravel 隊列之前，必須先明確了解「連接」與「隊列」之間的區別。在 `config/queue.php` 設定檔中有一個 `connections` 的設定選項，這個選項定義了連接隊列的後端服務，像是 Amazon SQS、Beanstalk 或是 Redis。每一個定義的「連接、，可以擁有多個不同的「隊列」，隊列內有許多的隊列任務，堆疊起來。
 
-Note that each connection configuration example in the `queue` configuration file contains a `queue` attribute. This is the default queue that jobs will be dispatched to when they are sent to a given connection. In other words, if you dispatch a job without explicitly defining which queue it should be dispatched to, the job will be placed on the queue that is defined in the `queue` attribute of the connection configuration:
+注意在 `queue` 設定檔中每個連接設定範例的 `queue` 屬性。將任何隊列任務送至該連接時，所有的隊列任務預設都會送到這個隊列內。換句話說，如果妳執行一個隊列任務時沒有指定任何的隊列，該隊列任務預設就會放置在設定檔裡 `queue` 屬性內預設定義的隊列內：
 
-    // This job is sent to the default queue...
+    // 這個隊列任務會被送至預設的隊列...
     Job::dispatch();
 
-    // This job is sent to the "emails" queue...
+    // 這個隊列任務會被送至 "email" 隊列...
     Job::dispatch()->onQueue('emails');
 
-Some applications may not need to ever push jobs onto multiple queues, instead preferring to have one simple queue. However, pushing jobs to multiple queues can be especially useful for applications that wish to prioritize or segment how jobs are processed, since the Laravel queue worker allows you to specify which queues it should process by priority. For example, if you push jobs to a `high` queue, you may run a worker that gives them higher processing priority:
+一些應用程序可能無法滿足只使用單一個隊列，會需要推送任務至多個隊列內。針對應用程序需要設計哪些任務必須先執行或是切割任務時，推送任務至多個隊列的功能就特別好用。Laravel queue worker 允許你指定不同隊列執行任務的優先權。例如，若你推送任務至 `high` 隊列，你可以在執行 worker 時給予較高的處理順序：
 
     php artisan queue:work --queue=high,default
 
 <a name="driver-prerequisites"></a>
-### Driver Prerequisites
+### 隊列驅動基本要求
 
-#### Database
+#### 資料庫
 
-In order to use the `database` queue driver, you will need a database table to hold the jobs. To generate a migration that creates this table, run the `queue:table` Artisan command. Once the migration has been created, you may migrate your database using the `migrate` command:
+若要使用 `database` 作為隊列驅動，你必須先建置好一個資料表用來放置任務。你可以使用 Artisan 指令 `queue:table` 來產生這個資料表。當資料表遷移成功被建立後，你可以使用 `migrate` 指令進行資料庫的資料表遷移更新：
 
     php artisan queue:table
 
@@ -63,9 +63,9 @@ In order to use the `database` queue driver, you will need a database table to h
 
 #### Redis
 
-In order to use the `redis` queue driver, you should configure a Redis database connection in your `config/database.php` configuration file.
+若要使 `redis` 作為隊列驅動，你必須在 `config/database.php` 設定檔內設定你的 Redis 資料庫連接。
 
-If your Redis queue connection uses a Redis Cluster, your queue names must contain a [key hash tag](https://redis.io/topics/cluster-spec#keys-hash-tags). This is required in order to ensure all of the Redis keys for a given queue are placed into the same hash slot:
+若你的 Redis 隊列連接使用 Redis 叢集，你的隊列名稱必須包含 [key hash tag](https://redis.io/topics/cluster-spec#keys-hash-tags)。這個選項是必須的，用來確保指定隊列的所有 Redis keys 被放置在同一個 hash slot:
 
     'redis' => [
         'driver' => 'redis',
@@ -74,9 +74,9 @@ If your Redis queue connection uses a Redis Cluster, your queue names must conta
         'retry_after' => 90,
     ],
 
-#### Other Driver Prerequisites
+#### 其他的隊列驅動基本要求
 
-The following dependencies are needed for the listed queue drivers:
+針對列出的隊列驅動，必須安裝以下對應的相依套件：
 
 <div class="content-list" markdown="1">
 - Amazon SQS: `aws/aws-sdk-php ~3.0`
