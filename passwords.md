@@ -10,20 +10,20 @@
 <a name="introduction"></a>
 ## 介紹
 
-> {tip} **想要快速入門？**只要在剛建立的 Laravel 應用程式中執行 `php artisan make:auth`，並瀏覽 `http://your-app.dev/register`  這個頁面或分配給應用程式的任何其他的連結。這一個指令會幫你架好晚整的認證系統，且包含重設密碼！
+> {tip} **想要快速入門？**只要在剛建立的 Laravel 應用程式中執行 `php artisan make:auth`，並瀏覽 `http://your-app.dev/register`  這個頁面或分配給應用程式的任何其他的連結。這一個指令會幫你建立好完整的認證系統，而且包含重設密碼！
 
-大多數網頁應用程式提供使用者重設它們遺忘的密碼。 web applications provide a way for users to reset their forgotten passwords. Laravel 並沒有強迫你要在每個應用程式上實作這個功能，而是提供方便的方法來傳送密碼提示和處理密碼重設。
+大多數網頁應用程式提供使用者重設它們遺忘的密碼。Laravel 並沒有強迫你要在每個應用程式上實作這個功能，而是提供方便的方法來傳送密碼提示和處理密碼重設。
 
 > {note} 在使用 Laravel 的密碼重設功能之前，你的 user 模型最好使用 `Illuminate\Notifications\Notifiable` trait。
 
 <a name="resetting-database"></a>
 ## 資料庫的注意事項
 
-在開始之前，請驗證你的 `App\User` 模型有無實作 the `Illuminate\Contracts\Auth\CanResetPassword`。當然，`App\User` 模型早就被框架實作這個介面，並使用 `Illuminate\Auth\Passwords\CanResetPassword` trait 來引入實作該介面所需的方法。
+在開始之前，驗證你的 App\User 模型是否實作 Illuminate\Contracts\Auth\CanResetPassword contract。當然，`App\User` 模型早就被框架實作這個介面，並使用 `Illuminate\Auth\Passwords\CanResetPassword` trait 來引入實作該介面所需的方法。
 
-#### 產生重設密碼的 Token 資料表遷移
+#### 產生重設密碼 Token 資料表的遷移
 
-接著，你必須建立一個用來儲存密碼重設的 Token 的資料表。該資料表的遷移檔早就包含在 Laravel 中，並放置在 `database/migrations` 目錄。所以，你所要做的是執行你的資料庫遷移：
+接著，你必須建立一個用來儲存密碼重設的 Token 的資料表。該資料表的遷移檔已經包含在 Laravel 中，並放置在 `database/migrations` 目錄。所以，你所要做的是執行你的資料庫遷移：
 
     php artisan migrate
 
@@ -37,7 +37,7 @@ Laravel 引入了 `Auth\ForgotPasswordController` 和 `Auth\ResetPasswordControl
 <a name="resetting-views"></a>
 ## 視圖
 
-再説一次，Laravel 會在執行 `make:auth` 時產生所有密碼重設所需要的視圖。這些視圖被放置在 `resources/views/auth/passwords`。你可以根據應用程式的需要來自由的自訂它們。
+Laravel 會在執行 `make:auth` 時產生所有密碼重設所需要的視圖。這些視圖被放置在 `resources/views/auth/passwords`。你可以根據應用程式的需要來自由的自訂它們。
 
 <a name="after-resetting-passwords"></a>
 ## 重設密碼之後
@@ -55,7 +55,7 @@ Laravel 引入了 `Auth\ForgotPasswordController` 和 `Auth\ResetPasswordControl
 
 #### 自訂認證 Guard
 
-在 `auth.php` 設定檔中，你可以設定多個「guard」，可被用於定義多個使用者資料表的認證行為。你能在控制器上覆寫 `guard` 方法來自訂 `ResetPasswordController` 來使用你選擇的選擇 Guard：這個方法會回傳一個 Guard 實例：
+在 `auth.php` 設定檔中，你可以設定多個「Guard」，可被用於定義多個使用者資料表的認證行為。你能在控制器上覆寫 `guard` 方法來自訂 `ResetPasswordController` 來使用你選擇的選擇 Guard。這個方法會回傳一個 Guard 實例：
 
     use Illuminate\Support\Facades\Auth;
 
@@ -66,7 +66,7 @@ Laravel 引入了 `Auth\ForgotPasswordController` 和 `Auth\ResetPasswordControl
 
 #### 自訂密碼 Broker
 
-在你的 `auth.php` 設定檔中，你可以設定多個密碼「broker」，可被用於重置多個使用者茲要表。你能覆寫 `broker` 方法來自訂 `ForgotPasswordController` 和 `ResetPasswordController` 來使用你所選擇的 Broker：
+在你的 `auth.php` 設定檔中，你可以設定多個密碼「broker」，可被用於重置多個使用者資料表。你能覆寫 `broker` 方法來自訂 `ForgotPasswordController` 和 `ResetPasswordController` 來使用你所選擇的 Broker：
 
     use Illuminate\Support\Facades\Password;
 
