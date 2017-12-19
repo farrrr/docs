@@ -6,7 +6,7 @@
     - [建立控制器](#quick-creating-the-controller)
     - [撰寫驗證邏輯](#quick-writing-the-validation-logic)
     - [顯示驗證錯誤](#quick-displaying-the-validation-errors)
-    - [關於可選欄位的筆記](#a-note-on-optional-fields)
+    - [關於可選欄位的說明](#a-note-on-optional-fields)
 - [表單請求驗證](#form-request-validation)
     - [建立表單請求](#creating-form-requests)
     - [授權表單請求](#authorizing-form-requests)
@@ -134,7 +134,7 @@ Laravel 提供多種方法來驗證應用程式傳入的資料。預設情況下
 
 注意到我們在 `GET` 路由中不需要明確地綁定錯誤訊息到視圖。這是因為 Laravel 會自動檢查 session 內的錯誤資料，如果錯誤存在的話，會自動綁定這些錯誤訊息到視圖。`$errors` 變數會是 `Illuminate\Support\MessageBag` 的實例。有關此物件的詳細資訊，[請查閱它的文件](#working-with-error-messages)。
 
-> {tip} `$errors` 變數是由 `web` 中介層群組提供的 `Illuminate\View\Middleware\ShareErrorsFromSession` 中介層綁定到視圖。**有應用這個中介層時，視圖中會存在一個 `$errors` 變數**，你可以放心的假設 `$errors` 變數總是有被定義且可以安全使用。
+> {tip} `$errors` 變數透過 `web` 中介層群組提供的 `Illuminate\View\Middleware\ShareErrorsFromSession` 中介層綁定到視圖。**當應用這個中介層時，視圖中會永遠存在一個可用的 `$errors` 變數**，你可以方便的假設 `$errors` 變數總是有被定義且可以安全使用。
 
 在我們的範例中，驗證失敗時會將使用者重導到控制器的 `create` 方法，讓我們可以在這個視圖中顯示錯誤訊息：
 
@@ -155,7 +155,7 @@ Laravel 提供多種方法來驗證應用程式傳入的資料。預設情況下
     <!-- 新增文章表單 -->
 
 <a name="a-note-on-optional-fields"></a>
-### 關於可選欄位的筆記
+### 關於可選欄位的說明
 
 Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `ConvertEmptyStringsToNull` 中介層。`App\Http\Kernel` 類別中列出了堆疊內的中介層。因此，如果你不想讓驗證器認為 `null` 值無效，你通常會需要把「可選」的請求欄位標註為 `nullable`。例如：
 
@@ -165,7 +165,7 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
         'publish_at' => 'nullable|date',
     ]);
 
-在這個範例中，我們定義 `publish_at` 欄位可以為 `null` 或一個有效的日期表示。如果沒有把 `nullable` 修飾字加到規則定義中，驗證器會認為 `null` 是無效的日期。
+在這個範例中，我們指定 `publish_at` 欄位可以為 `null` 或一個有效的日期表示。如果沒有把 `nullable` 修飾字加到規則定義中，驗證器會認為 `null` 是無效的日期。
 
 <a name="quick-ajax-requests-and-validation"></a>
 #### AJAX 請求和驗證
@@ -210,7 +210,7 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
         // 有效的傳入請求...
     }
 
-如果驗證失敗，會產生一個重導回應把使用者導回先前的位置。這些錯誤會被快閃至 session，讓錯誤都可以被顯示。如果是 AJAX 請求，則會傳回包含 422 狀態碼及驗證錯誤的 JSON 資料的 HTTP 回應，。
+如果驗證失敗，會產生一個重導回應把使用者導回先前的位置。這些錯誤會被快閃至 session，讓錯誤都可以被顯示。如果是 AJAX 請求，則會傳回包含 422 狀態碼及驗證錯誤的 JSON 資料的 HTTP 回應。
 
 #### 為表單請求加上驗證後的掛勾
 
@@ -324,12 +324,12 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
 
 傳給 `make` 方法的第一個參數是需要被驗證的資料。第二個參數是資料使用的驗證規則。
 
-檢查請求是否有驗證通過後，你可以使用 `withErrors` 方法把錯誤訊息快閃到 session。使用這個方法，在重導之後 `$errors` 變數可以自動的在視圖中共用，讓你輕鬆地顯示這些訊息給使用者。`withErrors` 方法接受驗證器、`MessageBag`，或是 PHP `陣列`。
+檢查請求是否有驗證通過後，你可以使用 `withErrors` 方法把錯誤訊息快閃到 session。使用這個方法，在重導之後 `$errors` 變數可以自動的在視圖中共用，讓你輕鬆地顯示這些訊息給使用者。`withErrors` 方法接受驗證器、`MessageBag`，或是 PHP `array`。
 
 <a name="automatic-redirection"></a>
 ### 自動重導
 
-如果在手動建立驗證器的同時，仍然想利用請求的 `validate` 方法所提供的自動重導，你可以呼叫既有的驗證器實體的 `validate` 方法。如果驗證失敗，使用者會被自動重導，或在 AJAX 請求時回傳 JSON 回應：
+如果在手動建立驗證器的同時，仍然想利用請求的 `validate` 方法所提供的自動重導，你可以呼叫現有的驗證器實體的 `validate` 方法。如果驗證失敗，使用者會被自動重導，或在 AJAX 請求時回傳 JSON 回應：
 
     Validator::make($request->all(), [
         'title' => 'required|unique:posts|max:255',
@@ -425,7 +425,7 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
         'same'    => ':attribute 和 :other 必須相同。',
         'size'    => ':attribute 的大小必須是 :size。',
         'between' => ':attribute 必須介於 :min - :max 之間。',
-        'in'      => ':attribute 必須是以下的類型之一：:values。',
+        'in'      => ':attribute 必須是以下的類型之一：:values',
     ];
 
 #### 指定自訂訊息給特定的屬性
@@ -458,7 +458,7 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
 <a name="available-validation-rules"></a>
 ## 可用的驗證規則
 
-以下是所有可用的驗證規則清單與功能：
+以下是所有可用的驗證規則與功能：
 
 <style>
     .collection-method-list > p {
@@ -542,7 +542,7 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
 <a name="rule-after"></a>
 #### after:_date_
 
-驗證欄位是否是在指定日期之後。這個日期會透過 PHP `strtotime` 函式驗證。
+驗證欄位是否是在指定日期之後的值。這個日期會透過 PHP `strtotime` 函式驗證。
 
     'start_date' => 'required|date|after:tomorrow'
 
@@ -613,7 +613,7 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
 <a name="rule-date-format"></a>
 #### date_format:_format_
 
-驗證欄位值符合定義的日期格式（ _format_ ）。最好 `date` 或 `date_format` **其一**來驗證欄位，而不是兩者。
+驗證欄位值符合定義的日期格式（ _format_ ）。你應該使用 `date` 或 `date_format` **其一**來驗證欄位，而不是兩者。
 
 <a name="rule-different"></a>
 #### different:_field_
@@ -628,12 +628,12 @@ Laravel 預設會在全域的中介層堆疊中加入 `TrimStrings` 和 `Convert
 <a name="rule-digits-between"></a>
 #### digits_between:_min_,_max_
 
-驗證欄位值的長度在 _min_ 和 _max_ 之間。
+驗證欄位值的長度必須在 _min_ 和 _max_ 之間。
 
 <a name="rule-dimensions"></a>
 #### dimensions
 
-驗證欄位值為圖片且符合規則參數限制的尺寸：
+驗證欄位值必須是一張圖片且符合規則參數限制的尺寸：
 
     'avatar' => 'dimensions:min_width=100,min_height=200'
 
@@ -657,19 +657,19 @@ _ratio_ 為寬除以高的比例。可以運算式 `3/2` 或浮點數 `1.5` 來�
 <a name="rule-distinct"></a>
 #### distinct
 
-處理陣列時，驗證欄位中沒有重複值。
+當處理陣列時，驗證欄位中不能有任何重複的值
 
     'foo.*.id' => 'distinct'
 
 <a name="rule-email"></a>
 #### email
 
-驗證欄位必須為 e-mail 位址。
+驗證欄位必須為一個 e-mail 地址。
 
 <a name="rule-exists"></a>
 #### exists:_table_,_column_
 
-驗證欄位值存在指定的資料表中。
+驗證欄位值必須存在一個指定的資料表中。
 
 #### Exists 規則的基本用法
 
@@ -699,12 +699,12 @@ _ratio_ 為寬除以高的比例。可以運算式 `3/2` 或浮點數 `1.5` 來�
 <a name="rule-file"></a>
 #### file
 
-驗證欄位必須是成功上傳的檔案。
+驗證欄位必須是一個成功上傳的檔案。
 
 <a name="rule-filled"></a>
 #### filled
 
-驗證欄位存在時，不可以為空值。
+當驗證欄位存在時，不可以為空值。
 
 <a name="rule-image"></a>
 #### image
@@ -714,7 +714,7 @@ _ratio_ 為寬除以高的比例。可以運算式 `3/2` 或浮點數 `1.5` 來�
 <a name="rule-in"></a>
 #### in:_foo_,_bar_,...
 
-驗證欄位值有在給定的清單裡。因為這個規則常常需要 `implode` 陣列，`Rule::in` 方法可以用來流暢地建構規則：
+驗證欄位必須包含在給定的列表中。由於這個規則經常需要你 `implode` 一個陣列，`Rule::in` 方法可以用來流暢地建構規則：
 
     use Illuminate\Validation\Rule;
 
@@ -728,25 +728,25 @@ _ratio_ 為寬除以高的比例。可以運算式 `3/2` 或浮點數 `1.5` 來�
 <a name="rule-in-array"></a>
 #### in_array:_anotherfield_
 
-驗證欄位值必須在 _anotherfield_ 陣列中存在。
+驗證欄位的值必須在 _anotherfield_ 陣列中存在。
 
 <a name="rule-integer"></a>
 #### integer
 
-驗證欄位值是整數。
+驗證欄位必須是一個整數。
 
 <a name="rule-ip"></a>
 #### ip
 
-驗證欄位值符合 IP 位址的格式。
+驗證欄位必須符合一個 IP 位址的格式。
 
 #### ipv4
 
-驗證欄位值符合 IPv4 位址的格式。
+驗證欄位必須符合一個 IPv4 位址的格式。
 
 #### ipv6
 
-驗證欄位值符合 IPv6 位址的格式。
+驗證欄位必須符合一個 IPv6 位址的格式。
 
 <a name="rule-json"></a>
 #### json
@@ -945,7 +945,7 @@ _ratio_ 為寬除以高的比例。可以運算式 `3/2` 或浮點數 `1.5` 來�
 
 在上面的範例中，`email` 欄位的驗證，只會在 `$data` 陣列有此欄位才會進行。
 
-> 如果你在嘗試驗證一定會存在但可能為空值的欄位，請查看[關於可選欄位的筆記](#a-note-on-optional-fields)
+> 如果你在嘗試驗證一定會存在但可能為空值的欄位，請查看[關於可選欄位的說明](#a-note-on-optional-fields)
 
 #### 複雜的條件驗證
 
