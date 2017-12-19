@@ -3,9 +3,9 @@
 - [簡介](#introduction)
     - [連接 Vs. 隊列](#connections-vs-queues)
     - [隊列驅動基本要求](#driver-prerequisites)
-- [Creating Jobs](#creating-jobs)
-    - [Generating Job Classes](#generating-job-classes)
-    - [Class Structure](#class-structure)
+- [建立任務](#creating-jobs)
+    - [產生任務類別](#generating-job-classes)
+    - [類別結構](#class-structure)
 - [Dispatching Jobs](#dispatching-jobs)
     - [Delayed Dispatching](#delayed-dispatching)
     - [Job Chaining](#job-chaining)
@@ -22,7 +22,7 @@
     - [Cleaning Up After Failed Jobs](#cleaning-up-after-failed-jobs)
     - [Failed Job Events](#failed-job-events)
     - [Retrying Failed Jobs](#retrying-failed-jobs)
-- [Job Events](#job-events)
+- [任務事件](#job-events)
 
 <a name="introduction"></a>
 ## 簡介
@@ -85,21 +85,21 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
 </div>
 
 <a name="creating-jobs"></a>
-## Creating Jobs
+## 建立任務
 
 <a name="generating-job-classes"></a>
-### Generating Job Classes
+### 產生任務類別
 
-By default, all of the queueable jobs for your application are stored in the `app/Jobs` directory. If the `app/Jobs` directory doesn't exist, it will be created when you run the `make:job` Artisan command. You may generate a new queued job using the Artisan CLI:
+應用程式所有可放入隊列中執行的任務都被存放在 `app/Jobs` 目錄。如果 `app/Jobs` 目錄不存在，執行 Artisan 指令 `make:job` 同時會建立該目錄，你可以使用 Artisan CLI 產生一個新的隊列任務：
 
     php artisan make:job ProcessPodcast
 
-The generated class will implement the `Illuminate\Contracts\Queue\ShouldQueue` interface, indicating to Laravel that the job should be pushed onto the queue to run asynchronously.
+產生的任務類別會實作 `Illuminate\Contracts\Queue\ShouldQueue` 介面，意味著 Laravel 執行該任務時會將該任務類別以非同步的方式推送至隊列。
 
 <a name="class-structure"></a>
-### Class Structure
+### 類別結構
 
-Job classes are very simple, normally containing only a `handle` method which is called when the job is processed by the queue. To get started, let's take a look at an example job class. In this example, we'll pretend we manage a podcast publishing service and need to process the uploaded podcast files before they are published:
+任務類別的結構非常簡單，通常會包含一個 `handle` 方法，該方法會在任務被隊列執行時呼叫。為了理解，讓我們看一下任務類別的範例。在這個範例中，我們假裝我們管理一個公開的推播服務，該服務需要在公開推播時處理上傳的播放檔案：
 
     <?php
 
@@ -120,7 +120,7 @@ Job classes are very simple, normally containing only a `handle` method which is
         protected $podcast;
 
         /**
-         * Create a new job instance.
+         * 產生一個 Job 實例
          *
          * @param  Podcast  $podcast
          * @return void
@@ -131,22 +131,22 @@ Job classes are very simple, normally containing only a `handle` method which is
         }
 
         /**
-         * Execute the job.
+         * 執行任務
          *
          * @param  AudioProcessor  $processor
          * @return void
          */
         public function handle(AudioProcessor $processor)
         {
-            // Process uploaded podcast...
+            // 處理上傳的推播...
         }
     }
 
-In this example, note that we were able to pass an [Eloquent model](/docs/{{version}}/eloquent) directly into the queued job's constructor. Because of the `SerializesModels` trait that the job is using, Eloquent models will be gracefully serialized and unserialized when the job is processing. If your queued job accepts an Eloquent model in its constructor, only the identifier for the model will be serialized onto the queue. When the job is actually handled, the queue system will automatically re-retrieve the full model instance from the database. It's all totally transparent to your application and prevents issues that can arise from serializing full Eloquent model instances.
+在這個範例中，我們能夠直接傳遞一個 [Eloquent 模型](/docs/{{version}}/eloquent) 至隊列任務的建構子。因為任務類別使用 `SerializesModels` trait，當任務被執行時， Eloquent 模型會優雅的被序列話化和解序列化。如果你的隊列任務在建構子接收一個 Eloquent 模型，只有模型的識別子(identifier)會被序列化被放進隊列中。當任務真正被處理時，隊列系統會自動的重新從資料庫獲取完整的模型實例。整個過程對於你的應用程式是完全透明的，避免在序列化整個 Eloquent 模型實例時出現問題。
 
-The `handle` method is called when the job is processed by the queue. Note that we are able to type-hint dependencies on the `handle` method of the job. The Laravel [service container](/docs/{{version}}/container) automatically injects these dependencies.
+`handle` 方法會在任務執行是被呼叫。注意我們能夠在 `handle` 方法傳遞的參數宣告依賴類別，Laravel 提供 [服務容器](/docs/{{version}}/container) 能夠自動的注入這些依賴類別。
 
-> {note} Binary data, such as raw image contents, should be passed through the `base64_encode` function before being passed to a queued job. Otherwise, the job may not properly serialize to JSON when being placed on the queue.
+> {note} 二進位資料，例如原始圖形內容，在傳遞至隊列任務時需要使用 `base64_encode` 函式進行傳遞。否則，該隊列任務在被放置進隊列時可能無法正確的序列化解析成 JSON 格式。
 
 <a name="dispatching-jobs"></a>
 ## Dispatching Jobs
@@ -636,9 +636,9 @@ To delete all of your failed jobs, you may use the `queue:flush` command:
     php artisan queue:flush
 
 <a name="job-events"></a>
-## Job Events
+## 任務事件
 
-Using the `before` and `after` methods on the `Queue` [facade](/docs/{{version}}/facades), you may specify callbacks to be executed before or after a queued job is processed. These callbacks are a great opportunity to perform additional logging or increment statistics for a dashboard. Typically, you should call these methods from a [service provider](/docs/{{version}}/providers). For example, we may use the `AppServiceProvider` that is included with Laravel:
+在 `Queue` [facade](/docs/{{version}}/facades) 使用 `before` 及 `after` 方法，你能指定回呼(callbacks)函式，在執行處理該隊列任務前或後執行對應的動作。這些回呼函式能夠完美的執行額外的事件記錄或是為儀表板提供統計資訊。通常會搭配 [service provider](/docs/{{version}}/providers) 用於呼叫這些方法。舉例來說，你可以使用 Laravel 內建的 `AppServiceProvider`:
 
     <?php
 
@@ -652,7 +652,7 @@ Using the `before` and `after` methods on the `Queue` [facade](/docs/{{version}}
     class AppServiceProvider extends ServiceProvider
     {
         /**
-         * Bootstrap any application services.
+         * 引導應用服務
          *
          * @return void
          */
@@ -672,7 +672,7 @@ Using the `before` and `after` methods on the `Queue` [facade](/docs/{{version}}
         }
 
         /**
-         * Register the service provider.
+         * 註冊服務提供者
          *
          * @return void
          */
@@ -682,7 +682,7 @@ Using the `before` and `after` methods on the `Queue` [facade](/docs/{{version}}
         }
     }
 
-Using the `looping` method on the `Queue` [facade](/docs/{{version}}/facades), you may specify callbacks that execute before the worker attempts to fetch a job from a queue. For example, you might register a Closure to rollback any transactions that were left open by a previously failed job:
+使用 `Queue` [facade](/docs/{{version}}/facades) 的 `looping` 方法，你能夠藉由定義回呼函式，在 worker 嘗試從隊列中獲取任務執行一些工作。舉例來說，你可以註冊一個閉包以還原前一個任務執行時拜留下的資料庫交易紀錄：
 
     Queue::looping(function () {
         while (DB::transactionLevel() > 0) {
