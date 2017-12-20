@@ -17,7 +17,7 @@
     - [Queue Priorities](#queue-priorities)
     - [Queue Workers & Deployment](#queue-workers-and-deployment)
     - [Job Expirations & Timeouts](#job-expirations-and-timeouts)
-- [Supervisor Configuration](#supervisor-configuration)
+- [設定 Supervisor](#supervisor-configuration)
 - [Dealing With Failed Jobs](#dealing-with-failed-jobs)
     - [Cleaning Up After Failed Jobs](#cleaning-up-after-failed-jobs)
     - [Failed Job Events](#failed-job-events)
@@ -464,19 +464,19 @@ When jobs are available on the queue, the worker will keep processing jobs with 
     php artisan queue:work --sleep=3
 
 <a name="supervisor-configuration"></a>
-## Supervisor Configuration
+## 設定 Supervisor
 
-#### Installing Supervisor
+#### 安裝 Supervisor
 
-Supervisor is a process monitor for the Linux operating system, and will automatically restart your `queue:work` process if it fails. To install Supervisor on Ubuntu, you may use the following command:
+Supervisor 是一個 Linux 系統內的程序監看工具，同時能夠自動重啟失敗的 `queue:work` 程序。在 Ubuntu 發行版中你可以使用以下指令安裝 Supervisor ：
 
     sudo apt-get install supervisor
 
-> {tip} If configuring Supervisor yourself sounds overwhelming, consider using [Laravel Forge](https://forge.laravel.com), which will automatically install and configure Supervisor for your Laravel projects.
+> {tip} 設定 Supervisor 聽起來很麻煩嗎？可以使用 [Laravel Forge](https://forge.laravel.com)，內建已經自動地為你的 Laravel 專安安裝並設定好 Supervisor。
 
-#### Configuring Supervisor
+#### Supervisor 設定檔
 
-Supervisor configuration files are typically stored in the `/etc/supervisor/conf.d` directory. Within this directory, you may create any number of configuration files that instruct supervisor how your processes should be monitored. For example, let's create a `laravel-worker.conf` file that starts and monitors a `queue:work` process:
+Supervisor 設定檔通常會位於 `/etc/supervisor/conf.d` 目錄。在這個目錄內，你可以建立不限數量的設定檔案來引導 Supervisor 如何監看你的程序。舉例來說，建立一個 `laravel-worker.conf` 檔案用於啟動並監看 `queue:work` 程序：
 
     [program:laravel-worker]
     process_name=%(program_name)s_%(process_num)02d
@@ -488,11 +488,11 @@ Supervisor configuration files are typically stored in the `/etc/supervisor/conf
     redirect_stderr=true
     stdout_logfile=/home/forge/app.com/worker.log
 
-In this example, the `numprocs` directive will instruct Supervisor to run 8 `queue:work` processes and monitor all of them, automatically restarting them if they fail. Of course, you should change the `queue:work sqs` portion of the `command` directive to reflect your desired queue connection.
+在這個範例，`numprocs` 指令會引導 Supervisor 啟動並監看 8 個 `queue:work` 程序，並自動重啟失敗的程序。當然，你應該更改 `command` 選項內部分 `queue:work sqs` 設定，以達到你預期的隊列連線設定。
 
-#### Starting Supervisor
+#### 啟動 Supervisor
 
-Once the configuration file has been created, you may update the Supervisor configuration and start the processes using the following commands:
+一旦設定檔案被建立，你可以使用以下指令更新及啟動 Supervisor ：
 
     sudo supervisorctl reread
 
@@ -500,7 +500,7 @@ Once the configuration file has been created, you may update the Supervisor conf
 
     sudo supervisorctl start laravel-worker:*
 
-For more information on Supervisor, consult the [Supervisor documentation](http://supervisord.org/index.html).
+更多訊息，詳見 [Supervisor 參考文件](http://supervisord.org/index.html)。
 
 <a name="dealing-with-failed-jobs"></a>
 ## Dealing With Failed Jobs
