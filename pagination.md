@@ -13,7 +13,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-做其它框架中，分頁的設計是相當艱難的。Laravel 的分頁器是與[查詢建構器](/docs/{{version}}/queries) 和 [Eloquent ORM](/docs/{{version}}/eloquent) 一起被整合的，並且提供方便且易於使用的資料庫結果，還能馬上使用。分頁器產生的 HTML 可相容於 [Bootstrap CSS 框架](https://getbootstrap.com/).
+在其他框架中，分頁是非常讓人苦惱的。Laravel 的分頁器是與[查詢建構器](/docs/{{version}}/queries) 和 [Eloquent ORM](/docs/{{version}}/eloquent) 一起被整合的，並且提供方便且易於使用的資料庫結果，還能馬上使用。分頁器產生的 HTML 可相容於 [Bootstrap CSS 框架](https://getbootstrap.com/).
 
 <a name="basic-usage"></a>
 ## 基本用法
@@ -21,9 +21,9 @@
 <a name="paginating-query-builder-results"></a>
 ### 對查詢建構器的結果分頁
 
-這有幾種方式可以分頁項目。最簡單的方式是在[查詢建構器](/docs/{{version}}/queries) 或者在 [Eloquent 查詢](/docs/{{version}}/eloquent)上使用 `paginate` 方法。`paginate` 方法會依據當前使用者正在看的頁面自動設定正確的分頁數量與偏移偏移樹。預設的當前頁面會依照 HTTP 請求上的 `page` 查詢字串參數的值來檢測。當然，Laravel 會自動檢測這個值，並且會自動插入分頁器產生的連結中。
+這裡有幾種方式可以分頁項目。最簡單的方式是在[查詢建構器](/docs/{{version}}/queries) 或者在 [Eloquent 查詢](/docs/{{version}}/eloquent)上使用 `paginate` 方法。`paginate` 方法會依據目前使用者正在看的頁面自動設定正確的分頁數量與偏移數。預設情況下，目前頁數會透過 HTTP 請求中的 `page` 查詢字串參數的值來檢測。當然，Laravel 會自動檢測這個值，並且會自動插入分頁器產生的連結中。
 
-在這個範例中，在 `paginate` 方法傳入唯一的參數，即是你想要在「每一頁」顯示的項目數量。在這個案例中，讓我們指定想要每一頁都顯示 `15` 個頁籤：
+在這個範例中，在 `paginate` 方法傳入唯一的參數，即是你想要在「每一頁」顯示的資料數量。在這個案例中，讓我們指定想要每一頁都顯示 `15` 筆資料：
 
     <?php
 
@@ -35,7 +35,7 @@
     class UserController extends Controller
     {
         /**
-         * 顯示應用程式的所有使用者
+         * 顯示應用程式的所有使用者。
          *
          * @return Response
          */
@@ -47,11 +47,11 @@
         }
     }
 
-> {note} 目前， Laravel 的分頁無法有效操作含有 `groupBy` 語句。如果您需要對使用 `groupBy` 的結果做分頁，建議您查詢資料庫後再手動製作分頁。
+> {note} 目前， Laravel 的分頁無法有效操作含有 `groupBy` 語句。如果你需要對使用 `groupBy` 的結果做分頁，建議你查詢資料庫後再手動製作分頁。
 
 #### 「簡易分頁」
 
-如果在您的視圖只需要顯示簡單的「下一步」和「上一步」連結，你可以使用 `simplePaginate` 方法來執行更高效能的查詢。在渲染視圖時，如果你不在需要為每個頁碼顯示連結，那麼這會有助於大型資料庫的效能：
+如果在你的視圖只需要顯示簡單的「下一步」和「上一步」連結，你可以使用 `simplePaginate` 方法來執行更高效能的查詢。在渲染視圖時，如果你不在需要為每個頁碼顯示連結，那麼這會有助於大型資料庫的效能：
 
     $users = DB::table('users')->simplePaginate(15);
 
@@ -75,16 +75,16 @@
 
 有時你可能希望手動建立一個分頁實例，然後將項目陣列傳入給它。你可以根據你的實際需要來建立 `Illuminate\Pagination\Paginator` 或 `Illuminate\Pagination\LengthAwarePaginator` 其中一個實例來實現。
 
-`Paginator` 類別不需要知道結果集的項目總數。然而，也因為如此，它也無法提供取得最後一頁的方法。`LengthAwarePaginator` 與 `Paginator` 的參數幾乎相同；但是它需要資料的總筆數。
+`Paginator` 類別不需要知道資料的總筆數。然而，也因為如此，它也無法提供取得最後一頁的方法。`LengthAwarePaginator` 與 `Paginator` 的參數幾乎相同；但是它需要資料的總筆數。
 
 換句話說， `Paginator` 對應於在查詢建構器和 Eloquent 上的 `simplePaginate` 方法，`LengthAwarePaginator` 對應於 `paginate` 方法。
 
-> {note}當手動創建一個分頁器實例時，您應該手動「切割」傳遞給分頁器的陣列。如果您不確定如何做到這一點，請查閱 PHP 的 [array_slice](https://secure.php.net/manual/en/function.array-slice.php) 函式。
+> {note}當手動建立一個分頁器實例時，你應該手動「切割」傳遞給分頁器的陣列。如果你不確定如何做到這一點，請查閱 PHP 的 [array_slice](https://secure.php.net/manual/en/function.array-slice.php) 函式。
 
 <a name="displaying-pagination-results"></a>
 ## 顯示分頁結果
 
-在呼叫 `paginate` 方法時，你會接收 `Illuminate\Pagination\LengthAwarePaginator` 實例。在呼叫 `simplePaginate` 方法時，你會接收 `Illuminate\Pagination\Paginator` 實例。這些對象提供幾種方法用來描述結果集。除了這些輔助方法，分頁器的實例也是個疊代器，並且可以像陣列一樣使用迴圈取值。所以，你一旦取得該結果，你就可以顯示該結果並渲染使用 [Blade](/docs/{{version}}/blade) 的頁面連結：
+在呼叫 `paginate` 方法時，你會接收 `Illuminate\Pagination\LengthAwarePaginator` 實例。在呼叫 `simplePaginate` 方法時，你會接收 `Illuminate\Pagination\Paginator` 實例。這些對象提供幾種方法用來描述結果集。除了這些輔助方法，分頁器的實例也是個疊代器，並且可以像陣列一樣使用迴圈取值。所以，你一旦取得該結果，你就可以顯示該結果並使用 [Blade](/docs/{{version}}/blade) 渲染頁面連結：
 
     <div class="container">
         @foreach ($users as $user)
@@ -96,9 +96,9 @@
 
 `links` 方法會在結果中渲染該連結到其餘頁面。這些每一個連結都已經具有正確的 `page` 查詢字串變數。請記得，使用 `link` 方法產生的 HTML 會相容於 [Bootstrap CSS 框架](https://getbootstrap.com).
 
-#### 自訂頁面的 URI
+#### 自訂分頁的 URI
 
-`withPath` 方法可以讓你在產生連結時依照分頁器來使用自訂的 URI。例如，如果你想要分頁器去產生像是 `http://example.com/custom/url?page=N` 這樣的連結，你應該將 `custom/url` 傳入 `withPath` 方法：
+`withPath` 方法可以讓你當透過分頁器產生連結時，使用自訂的 URI。例如，如果你想要分頁器去產生像是 `http://example.com/custom/url?page=N` 這樣的連結，你應該將 `custom/url` 傳入 `withPath` 方法：
 
     Route::get('users', function () {
         $users = App\User::paginate(15);
@@ -110,7 +110,7 @@
 
 #### 附加到分頁連結
 
-你可以使用 `appends` 方法來將查詢字串附加到分頁連結上。例如，要附加 `sort=votes` 到每一個分頁連結上，你應該跟著下列範例一樣呼叫 `appends`：
+你可以使用 `appends` 方法來將查詢字串附加到分頁連結上。例如，要附加 `sort=votes` 到每一個分頁連結上，你應該照著以下範例呼叫 `appends`：
 
     {{ $users->appends(['sort' => 'votes'])->links() }}
 
