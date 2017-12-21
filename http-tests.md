@@ -1,16 +1,16 @@
-# HTTP Tests
+# HTTP 測試
 
-- [Introduction](#introduction)
-    - [Customizing Request Headers](#customizing-request-headers)
-- [Session / Authentication](#session-and-authentication)
-- [Testing JSON APIs](#testing-json-apis)
-- [Testing File Uploads](#testing-file-uploads)
-- [Available Assertions](#available-assertions)
+- [介紹](#introduction)
+    - [自訂請求 Header](#customizing-request-headers)
+- [Session 和認證](#session-and-authentication)
+- [測試 JSON API](#testing-json-apis)
+- [測試檔案上傳](#testing-file-uploads)
+- [可用的斷言](#available-assertions)
 
 <a name="introduction"></a>
-## Introduction
+## 介紹
 
-Laravel provides a very fluent API for making HTTP requests to your application and examining the output. For example, take a look at the test defined below:
+Laravel 提供了一個非常優雅的 API 來向你的應用程式發出 HTTP 請求並檢查輸出。如下面定義的測試：
 
     <?php
 
@@ -23,7 +23,7 @@ Laravel provides a very fluent API for making HTTP requests to your application 
     class ExampleTest extends TestCase
     {
         /**
-         * A basic test example.
+         * 一個基本測試範例。
          *
          * @return void
          */
@@ -35,19 +35,19 @@ Laravel provides a very fluent API for making HTTP requests to your application 
         }
     }
 
-The `get` method makes a `GET` request into the application, while the `assertStatus` method asserts that the returned response should have the given HTTP status code. In addition to this simple assertion, Laravel also contains a variety of assertions for inspecting the response headers, content, JSON structure, and more.
+`get` 方法會建立一個 `GET` 請求給應用程式，而 `assertStatus` 方法來斷言所回傳的回應會有給定的 HTTP 狀態碼。除了這個簡易的斷言，Laravel 也包含用來檢查回應的 Header、內容、JSON 結構等的各種斷言。
 
 <a name="customizing-request-headers"></a>
-### Customizing Request Headers
+### 自訂請求 Header
 
-You may use the `withHeaders` method to customize the request's headers before it is sent to the application. This allows you to add any custom headers you would like to the request:
+你可以在發送 Header 之前使用 `withHeaders` 方法來自訂請求的 Header。這可以讓你來新增想要的任何自訂請求 Header：
 
     <?php
 
     class ExampleTest extends TestCase
     {
         /**
-         * A basic functional test example.
+         * 一個基本功能測試範例。
          *
          * @return void
          */
@@ -66,9 +66,9 @@ You may use the `withHeaders` method to customize the request's headers before i
     }
 
 <a name="session-and-authentication"></a>
-## Session / Authentication
+## Session 和認證
 
-Laravel provides several helpers for working with the session during HTTP testing. First, you may set the session data to a given array using the `withSession` method. This is useful for loading the session with data before issuing a request to your application:
+Laravel 提供幾個在 HTTP 測試期間會搭配 Session 一起測試的輔助函式。首先，你可以使用 `withSession` 方法來設定 Session 資料來取得陣列。這樣有助於在發送請求到你的應用程式前載入 Session 與資料：
 
     <?php
 
@@ -81,7 +81,7 @@ Laravel provides several helpers for working with the session during HTTP testin
         }
     }
 
-Of course, one common use of the session is for maintaining state for the authenticated user. The `actingAs` helper method provides a simple way to authenticate a given user as the current user. For example, we may use a [model factory](/docs/{{version}}/database-testing#writing-factories) to generate and authenticate a user:
+當然，Session 常被用於維持已認證使用者的狀態。`actingAs` 輔助函式方法提供一個簡易的方式來認證當前的使用者。例如，我們使用[模型工廠](/docs/{{version}}/database-testing#writing-factories) 來產生並認證使用者：
 
     <?php
 
@@ -99,21 +99,21 @@ Of course, one common use of the session is for maintaining state for the authen
         }
     }
 
-You may also specify which guard should be used to authenticate the given user by passing the guard name as the second argument to the `actingAs` method:
+你也可以透過將 guard 名稱作為第二個參數傳送給 actingAs 方法來指定應該使用那個守衛來驗證給定的使用者：
 
     $this->actingAs($user, 'api')
 
 <a name="testing-json-apis"></a>
-## Testing JSON APIs
+## 測試 JSON API
 
-Laravel also provides several helpers for testing JSON APIs and their responses. For example, the `json`, `get`, `post`, `put`, `patch`, and `delete` methods may be used to issue requests with various HTTP verbs. You may also easily pass data and headers to these methods. To get started, let's write a test to make a `POST` request to `/user` and assert that the expected data was returned:
+Laravel 還提供數個測試 JSON API 與回應的輔助函式。例如，`json`、`get`、`post`、`put`、`patch` 和 `delete` 方法可被用於發出各種 HTTP 動詞的請求。你還可以輕易的將資料和標頭傳入這些方法。讓我們開始撰寫一個測試來建立 `POST` 請求到 `/user` 並斷言已回傳的預期資料：
 
     <?php
 
     class ExampleTest extends TestCase
     {
         /**
-         * A basic functional test example.
+         * 一個基本功能測試範例。
          *
          * @return void
          */
@@ -129,19 +129,19 @@ Laravel also provides several helpers for testing JSON APIs and their responses.
         }
     }
 
-> {tip} The `assertJson` method converts the response to an array and utilizes `PHPUnit::assertArraySubset` to verify that the given array exists within the JSON response returned by the application. So, if there are other properties in the JSON response, this test will still pass as long as the given fragment is present.
+> {tip}`assertJson` 方法會把回應轉換成陣列，並採用 `PHPUnit::assertArraySubset` 來驗證剛回傳的 JSON 回應中是否存在給定的陣列。所以，如果 JSON 回應中有其他的屬性，只有給定的陣列值存在，這個測試仍然會通過。
 
 <a name="verifying-exact-match"></a>
-### Verifying An Exact JSON Match
+### 驗證是否與 JSON 完全匹配
 
-If you would like to verify that the given array is an **exact** match for the JSON returned by the application, you should use the `assertExactJson` method:
+如果你希望驗證給定的陣列是否與應用程式回傳的 JSON **完全**匹配，你應該使用 `assertExactJson` 方法：
 
     <?php
 
     class ExampleTest extends TestCase
     {
         /**
-         * A basic functional test example.
+         * 一個基本功能測試範例。
          *
          * @return void
          */
@@ -158,9 +158,9 @@ If you would like to verify that the given array is an **exact** match for the J
     }
 
 <a name="testing-file-uploads"></a>
-## Testing File Uploads
+## 測試檔案上傳
 
-The `Illuminate\Http\UploadedFile` class provides a `fake` method which may be used to generate dummy files or images for testing. This, combined with the `Storage` facade's `fake` method greatly simplifies the testing of file uploads. For example, you may combine these two features to easily test an avatar upload form:
+`Illuminate\Http\UploadedFile` 類別提供 `fake` 方法可以用來產生虛擬檔案或圖像來進行測試。若與 `Storage` facade 的 `fake` 方法的搭配組合可以大大簡化檔案上傳的測試。例如，你可以組合這兩個功能來輕易的測試頭像上傳表單：
 
     <?php
 
@@ -182,49 +182,52 @@ The `Illuminate\Http\UploadedFile` class provides a `fake` method which may be u
                 'avatar' => UploadedFile::fake()->image('avatar.jpg')
             ]);
 
-            // Assert the file was stored...
+            // 斷言檔案使否有儲存...
             Storage::disk('avatars')->assertExists('avatar.jpg');
 
-            // Assert a file does not exist...
+            // 斷言檔案是否不存在...
             Storage::disk('avatars')->assertMissing('missing.jpg');
         }
     }
 
-#### Fake File Customization
+#### 自訂假檔案
 
-When creating files using the `fake` method, you may specify the width, height, and size of the image in order to better test your validation rules:
+使用 `fake` 方法來建立檔案時，你可以為了更好的測試驗證規則而指定圖像的寬、高和其他尺寸：
 
     UploadedFile::fake()->image('avatar.jpg', $width, $height)->size(100);
 
-In addition to creating images, you may create files of any other type using the `create` method:
+除了建立圖片，你可以使用 `create` 方法來建立任何類型的檔案：
 
     UploadedFile::fake()->create('document.pdf', $sizeInKilobytes);
 
 <a name="available-assertions"></a>
-## Available Assertions
+## 可用的斷言
 
-Laravel provides a variety of custom assertion methods for your [PHPUnit](https://phpunit.de/) tests. These assertions may be accessed on the response that is returned from the `json`, `get`, `post`, `put`, and `delete` test methods:
+Laravel 為你的 [PHPUnit](https://phpunit.de/) 測試提供了各種自訂的斷言方法。這些斷言可以存取從 `json`、`get`、`post`、`put` 和 `delete` 測試方法所回傳的回應：
 
-Method  | Description
+方法  | 說明
 ------------- | -------------
-`$response->assertSuccessful();`  |  Assert that the response has a successful status code.
-`$response->assertStatus($code);`  |  Assert that the response has a given code.
-`$response->assertRedirect($uri);`  |  Assert that the response is a redirect to a given URI.
-`$response->assertHeader($headerName, $value = null);`  |  Assert that the given header is present on the response.
-`$response->assertCookie($cookieName, $value = null);`  |  Assert that the response contains the given cookie.
-`$response->assertPlainCookie($cookieName, $value = null);`  |  Assert that the response contains the given cookie (unencrypted).
-`$response->assertSessionHas($key, $value = null);`  |  Assert that the session contains the given piece of data.
-`$response->assertSessionHasErrors(array $keys, $format = null, $errorBag = 'default');`  |  Assert that the session contains an error for the given field.
-`$response->assertSessionMissing($key);`  |  Assert that the session does not contain the given key.
-`$response->assertJson(array $data);`  |  Assert that the response contains the given JSON data.
-`$response->assertJsonFragment(array $data);`  |  Assert that the response contains the given JSON fragment.
-`$response->assertJsonMissing(array $data);`  |  Assert that the response does not contain the given JSON fragment.
-`$response->assertExactJson(array $data);`  |  Assert that the response contains an exact match of the given JSON data.
-`$response->assertJsonStructure(array $structure);`  |  Assert that the response has a given JSON structure.
-`$response->assertViewIs($value);`  |  Assert that the given view was returned by the route.
-`$response->assertViewHas($key, $value = null);`  |  Assert that the response view was given a piece of data.
-`$response->assertViewMissing($key);`  |  Assert that the response view is missing a piece of bound data.
-`$response->assertSee($value);`  |  Assert that the given string is contained within the response.
-`$response->assertDontSee($value);`  |  Assert that the given string is not contained within the response.
-`$response->assertSeeText($value);`  |  Assert that the given string is contained within the response text.
-`$response->assertDontSeeText($value);`  |  Assert that the given string is not contained within the response text.
+`$response->assertSuccessful();`  |  斷言回應是否有成功的狀態碼。
+`$response->assertStatus($code);`  |  斷言回應是否有給定的狀態碼。
+`$response->assertRedirect($uri);`  |  斷言回應是否導回給定的 URI。
+`$response->assertHeader($headerName, $value = null);`  |  斷言給定的標頭是否存在於回應上。
+`$response->assertCookie($cookieName, $value = null);`  |  斷言回應是否包含給定的 cookie。
+`$response->assertPlainCookie($cookieName, $value = null);`  |  斷言回應是否包含給定的 cookie (已加密)。
+`$response->assertCookieExpired($cookieName);`  |  斷言回應是否包含給定的 cookie 與有效期限。
+`$response->assertCookieMissing($cookieName);`  |  斷言回應有沒有不包含給定的 cookie
+`$response->assertSessionHas($key, $value = null);`  |  斷言 session 是否包含給的資料片段。
+`$response->assertSessionHasErrors(array $keys, $format = null, $errorBag = 'default');`  |  斷言 session 是否包含給定字段的錯誤。
+`$response->assertSessionMissing($key);`  |  斷言 session 是否不包含給定的金鑰。
+`$response->assertJson(array $data);`  |  斷言回應是否包含給定的 JSON 資料。
+`$response->assertJsonFragment(array $data);`  |  斷言回應是否包含給定的 JSON 片段。
+`$response->assertJsonMissing(array $data);`  |   斷言回應是否不包含給定的 JSON 片段。
+`$response->assertExactJson(array $data);`  |  斷言回應是否與包含給定的 JSON 資料完全匹配。
+`$response->assertJsonStructure(array $structure);`  |  斷言回應是否有給定的 JSON 結構。
+`$response->assertViewIs($value);`  |  斷言給定視圖是否從路由回傳。
+`$response->assertViewHas($key, $value = null);`  |  斷言回應的視圖是否有給定的資料片段。
+`$response->assertViewHasAll(array $data);`  |  斷言回應的視圖是否有給定的資料列表。
+`$response->assertViewMissing($key);`  |  斷言回應的視圖是否缺少範圍內的資料。
+`$response->assertSee($value);`  |  斷言給定的字串是否包含在回應中。
+`$response->assertDontSee($value);`  |  斷言給定的字串是否不包含在回應中。
+`$response->assertSeeText($value);`  |  斷言給定的字串是否包含在回應文本中。
+`$response->assertDontSeeText($value);`  |  斷言給定字串是否不包含在回應文本中。
