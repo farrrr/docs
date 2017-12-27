@@ -12,24 +12,24 @@
     - [視圖](#views)
 - [指令](#commands)
 - [公開資源](#public-assets)
-- [發布檔案群組](#publishing-file-groups)
+- [發佈檔案群組](#publishing-file-groups)
 
 <a name="introduction"></a>
 ## 介紹
 
-套件是 Laravel 新增功能的主要方式。例如像是最擅長處理時間的套件 [Carbon](https://github.com/briannesbitt/Carbon)，或者是整個 BDD 測試框架 [Behat](https://github.com/Behat/Behat)。
+套件是 Laravel 新增功能的主要方式。例如像 [Carbon](https://github.com/briannesbitt/Carbon) 用於處理時間，或是像 [Behat](https://github.com/Behat/Behat) 這種完整的 BDD 測試框架。。
 
 當然，會有不同種類的套件。有些套件是獨立套件，也就可以執行在任何 PHP 框架上。Carbon 和 Behat 就是獨立套件的例子。這些任何一個套件都可以被 Laravel 使用，只要你在 `composer.json` 檔案中引入它們就好。
 
-另一方面，其他套件專門用在 Laravel。這些套件可以有路由、控制器、視圖 和設定來專門強化 Laravel 應用程式。本章節主要介紹專門為 Laravel 使用套件的開發。
+另一方面，其他套件專門用在 Laravel。這些套件可以有路由、控制器、視圖和設定來專門增強 Laravel 應用程式。這份指南裡將主要以開發 Laravel 專屬的套件為目標進行說明。
 
 <a name="a-note-on-facades"></a>
 ### Facades 注意事項
 
-撰寫 Laravel 應用程式時，不論你是使用 Contracts 或 Facade 都不會造成太大的差別，因為它們在本質上都提供了相同程度的可測試性。然而，撰寫套件時，你的套件通常無法使用 Laravel 的測試輔助函式。如果你想要撰寫套件測試就像在 Laravel 的環境中，你可以使用 [Orchestral Testbench](https://github.com/orchestral/testbench) 套件。
+撰寫 Laravel 應用程式時，不論你是使用 Contract 或 Facade 都不會造成太大的差別，因為它們在本質上都提供了相同程度的可測試性。然而，撰寫套件時，你的套件通常無法使用 Laravel 的測試輔助函式。如果你想要撰寫套件測試就像在 Laravel 的環境中，你可以使用 [Orchestral Testbench](https://github.com/orchestral/testbench) 套件。
 
 <a name="package-discovery"></a>
-## 套件發掘
+## 套件發現
 
 在 Laravel 應用程式的 `config/app.php` 設定檔，`providers` 選項定義定義了應該被 Laravel 載入的服務提供者清單。當有人在安裝你的套件時，你通常會想要你的服務提供者能被包含到這個清單，而不是要求使用者手動新增你的服務提供者到該清單上。你可以在套件中 `composer.json` 的 `extra` 部分來定義該提供者。除了服務提供者，你也可以列出你想要註冊的任何 [facades](/docs/{{version}}/facades)：
 
@@ -44,11 +44,11 @@
         }
     },
 
-Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動註冊該服務提供者與 Facade，來為你的套件使用者打造一個方便的安裝體驗。
+Laravel 一旦發現到你的套件設定，會在套件被安裝的時候自動註冊該服務提供者與 Facade，來為你的套件使用者打造一個方便的安裝體驗。
 
-### 選擇套件發掘
+### 選擇套件發現
 
-如果你是一個套件使用者，並想停用套件的發掘的功能，你可以列出在應用程式的 `composer.json` 檔案 `extra` 部分中的套件清單：
+如果你是一個套件使用者，並想停用套件的發現的功能，你可以列出在應用程式的 `composer.json` 檔案 `extra` 部分中的套件清單：
 
     "extra": {
         "laravel": {
@@ -58,7 +58,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
         }
     },
 
-你可以在應用程式的 `dont-discover` 只是中使用 `*` 字元來為所有套件停用發掘功能：
+你可以在應用程式的 `dont-discover` 只是中使用 `*` 字元來為所有套件停用發現功能：
 
     "extra": {
         "laravel": {
@@ -71,9 +71,9 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
 <a name="service-providers"></a>
 ## 服務提供者
 
-[服務提供者](/docs/{{version}}/providers)是你的套件與 Laravel 之間的連接點。服務提供者負責將事物綁定在 Laravel 的 [服務容器](/docs/{{version}}/container)，並告訴 Laravel 要在哪裡載入套件資源，像是視圖、設定和本地化檔案。
+[服務提供者](/docs/{{version}}/providers)是你的套件與 Laravel 之間的連接點。服務提供者負責將事物綁定在 Laravel 的[服務容器](/docs/{{version}}/container)，並告訴 Laravel 要在哪裡載入套件資源，像是視圖、設定和本地化檔案。
 
-服務提供者繼承了 `Illuminate\Support\ServiceProvider` 類別，並包含了兩個方法：`register` 和 `boot`。基本的 `ServiceProvider` 類別會放在 `illuminate/support` Composer 套件中，你應該新增自己套件的依賴項目。想學習更多關於服務提供者的用途與結構，請查閱[服務物提供者的文件](/docs/{{version}}/providers)。
+服務提供者繼承了 `Illuminate\Support\ServiceProvider` 類別，並包含了兩個方法：`register` 和 `boot`。基底的 `ServiceProvider` 類別會放在 `illuminate/support` Composer 套件中，你應該新增自己套件的依賴項目。想學習更多關於服務提供者的用途與結構，請查閱[服務物提供者的文件](/docs/{{version}}/providers)。
 
 <a name="resources"></a>
 ## 資源
@@ -81,7 +81,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
 <a name="configuration"></a>
 ### 設定
 
-通常你會需要將套件的設定檔發佈到到應用程式本身的 `config` 目錄中。這可以讓套件使用者輕易的覆寫預設的設定選項。要可以讓你的設定檔可以被發布，請從你的服務提供者的 `boot` 方法中呼叫 `publishes` 方法：
+通常你會需要將套件的設定檔發佈到到應用程式本身的 `config` 目錄中。這可以讓套件使用者輕易的覆寫預設的設定選項。要讓你的設定檔可以被發佈，請從你的服務提供者的 `boot` 方法中呼叫 `publishes` 方法：
 
     /**
      * 執行服務註冊後啟動。
@@ -95,7 +95,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
         ]);
     }
 
-現在，當套件使用者執行 Laravel 的 `vendor:publish` 指令時，你的檔案會被複製到指定的發布位置。當然你的設定檔一旦被發布，它的值就可以向任何其它設定檔案一樣被存取：
+現在，當套件使用者執行 Laravel 的 `vendor:publish` 指令時，你的檔案會被複製到指定的發佈位置。當然你的設定檔一旦被發佈，它的值就可以像任何其它設定檔案一樣被存取：
 
     $value = config('courier.option');
 
@@ -103,7 +103,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
 
 #### 預設套件設定
 
-你也可以將自己的套件設定檔與應用程式發佈的副本合併。這可以讓你的使用者只定義他們實際想要在發布的副本上覆寫的選項。要合併設定，請在服務提供者的 `register` 方法中使用 `mergeConfigFrom` 方法：
+你也可以將自己的套件設定檔與應用程式發佈的副本合併。這可以讓你的使用者只定義他們實際想要在發佈的副本上覆寫的選項。要合併設定，請在服務提供者的 `register` 方法中使用 `mergeConfigFrom` 方法：
 
     /**
      * 在容器中註冊綁定。
@@ -172,7 +172,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
 
 #### 發佈語系
 
-如果你想要發布套件的語系到應用程式的 `resources/lang/vendor` 目錄，你可以使用服務提供者的 `publishes` 方法。`publishes` 方法接受一組套件路徑的陣列和他們想要發佈的位置。例如，要為 `courier` 套件發布語系檔案，你可以效仿下列內容：
+如果你想要發佈套件的語系到應用程式的 `resources/lang/vendor` 目錄，你可以使用服務提供者的 `publishes` 方法。`publishes` 方法接受一組套件路徑的陣列和他們想要發佈的位置。例如，要為 `courier` 套件發佈語系檔案，你可以效仿下列內容：
 
     /**
      * 執行服務註冊後啟動。
@@ -188,7 +188,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
         ]);
     }
 
-現在，當套件的使用者執行 Laravel 的 Artisan `vendor:publish` 指令時，套件的語系會被發布到指定的發佈位置。
+現在，當套件的使用者執行 Laravel 的 Artisan `vendor:publish` 指令時，套件的語系會被發佈到指定的發佈位置。
 
 <a name="views"></a>
 ### 視圖
@@ -258,7 +258,7 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
 <a name="public-assets"></a>
 ## 公開資源
 
-你的套件可能會有 JavaScript、CSS 和圖像等資源。要發佈這些資源到應用程式的 `public` 目錄，請使用服務提供者的 `publishes` 方法。在本案例中，我們還會新增一個 `public` 資源群組標籤，這可以被用於發佈相關資源群組
+你的套件可能會有 JavaScript、CSS 和圖像等資源。要發佈這些資源到應用程式的 `public` 目錄，請使用服務提供者的 `publishes` 方法。在這個範例中，我們還會新增一個 `public` 資源群組標籤，這可以被用於發佈相關資源群組
 
     /**
      * 執行服務註冊後啟動。
@@ -272,14 +272,14 @@ Laravel 一旦發掘到你的套件設定，會在套件被安裝的時候自動
         ], 'public');
     }
 
-現在，當你的套件使用者執行 `vendor:publish` 指令時，你的資源會被複製到指定的發佈位置。由於你通常會需要在每次更新套件ㄓ覆寫資源，你可以使用 `--force` 選項：
+現在，當你的套件使用者執行 `vendor:publish` 指令時，你的資源會被複製到指定的發佈位置。由於你通常會需要在每次更新套件覆寫資源，你可以使用 `--force` 選項：
 
     php artisan vendor:publish --tag=public --force
 
 <a name="publishing-file-groups"></a>
-## 發布檔案群組
+## 發佈檔案群組
 
-你可能想要發佈套件資源群組和個別資源。例如，你可能想要讓你的使用者發佈你的套件設定檔，而不必強制發佈你的套件資源。你可以從套件的服務提供者中呼叫 `publishes` 方法來標記，藉此做到這一點。例如，讓我們使用標籤在套件服務提供者的 `boot` 方法中定義兩個發布群組：
+你可能想要發佈套件資源群組和個別資源。例如，你可能想要讓你的使用者發佈你的套件設定檔，而不必強制發佈你的套件資源。你可以從套件的服務提供者中呼叫 `publishes` 方法來標記，藉此做到這一點。例如，讓我們使用標籤在套件服務提供者的 `boot` 方法中定義兩個發佈群組：
 
     /**
      * 執行服務註冊後啟動。
