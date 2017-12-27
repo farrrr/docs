@@ -3,8 +3,8 @@
 - [取得請求](#accessing-the-request)
     - [請求路徑與方法](#request-path-and-method)
     - [PSR-7 請求](#psr7-requests)
-- [Input Trimming & Normalization](#input-trimming-and-normalization)
-- [接收輸入](#retrieving-input)
+- [輸入的修飾與標準化](#input-trimming-and-normalization)
+- [取得輸入](#retrieving-input)
     - [舊輸入](#old-input)
     - [Cookies](#cookies)
 - [檔案](#files)
@@ -15,7 +15,7 @@
 <a name="accessing-the-request"></a>
 ## 取得請求
 
-要透過依賴注入才能獲得當前 HTTP 請求的實例，你應該在你的控制器方法上型別注入 `Illuminate\Http\Request` 類別。傳入的請求會自動由[服務容器](/docs/{{version}}/container)注入：
+要透過依賴注入才能獲得目前 HTTP 請求的實例，你應該在你的控制器方法上型別注入 `Illuminate\Http\Request` 類別。傳入的請求會自動由[服務容器](/docs/{{version}}/container)注入：
 
     <?php
 
@@ -26,7 +26,7 @@
     class UserController extends Controller
     {
         /**
-         * 儲存新使用者
+         * 儲存一位新使用者。
          *
          * @param  Request  $request
          * @return Response
@@ -56,7 +56,7 @@
     class UserController extends Controller
     {
         /**
-         * 更新特定使用者
+         * 更新特定使用者。
          *
          * @param  Request  $request
          * @param  string  $id
@@ -70,7 +70,7 @@
 
 #### 透過路由閉包存取請求
 
-你也可以在路由閉包上注入 `Illuminate\Http\Request` 類別。該服務容器會在執行時自動將傳來的請求注入到閉包中：
+你也可以在路由閉包上型別提示 `Illuminate\Http\Request` 類別。該服務容器會在執行時自動將傳入的請求注入到閉包中：
 
     use Illuminate\Http\Request;
 
@@ -118,12 +118,12 @@
 <a name="psr7-requests"></a>
 ### PSR-7 請求
 
-[PSR-7 標準](http://www.php-fig.org/psr/psr-7/) 制定了包含請求與回應的 HTTP 訊息介面。如果你想要得到一個 PSR-7 請求實例，而不是 Laravel 請求，你首先會需要安裝一些函式庫。Laravel 使用 *Symfony HTTP 訊息橋接*元件來將原生 Laravel 請求和回應轉換成 PSR-7 相容的實作：
+[PSR-7 標準](http://www.php-fig.org/psr/psr-7/)規範了包含請求與回應的 HTTP 訊息介面。如果你想要得到一個 PSR-7 請求實例，而不是 Laravel 請求，你首先會需要安裝一些函式庫。Laravel 使用 *Symfony HTTP 訊息橋接*元件來將原生 Laravel 請求和回應轉換成 PSR-7 相容的實作：
 
     composer require symfony/psr-http-message-bridge
     composer require zendframework/zend-diactoros
 
-你一旦有安裝這些函式庫，你就可以在路由閉包或控制器方法上注入該請求介面來獲得 PSR-7 請求：
+一旦你安裝好這些函式庫，你可以透過型別提示請求介面在你的路由閉包或是控制器方法上取得 PSR-7 請求：
 
     use Psr\Http\Message\ServerRequestInterface;
 
@@ -159,7 +159,7 @@
 
     $name = $request->input('name', 'Sally');
 
-使用多組輸入的表單時，請使用「點」符號來存取陣列：
+當處理包含陣列輸入的表單時，請使用「點」符號來存取陣列：
 
     $name = $request->input('products.0.name');
 
@@ -167,7 +167,7 @@
 
 #### 從查詢字串中取得輸入
 
-使用 `input` 方法來從整個請求負載（包含字串查詢）中取得值，`query` 方法會只從查詢字串中取得值：
+使用 `input` 方法從整個請求資料（包含查詢字串）中取得值，`query` 方法會只從查詢字串中取得值：
 
     $name = $request->query('name');
 
@@ -175,7 +175,7 @@
 
     $name = $request->query('name', 'Helen');
 
-你可以不使用任何參數來呼叫 `query` 方法，對於取得所有查訊字串值作為一組有相關的陣列：
+你可以不使用任何參數來呼叫 `query` 方法，以便將所有查詢字串值作為一組關聯陣列：
 
     $query = $request->query();
 
@@ -185,17 +185,17 @@
 
     $name = $request->name;
 
-當你在使用動態屬性時，Laravel 會首先查看在請求負載中的屬性值。如果不存在該屬性，Laravel 會搜尋在路由參數中的輸入段落。
+當你在使用動態屬性時，Laravel 將首先尋找請求資料中的參數值。如果不存在的話，Laravel 將會搜尋在路由參數中的輸入段落。
 
 #### 取得 JSON 輸入值
 
-當你在發送 JSON 請求到你應用程式時，只要請求的 `Content-Type` 標頭正確的設為 `application/json`，你可以透過 `input` 方法存取 JSON 資料。你甚至可以使用「點」語法來深入 JSON 陣列：
+當你在發送 JSON 請求到你應用程式時，只要請求的 `Content-Type` header 正確的設為 `application/json`，你可以透過 `input` 方法存取 JSON 資料。你甚至可以使用「點」語法來深入 JSON 陣列：
 
     $name = $request->input('user.name');
 
 #### 取得一部分的輸入資料
 
-如果你需要存取輸入資料的一部分，你可以使用 `only` 和 `except` 方法。這兩種方法都接受一組`陣列`或參數動態清單：
+如果你需要取得輸入資料的一部份，你可以使用 `only` 和 `except` 方法。這兩種方法都接受一組`陣列`或參數動態清單：
 
     $input = $request->only(['username', 'password']);
 
@@ -215,7 +215,7 @@
         //
     }
 
-在給予一組陣列時，`has` 方法會確認所有指定的值是否存在：
+當給定一個陣列時，`has` 方法會確認所有指定的值是否存在：
 
     if ($request->has(['name', 'email'])) {
         //
@@ -311,7 +311,7 @@ Laravel 也提供一個全域的 `old` 輔助函示。如果你在 [Blade 模板
 <a name="retrieving-uploaded-files"></a>
 ### 取得上傳檔案
 
-你可以從 `Illuminate\Http\Request` 實例中使用 `file` 方法或使用動態屬性來存取上傳的檔案。`file` 方法回傳一個 `Illuminate\Http\UploadedFile` 類別的實例，它繼承了 PHP `SplFileInfo` 類別，並提供各種與檔案交換資料的各種方法：
+你可以從 `Illuminate\Http\Request` 實例中使用 `file` 方法或使用動態屬性來取得上傳的檔案。`file` 方法回傳一個 `Illuminate\Http\UploadedFile` 類別的實例，它繼承了 PHP `SplFileInfo` 類別，並提供各種與檔案交換資料的各種方法：
 
     $file = $request->file('photo');
 
@@ -325,15 +325,15 @@ Laravel 也提供一個全域的 `old` 輔助函示。如果你在 [Blade 模板
 
 #### 驗證成功的上傳
 
-除了檢查檔案是否存在，你可以透過 `isValid` 方法來驗證上傳的檔案是否有效ㄑ：
+除了檢查檔案是否存在，你可以透過 `isValid` 方法來驗證上傳的檔案是否有效：
 
     if ($request->file('photo')->isValid()) {
         //
     }
 
-#### 檔案路徑與延伸
+#### 檔案路徑與副檔名
 
-`UploadedFile` 類別包含存取檔案的完整路徑和延伸的方法。`extension` 方法會根據內容嘗試猜測檔案的延伸名稱。這個延伸名稱可能與客戶端提供的延伸名稱不同：
+`UploadedFile` 類別也包含了取得檔案完整路徑和它的副檔名的方法。`extension` 將會根據內容嘗試猜測檔案的副檔名。這個副檔名可能會與客戶端提供的檔名不同：
 
     $path = $request->photo->path();
 
@@ -341,14 +341,14 @@ Laravel 也提供一個全域的 `old` 輔助函示。如果你在 [Blade 模板
 
 #### 其他檔案方法
 
-`UploadedFile` 實例上還有其他各種方法。請查閱 [該類別的 API 文件](http://api.symfony.com/3.0/Symfony/Component/HttpFoundation/File/UploadedFile.html) 來獲得更多該方法的資訊。
+`UploadedFile` 實例上還有其他各種方法。請查閱[該類別的 API 文件](http://api.symfony.com/3.0/Symfony/Component/HttpFoundation/File/UploadedFile.html) 來獲得更多該方法的資訊。
 
 <a name="storing-uploaded-files"></a>
 ### 儲存上傳檔案
 
 要儲存上傳的檔案，你通常會使用[檔案系統](/docs/{{version}}/filesystem)的其中一個設定。`UploadedFile` 類別有 `store` 方法，它會將上傳的檔案一到你的其中一個硬碟，這可能是本機上的檔案系統，或甚至是 Amazon S3 這種雲端儲存空間。
 
-`store` 方法接對於檔案系統設定的根目錄的相對路徑。這個路徑不包含檔案名稱，因為會自動產生一個唯一 ID 作為檔案名稱。
+`store` 方法接受檔案相對於檔案系統設定的根目錄的儲存路徑。這個路徑不包含檔案名稱，因為會自動產生一個唯一 ID 作為檔案名稱。
 
 `store` 方法也接受一個可選的第二個參數，用於指定儲存檔案的硬碟名稱。該方法會回傳檔案檔案對於硬碟根目錄的相對路徑：
 
@@ -389,7 +389,7 @@ Laravel 也提供一個全域的 `old` 輔助函示。如果你在 [Blade 模板
         ];
 
         /**
-         * 當前代理標頭的映射。
+         * 目前代理 header 的映射。
          *
          * @var array
          */
