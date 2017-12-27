@@ -112,7 +112,7 @@ Redis 廣播器會使用 Redis 發佈/訂閱 功能來廣播訊息。然而，�
 <a name="concept-overview"></a>
 ## 概念簡述
 
-Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 Laravel 事件廣播給前端 JavaScript 應用程式。目前，Laravel 內建了 [Pusher](https://pusher.com) 和 Redis 的驅動。在前端使用 Javascript 的 [Laravel Echo](#installing-laravel-echo) 套件，可以更簡單的處理事件
+Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 Laravel 事件廣播給前端 JavaScript 應用程式。目前，Laravel 內建了 [Pusher](https://pusher.com) 和 Redis 的驅動。在前端使用 [Laravel Echo](#installing-laravel-echo) Javascript 的套件，可以更簡單的處理事件
 
 事件通過「頻道」來廣播，頻道可以被指定為公開或私人的。你的應用程式的任何訪客都可以訂閱公共頻道，且不需要在認證身份或檢查授權。然而，如果為了訂閱一個私人頻道，使用者就必須認證身份與通過授權才可以監聽該頻道。
 
@@ -268,7 +268,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 然而，如果你希望對廣播資料有更細微的控制，你可以加入 `broadcastWith` 方法到你的事件中。這個方法會回傳一組陣列資料，並如你所希望的廣播事件資料：
 
     /**
-     * 取得資料到廣播
+     * 取得資料到廣播。
      *
      * @return array
      */
@@ -299,6 +299,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
     {
         //
     }
+    
 <a name="broadcast-conditions"></a>
 ### 廣播條件
 
@@ -396,7 +397,7 @@ Laravel 的事件廣播允許你使用基於驅動的 WebSockets 將後端的 La
 <a name="installing-laravel-echo"></a>
 ### 安裝 Laravel Echo
 
-Laravel Echo 是一個 JavaScript 程式庫，它可以透過 Laravel 無痛的訂閱頻道與監聽事件廣播。你可以透過 NPM 套件管理器來安裝 Echo。在這個範例中，我們也會安裝 `pusher-js` 套件，因此我們會使用 Pusher 來廣播：
+Laravel Echo 是一個 JavaScript 程式庫，它可以透過 Laravel 無痛的訂閱頻道與監聽事件廣播。你可以透過 NPM 套件管理器來安裝 Echo。在這個範例中，我們也會安裝 `pusher-js` 套件，因為我們會使用 Pusher 來廣播：
 
     npm install --save laravel-echo pusher-js
 
@@ -557,5 +558,3 @@ Presence 可以像私人或是公開頻道一樣接收事件。使用一個聊�
         });
 
 在這個範例中，凡是透過廣播頻道發送到 `App\User` 實例的所有通知都將會被回呼所接收。`App.User.{id}` 頻道的授權回呼已載入到預設的 `BroadcastServiceProvider`。
-
-

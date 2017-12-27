@@ -1,26 +1,26 @@
-# Deployment
+# 部署
 
-- [Introduction](#introduction)
-- [Server Configuration](#server-configuration)
+- [介紹](#introduction)
+- [伺服器設定](#server-configuration)
     - [Nginx](#nginx)
-- [Optimization](#optimization)
-    - [Autoloader Optimization](#autoloader-optimization)
-    - [Optimizing Configuration Loading](#optimizing-configuration-loading)
-    - [Optimizing Route Loading](#optimizing-route-loading)
-- [Deploying With Forge](#deploying-with-forge)
+- [優化](#optimization)
+    - [自動載入優化](#autoloader-optimization)
+    - [優化設定檔的載入](#optimizing-configuration-loading)
+    - [優化路由的載入](#optimizing-route-loading)
+- [部署到 Forge](#deploying-with-forge)
 
 <a name="introduction"></a>
-## Introduction
+## 介紹
 
-When you're ready to deploy your Laravel application to production, there are some important things you can do to make sure your application is running as efficiently as possible. In this document, we'll cover some great starting points for making sure your Laravel application is deployed properly.
+當你準備部署 Laravel 應用程式到正式上線主機時，你能執行一些操作，用來確保你的應用程式能更有效的執行。在這個文件中，我們將介紹如何用很棒的方式來部署應用程式。
 
 <a name="server-configuration"></a>
-## Server Configuration
+## 伺服器設定
 
 <a name="nginx"></a>
 ### Nginx
 
-If you are deploying your application to a server that is running Nginx, you may use the following configuration file as a starting point for configuring your web server. Most likely, this file will need to be customized depending on your server's configuration. If you would like assistance in managing your server, consider using a service such as [Laravel Forge](https://forge.laravel.com):
+如果你把應用程式部署到執行 Nginx 的伺服器，你可以使用下面的設定內容來開始設定你的網頁伺服器。此文件內容最好是根據你的伺服器設定需求來客製化。如果你需要託管你的伺服器，可以考慮 [Laravel Forge](https://forge.laravel.com) 等服務：
 
     server {
         listen 80;
@@ -57,40 +57,40 @@ If you are deploying your application to a server that is running Nginx, you may
     }
 
 <a name="optimization"></a>
-## Optimization
+## 優化
 
 <a name="autoloader-optimization"></a>
-### Autoloader Optimization
+### 自動載入優化
 
-When deploying to production, make sure that you are optimizing Composer's class autoloader map so Composer can quickly find the proper file to load for a given class:
+部署到正式上線主機的時候，確保你優化了 Composer 的類別自動載入器映射，以便 Conposer 能更快的找到正確的檔案並加載到給定的檔案：
 
     composer install --optimize-autoloader
 
-> {tip} In addition to optimizing the autoloader, you should always be sure to include a `composer.lock` file in your project's source control repository. Your project's dependencies can be installed much faster when a `composer.lock` file is present.
+> {tip} 除了優化自動載入器，你應該始終將 `composer` 放在你的專案版本控制系統。當 `composer.lock` 檔案存在於你的系統時，專案的依賴套件項目能被快速的安裝。
 
 <a name="optimizing-configuration-loading"></a>
-### Optimizing Configuration Loading
+### 優化設定檔的載入
 
-When deploying your application to production, you should make sure that you run the `config:cache` Artisan command during your deployment process:
+當你在部署應用程式到正式上線主機時，你應該記得在你部署過程中有執行 Artisan 指令的 `config:cache`：
 
     php artisan config:cache
 
-This command will combine all of Laravel's configuration files into a single, cached file, which greatly reduces the number of trips the framework must make to the filesystem when loading your configuration values.
+這個指令可以將所有的 Laravel 設定檔快取到一個檔案，這會大大減少了載入設定值時框架對檔案系統的存取次數。
 
 <a name="optimizing-route-loading"></a>
-### Optimizing Route Loading
+### 優化路由的載入
 
-If you are building a large application with many routes, you should make sure that you are running the `route:cache` Artisan command during your deployment process:
+如果你正在建構一個很多路由的大型應用程式時，你應該確保在部署過程中執行 Artisan 的 `route：cache` 命令：
 
     php artisan route:cache
 
-This command reduces all of your route registrations into a single method call within a cached file, improving the performance of route registration when registering hundreds of routes.
+這個指令會將所有的路由註冊減少為快取檔案中的單個方法呼叫，有助於提升數擁有百個路由的系統的速度。
 
-> {note} Since this feature uses PHP serialization, you may only cache the routes for applications that exclusively use controller based routes. PHP is not able to serialize Closures.
+> {note} 因為這個功能使用到 PHP 序列化，所以你只能快取專門使用控制器類別的路由。PHP 目前無法將閉包給序列化。
 
 <a name="deploying-with-forge"></a>
-## Deploying With Forge
+## 部署到 Forge
 
-If you aren't quite ready to manage your own server configuration or aren't comfortable configuring all of the various services needed to run a robust Laravel application, [Laravel Forge](https://forge.laravel.com) is a wonderful alternative.
+如果你還沒有準備好管理自己的伺服器設定，又或者不太會設定執行強大的 Laravel 應用程式所需的各種服務，[Laravel Forge](https://forge.laravel.com) 會是一個不錯的選擇。
 
-Laravel Forge can create servers on various infrastructure providers such as DigitalOcean, Linode, AWS, and more. In addition, Forge installs and manages all of the tools needed to build robust Laravel applications, such as Nginx, MySQL, Redis, Memcached, Beanstalk, and more.
+Laravel Forge 能在各種伺服器服務的提供商（像是 DigitalOcean、Linode 或 AWS 等等）上建立伺服器。除此之外，Forge 也可以安裝和管理建構 Laravel 應用程式所需的所有工具，像是 Nginx、MySQL、Redis、Memcached 和 Beanstalk 等。

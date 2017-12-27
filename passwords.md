@@ -1,61 +1,61 @@
-# Resetting Passwords
+# 重設密碼
 
-- [Introduction](#introduction)
-- [Database Considerations](#resetting-database)
-- [Routing](#resetting-routing)
-- [Views](#resetting-views)
-- [After Resetting Passwords](#after-resetting-passwords)
-- [Customization](#password-customization)
+- [介紹](#introduction)
+- [資料庫的注意事項](#resetting-database)
+- [路由](#resetting-routing)
+- [視圖](#resetting-views)
+- [重設密碼之後](#after-resetting-passwords)
+- [自訂](#password-customization)
 
 <a name="introduction"></a>
-## Introduction
+## 介紹
 
-> {tip} **Want to get started fast?** Just run `php artisan make:auth` in a fresh Laravel application and navigate your browser to `http://your-app.dev/register` or any other URL that is assigned to your application. This single command will take care of scaffolding your entire authentication system, including resetting passwords!
+> {tip} **想要快速入門？**只要在剛建立的 Laravel 應用程式中執行 `php artisan make:auth`，並瀏覽 `http://your-app.dev/register`  這個頁面或分配給應用程式的任何其他的連結。這一個指令會幫你建立好完整的認證系統，而且包含重設密碼！
 
-Most web applications provide a way for users to reset their forgotten passwords. Rather than forcing you to re-implement this on each application, Laravel provides convenient methods for sending password reminders and performing password resets.
+大多數網頁應用程式提供使用者重設它們遺忘的密碼。Laravel 並沒有強迫你要在每個應用程式上實作這個功能，而是提供方便的方法來傳送密碼提示和處理密碼重設。
 
-> {note} Before using the password reset features of Laravel, your user must use the `Illuminate\Notifications\Notifiable` trait.
+> {note} 在使用 Laravel 的密碼重設功能之前，你的 user 模型最好使用 `Illuminate\Notifications\Notifiable` trait。
 
 <a name="resetting-database"></a>
-## Database Considerations
+## 資料庫的注意事項
 
-To get started, verify that your `App\User` model implements the `Illuminate\Contracts\Auth\CanResetPassword` contract. Of course, the `App\User` model included with the framework already implements this interface, and uses the `Illuminate\Auth\Passwords\CanResetPassword` trait to include the methods needed to implement the interface.
+在開始之前，驗證你的 App\User 模型是否實作 Illuminate\Contracts\Auth\CanResetPassword contract。當然，`App\User` 模型早就被框架實作這個介面，並使用 `Illuminate\Auth\Passwords\CanResetPassword` trait 來引入實作該介面所需的方法。
 
-#### Generating The Reset Token Table Migration
+#### 產生重設密碼 Token 資料表的遷移
 
-Next, a table must be created to store the password reset tokens. The migration for this table is included with Laravel out of the box, and resides in the `database/migrations` directory. So, all you need to do is run your database migrations:
+接著，你必須建立一個用來儲存密碼重設的 Token 的資料表。該資料表的遷移檔已經包含在 Laravel 中，並放置在 `database/migrations` 目錄。所以，你所要做的是執行你的資料庫遷移：
 
     php artisan migrate
 
 <a name="resetting-routing"></a>
-## Routing
+## 路由
 
-Laravel includes `Auth\ForgotPasswordController` and `Auth\ResetPasswordController` classes that contains the logic necessary to e-mail password reset links and reset user passwords. All of the routes needed to perform password resets may be generated using the `make:auth` Artisan command:
+Laravel 引入了 `Auth\ForgotPasswordController` 和 `Auth\ResetPasswordController` 類別，其中包含電子信箱的密碼重置連結和重設使用者密碼所需要的邏輯。所有處理密碼重設所需要的路由都可以使用 Artisan 的 `make:auth` 指令來產生：
 
     php artisan make:auth
 
 <a name="resetting-views"></a>
-## Views
+## 視圖
 
-Again, Laravel will generate all of the necessary views for password reset when the `make:auth` command is executed. These views are placed in `resources/views/auth/passwords`. You are free to customize them as needed for your application.
+Laravel 會在執行 `make:auth` 時產生所有密碼重設所需要的視圖。這些視圖被放置在 `resources/views/auth/passwords`。你可以根據應用程式的需要來自由的自訂它們。
 
 <a name="after-resetting-passwords"></a>
-## After Resetting Passwords
+## 重設密碼之後
 
-Once you have defined the routes and views to reset your user's passwords, you may simply access the route in your browser at `/password/reset`. The `ForgotPasswordController` included with the framework already includes the logic to send the password reset link e-mails, while the `ResetPasswordController` includes the logic to reset user passwords.
+你一旦定義了路由和視圖來重設使用者密碼，你可以在瀏覽器的 `/password/reset` 來簡單的存取你的路由。 框架引入的 `ForgotPasswordController` 已包含了發送密碼重設連結的 e-mail 邏輯，而 `ResetPasswordController` 則包含了重設使用者密碼的邏輯。
 
-After a password is reset, the user will automatically be logged into the application and redirected to `/home`. You can customize the post password reset redirect location by defining a `redirectTo` property on the `ResetPasswordController`:
+在密碼重設之後，該使用者會自動登入應用程式並重導到 `/home`。你能在 `ResetPasswordController` 上定義 `redirectTo` 屬性來自訂密碼重設後要重導的位置：
 
     protected $redirectTo = '/dashboard';
 
-> {note} By default, password reset tokens expire after one hour. You may change this via the password reset `expire` option in your `config/auth.php` file.
+> {note} 預設的密碼重設 Token 會在一小時後失效。你可以透過 `config/auth.php` 檔案中的密碼重設的 `expire` 選項來改變有效期限。
 
 <a name="password-customization"></a>
-## Customization
+## 自訂
 
-#### Authentication Guard Customization
+#### 自訂認證 Guard
 
-In your `auth.php` configuration file, you may configure multiple "guards", which may be used to define authentication behavior for multiple user tables. You can customize the included `ResetPasswordController` to use the guard of your choice by overriding the `guard` method on the controller. This method should return a guard instance:
+在 `auth.php` 設定檔中，你可以設定多個「Guard」，可被用於定義多個使用者資料表的認證行為。你能在控制器上覆寫 `guard` 方法來自訂 `ResetPasswordController` 來使用你選擇的選擇 Guard。這個方法會回傳一個 Guard 實例：
 
     use Illuminate\Support\Facades\Auth;
 
@@ -64,14 +64,14 @@ In your `auth.php` configuration file, you may configure multiple "guards", whic
         return Auth::guard('guard-name');
     }
 
-#### Password Broker Customization
+#### 自訂密碼 Broker
 
-In your `auth.php` configuration file, you may configure multiple password "brokers", which may be used to reset passwords on multiple user tables. You can customize the included `ForgotPasswordController` and `ResetPasswordController` to use the broker of your choice by overriding the `broker` method:
+在你的 `auth.php` 設定檔中，你可以設定多個密碼「broker」，可被用於重置多個使用者資料表。你能覆寫 `broker` 方法來自訂 `ForgotPasswordController` 和 `ResetPasswordController` 來使用你所選擇的 Broker：
 
     use Illuminate\Support\Facades\Password;
 
     /**
-     * Get the broker to be used during password reset.
+     * 取得密碼重設期間的 broker。
      *
      * @return PasswordBroker
      */
@@ -80,12 +80,12 @@ In your `auth.php` configuration file, you may configure multiple password "brok
         return Password::broker('name');
     }
 
-#### Reset Email Customization
+#### 自訂重設信件
 
-You may easily modify the notification class used to send the password reset link to the user. To get started, override the `sendPasswordResetNotification` method on your `User` model. Within this method, you may send the notification using any notification class you choose. The password reset `$token` is the first argument received by the method:
+你可以輕易地修改通知類別，並用在發送密碼重設連結給使用者。在開始之前，請在你的 `User` 模型上覆寫 `sendPasswordResetNotification` 方法。在這個方法中，你可以使用任何你選擇的通知類別來發送通知。該密碼重設的 `$token` 會是這個方法接收到的第一個參數：
 
     /**
-     * Send the password reset notification.
+     * 發送密碼重設通知。
      *
      * @param  string  $token
      * @return void
@@ -94,4 +94,3 @@ You may easily modify the notification class used to send the password reset lin
     {
         $this->notify(new ResetPasswordNotification($token));
     }
-
