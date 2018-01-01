@@ -6,8 +6,8 @@
 - [建立任務](#creating-jobs)
     - [產生任務類別](#generating-job-classes)
     - [類別結構](#class-structure)
-- [Dispatching Jobs](#dispatching-jobs)
-    - [Delayed Dispatching](#delayed-dispatching)
+- [執行任務](#dispatching-jobs)
+    - [延遲執行](#delayed-dispatching)
     - [Job Chaining](#job-chaining)
     - [Customizing The Queue & Connection](#customizing-the-queue-and-connection)
     - [Specifying Max Job Attempts / Timeout Values](#max-job-attempts-and-timeout)
@@ -18,7 +18,7 @@
     - [Queue Workers & Deployment](#queue-workers-and-deployment)
     - [Job Expirations & Timeouts](#job-expirations-and-timeouts)
 - [設定 Supervisor](#supervisor-configuration)
-- [Dealing With Failed Jobs](#dealing-with-failed-jobs)
+- [處理失敗的任務](#dealing-with-failed-jobs)
     - [Cleaning Up After Failed Jobs](#cleaning-up-after-failed-jobs)
     - [Failed Job Events](#failed-job-events)
     - [Retrying Failed Jobs](#retrying-failed-jobs)
@@ -149,9 +149,9 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
 > {note} 二進位資料，例如原始圖形內容，在傳遞至隊列任務時需要使用 `base64_encode` 函式進行傳遞。否則，該隊列任務在被放置進隊列時可能無法正確的序列化解析成 JSON 格式。
 
 <a name="dispatching-jobs"></a>
-## Dispatching Jobs
+## 執行任務 
 
-Once you have written your job class, you may dispatch it using the `dispatch` method on the job itself. The arguments passed to the `dispatch` method will be given to the job's constructor:
+當你撰寫完任務類別後，你可以呼叫類別內的 `dispatch` 方法執行任務。`dispatch` 方法的參數會被傳遞至任務類別的建構子中：
 
     <?php
 
@@ -164,23 +164,23 @@ Once you have written your job class, you may dispatch it using the `dispatch` m
     class PodcastController extends Controller
     {
         /**
-         * Store a new podcast.
+         * 儲存一個新的推播
          *
          * @param  Request  $request
          * @return Response
          */
         public function store(Request $request)
         {
-            // Create podcast...
+            // 建立推播...
 
             ProcessPodcast::dispatch($podcast);
         }
     }
 
 <a name="delayed-dispatching"></a>
-### Delayed Dispatching
+### 延遲執行
 
-If you would like to delay the execution of a queued job, you may use the `delay` method when dispatching a job. For example, let's specify that a job should not be available for processing until 10 minutes after it has been dispatched:
+如果你想要延遲執行一個隊列任務，可以在執行隊列任務時使用 `delay` 方法。舉例來說，指定一個任務在十分鐘後執行：
 
     <?php
 
@@ -194,14 +194,14 @@ If you would like to delay the execution of a queued job, you may use the `delay
     class PodcastController extends Controller
     {
         /**
-         * Store a new podcast.
+         * 儲存新的推播
          *
          * @param  Request  $request
          * @return Response
          */
         public function store(Request $request)
         {
-            // Create podcast...
+            // 新增推播 ...
 
             ProcessPodcast::dispatch($podcast)
                     ->delay(Carbon::now()->addMinutes(10));
@@ -503,15 +503,15 @@ Supervisor 設定檔通常會位於 `/etc/supervisor/conf.d` 目錄。在這個�
 更多訊息，詳見 [Supervisor 參考文件](http://supervisord.org/index.html)。
 
 <a name="dealing-with-failed-jobs"></a>
-## Dealing With Failed Jobs
+## 處理失敗的任務
 
-Sometimes your queued jobs will fail. Don't worry, things don't always go as planned! Laravel includes a convenient way to specify the maximum number of times a job should be attempted. After a job has exceeded this amount of attempts, it will be inserted into the `failed_jobs` database table. To create a migration for the `failed_jobs` table, you may use the `queue:failed-table` command:
+有時候隊列中的任務執行失敗，別擔心，事情發生總有不如預期。Laravel 內建了方便的方法能夠指定隊列任務的最大嘗試次數。當一個隊列任務超過最大嘗試次數時，會新增至 `failed_jobs` 資料表。為了透過建立資料庫遷移產生 `failed_jobs` 資料表，你可以使用 `queue:failed-table` 指令：
 
     php artisan queue:failed-table
 
     php artisan migrate
 
-Then, when running your [queue worker](#running-the-queue-worker), you should specify the maximum number of times a job should be attempted using the `--tries` switch on the `queue:work` command. If you do not specify a value for the `--tries` option, jobs will be attempted indefinitely:
+接下來，執行 [隊列 worker](#running-the-queue-worker)，你應該在執行 `queue:work` 指令時指定 `--tries` 選項指定最大的錯誤嘗試次數。如果 `--tries` 選項沒有被指定，失敗的隊列任務會不斷的進行錯誤重試：
 
     php artisan queue:work redis --tries=3
 
