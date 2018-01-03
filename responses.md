@@ -1,13 +1,13 @@
 # HTTP 回應
 
 - [建立回應](#creating-responses)
-    - [回應附加標題](#attaching-headers-to-responses)
-    - [回應附加 Cookie](#attaching-cookies-to-responses)
+    - [附加 Header 到回應](#attaching-headers-to-responses)
+    - [附加 Cookie 到回應](#attaching-cookies-to-responses)
     - [Cookie 與加密](#cookies-and-encryption)
 - [重導](#redirects)
     - [重導到已命名的路由](#redirecting-named-routes)
     - [重導到控制器行為](#redirecting-controller-actions)
-    - [重導並補上快閃 Session 資料](#redirecting-with-flashed-session-data)
+    - [重導並加上快閃 Session 資料](#redirecting-with-flashed-session-data)
 - [其他回應類型](#other-response-types)
     - [視圖回應](#view-responses)
     - [JSON 回應](#json-responses)
@@ -20,7 +20,7 @@
 
 #### 字串與陣列
 
-所有路由與控制器會回傳一個回應，並送回使用者的瀏覽器。Laravel 提供幾個不同的方式來回傳回應。最基本的回應是只從路由和控制器中回傳一組字串。Laravel 會自動將字串轉換成完整的 HTTP 回應：
+所有路由與控制器應該回傳一個回應到使用者的瀏覽器。Laravel 提供幾個不同的方式來回傳回應。最基本的回應是只從路由和控制器中回傳一組字串。Laravel 會自動將字串轉換成完整的 HTTP 回應：
 
     Route::get('/', function () {
         return 'Hello World';
@@ -38,7 +38,7 @@
 
 通常你不會只從路由行為中回傳簡單的字串或陣列，反而是回傳完整的 `Illuminate\Http\Response` 實例或[視圖](/docs/{{version}}/views)。
 
-回傳完整的 `Response` 實例可以讓你自訂回應的 HTTP 狀態碼和標頭。`Response` 實例繼承自 `Symfony\Component\HttpFoundation\Response` 類別，這會附帶各種方法來提供建構 HTTP 回應時使用：
+回傳完整的 `Response` 實例可以讓你自訂 HTTP 狀態碼和 header。`Response` 實例繼承自 `Symfony\Component\HttpFoundation\Response` 類別，這會附帶各種方法來提供建構 HTTP 回應時使用：
 
     Route::get('home', function () {
         return response('Hello World', 200)
@@ -48,14 +48,14 @@
 <a name="attaching-headers-to-responses"></a>
 #### 回應附加標頭
 
-請銘記在心，大多數的回應方法是可被連結的，這可以讓你優雅的建構回應實例。例如，在發送回應給使用者前，你可以使用 `header` 方法來新增一系列的標頭到回應中：
+請記得，大多數的方法是可以被鏈結的，這可以讓你優雅的建構回應實例。例如，在發送回應給使用者前，你可以使用 `header` 方法來新增一系列的 header 到回應中：
 
     return response($content)
                 ->header('Content-Type', $type)
                 ->header('X-Header-One', 'Header Value')
                 ->header('X-Header-Two', 'Header Value');
 
-或是你使用 `withHeaders` 方法來指定一組標頭陣列，並新增到回應中：
+或是你使用 `withHeaders` 方法來指定一組 header 陣列，並新增到回應中：
 
     return response($content)
                 ->withHeaders([
@@ -73,7 +73,7 @@
                     ->header('Content-Type', $type)
                     ->cookie('name', 'value', $minutes);
 
-`cookie` 方法也接受一些不常使用的參數。通常這些參數會與 PHP 本身的 [setcookie](https://secure.php.net/manual/en/function.setcookie.php) 方法的參數具有相同的意義和目的：
+`cookie` 方法也接受一些不常使用的參數。通常這些參數會和 PHP 原生的 [setcookie](https://secure.php.net/manual/en/function.setcookie.php) 方法的參數具有相同的意義和目的：
 
     ->cookie($name, $value, $minutes, $path, $domain, $secure, $httpOnly)
 
@@ -100,7 +100,7 @@
 <a name="redirects"></a>
 ## 重導
 
-重導回應是 `Illuminate\Http\RedirectResponse` 類別的實例，並具有將使用者重導到另一個 URL 所需的標頭。這有幾種方式來產生 `RedirectResponse` 實例。最簡單的方法是使用全域的 `redirect` 輔助函式：
+重導回應是 `Illuminate\Http\RedirectResponse` 類別的實例，並包含需要被重導到使用者另一個 URL 所需要的正確 header。這有幾種方式來產生 `RedirectResponse` 實例。最簡單的方法是使用全域的 `redirect` 輔助函式：
 
     Route::get('dashboard', function () {
         return redirect('home/dashboard');
@@ -127,15 +127,15 @@
 
     return redirect()->route('profile', ['id' => 1]);
 
-#### 透過 Eloquent 模型預填入參數
+#### 透過 Eloquent 模型填入參數
 
 如果你正要重導到需要從 Eloquent 模型填入「ID」參數的路由，你可以只傳入模型本身。該 ID 會被自動取出：
 
-    // For a route with the following URI: profile/{id}
+    // 以下路由會對應到這組 URI： profile/{id}
 
     return redirect()->route('profile', [$user]);
 
-如果你想要自訂位在路由參數中的值，你應該在 Eloquent 模型上覆寫 `getRouteKey` 方法：
+如果你想要自定義位在路由參數中的值，你應該在 Eloquent 模型上覆寫 `getRouteKey` 方法：
 
     /**
      * 取得模型的路由鍵的值。
@@ -150,7 +150,7 @@
 <a name="redirecting-controller-actions"></a>
 ### 重導到控制行為
 
-你也可以產生重導到 [控制器行為](/docs/{{version}}/controllers)。可以將控制器和行為名稱傳入 `action` 方法來做到。請記得，你不需要指定完整的命名空間到控制器，因為 Laravel 的 `RouteServiceProvider` 已預設為基本控制器的命名空間：
+你也可以產生重導到[控制器行為](/docs/{{version}}/controllers)。可以將控制器和行為名稱傳入 `action` 方法來做到。請記得，你不需要指定完整的命名空間到控制器，因為 Laravel 的 `RouteServiceProvider` 已預設為基本控制器的命名空間：
 
     return redirect()->action('HomeController@index');
 
@@ -161,9 +161,9 @@
     );
 
 <a name="redirecting-with-flashed-session-data"></a>
-### 重導並補上快閃 Session 資料
+### 重導並加上快閃 Session 資料
 
-要重導到新的 URL 並同時補上[快閃資料到 Session](/docs/{{version}}/session#flash-data)。通常是用在成功執行一個行為後，將成功的訊息快閃到 Session。為了方便講解，你可以建立一個 `RedirectResponse` 實例，並使用一個優雅的方法鏈結將資料快閃到 Session：
+通常重導到新的 URL 並同時加上[快閃資料到 Session](/docs/{{version}}/session#flash-data) 幾乎是在同一時間完成的。通常是用在成功執行一個行為後，將成功的訊息快閃到 Session。為了方便，你可以建立一個 `RedirectResponse` 實例，並使用一個優雅的方法鏈結將資料快閃到 Session：
 
     Route::post('user/profile', function () {
         // 更新使用者的個人資料...
@@ -171,7 +171,7 @@
         return redirect('dashboard')->with('status', 'Profile updated!');
     });
 
-使用者被重導後，你可以從 [Session](/docs/{{version}}/session)中顯示被快閃的訊息。例如，使用 [Blade 語法](/docs/{{version}}/blade):
+使用者被重導後，你可以從 [Session](/docs/{{version}}/session) 中顯示被快閃的訊息。例如，使用 [Blade 語法](/docs/{{version}}/blade)：
 
     @if (session('status'))
         <div class="alert alert-success">
@@ -193,12 +193,12 @@
                 ->view('hello', $data, 200)
                 ->header('Content-Type', $type);
 
-當然，如果你不需要傳入一個自訂的 HTTP 狀態碼或自訂的標頭，就直接使用 `view` 輔助函式。
+當然，如果你不需要傳入一個自訂的 HTTP 狀態碼或自訂的 header，就直接使用 `view` 輔助函式。
 
 <a name="json-responses"></a>
 ### JSON 回應
 
-`json` 方法會自動設定 `Content-Type` 標頭到 `application/json`，以及使用 PHP 的 `json_encode` 函式將陣列轉換成 JSON：
+`json` 方法會自動設定 `Content-Type` header 到 `application/json`，以及使用 PHP 的 `json_encode` 函式將陣列轉換成 JSON：
 
     return response()->json([
         'name' => 'Abigail',
@@ -214,7 +214,7 @@
 <a name="file-downloads"></a>
 ### 檔案下載
 
-`download` 方法可被用於產生一個會強制使用者的瀏覽器去下載給定路徑的檔案的回應。`download` 方法接受一個檔案名稱作為該方法的第二個參數，這會確認下載該檔案的使用者所看到的檔案名稱。最後，你可以將一組 HTTP 標頭的陣列作為第三個參數傳入到該方法：
+`download` 方法可被用於產生一個會強制使用者的瀏覽器去下載給定路徑的檔案的回應。`download` 方法接受一個檔案名稱作為該方法的第二個參數，這會確認下載該檔案的使用者所看到的檔案名稱。最後，你可以將一組 HTTP header 的陣列作為第三個參數傳入到該方法：
 
     return response()->download($pathToFile);
 
