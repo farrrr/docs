@@ -6,7 +6,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使用了許多這些功能。如果你也覺得很方便的話，可以在應用程式中隨意的使用它們。
+Laravel 包含了各式各樣的全域「輔助」PHP 函式。很多函式都有在框架本身使用到。如果你也覺得很方便的話，可以在應用程式中隨意的使用它們。
 
 <a name="available-methods"></a>
 ## 可用的方法
@@ -193,7 +193,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-add"></a>
 #### `array_add()` {#collection-method .first-collection-method}
 
-如果想要將特定的鍵新增到現有的陣列中，請使用 `array_add` 函式來將鍵與值新增至陣列中：
+如果指定的 key 在陣列中不存在，`array_add` 函式就會把指定的 key / value 新增到陣列中：
 
     $array = array_add(['name' => 'Desk'], 'price', 100);
 
@@ -202,7 +202,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-collapse"></a>
 #### `array_collapse()` {#collection-method}
 
-可以使用 `array_collapse` 函式將多組陣列合併成一組陣列：
+可以使用 `array_collapse` 函式將二維陣列合併成一維陣列：
 
     $array = array_collapse([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
 
@@ -233,7 +233,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-except"></a>
 #### `array_except()` {#collection-method}
 
-`array_except` 函式可以從一組陣列中移除特定的鍵值對：
+`array_except` 函式可以從一維陣列中移除特定的鍵值對：
 
     $array = ['name' => 'Desk', 'price' => 100];
 
@@ -254,14 +254,14 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 
     // 200
 
-可以傳入第三個參數作為該方法的預設值。如果陣列中沒有通過條件的元素，就會回傳這個預設值：
+可以傳入第三個參數作為預設值。如果陣列中沒有通過條件的元素，就會回傳這個預設值：
 
     $first = array_first($array, $callback, $default);
 
 <a name="method-array-flatten"></a>
 #### `array_flatten()` {#collection-method}
 
-`array_flatten` 函式可以將多維陣列的值給扁平化成一組陣列：
+`array_flatten` 函式可以將多維陣列的值給扁平化成一維陣列：
 
     $array = ['name' => 'Joe', 'languages' => ['PHP', 'Ruby']];
 
@@ -272,7 +272,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-forget"></a>
 #### `array_forget()` {#collection-method}
 
-`array_forget` 函式可以使用「點」符號來從多層巢狀的陣列中移除特定的鍵值對：
+`array_forget` 函式可以使用「點」表示法來從多維的巢狀陣列中移除特定的鍵值對：
 
     $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -283,7 +283,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-get"></a>
 #### `array_get()` {#collection-method}
 
-`array_get` 函式可以使用「點」符號來從多層巢狀的陣列中取得一個值：
+`array_get` 函式可以使用「點」表示法來從多維的巢狀陣列中取得一個值：
 
     $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -300,7 +300,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-has"></a>
 #### `array_has()` {#collection-method}
 
-`array_has` 函式可以使用「點」符號來檢查給定的項目是否存在於陣列中：
+`array_has` 函式可以使用「點」表示法來檢查給定的項目是否存在於陣列中：
 
     $array = ['product' => ['name' => 'Desk', 'price' => 100]];
 
@@ -325,7 +325,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 
     // 300
 
-可以傳入第三個參數作為該方法的預設值。如果陣列中沒有通過條件的元素，就會回傳這個預設值：
+可以傳入第三個參數作為預設值。如果陣列中沒有通過條件的元素，就會回傳這個預設值：
 
     $last = array_last($array, $callback, $default);
 
@@ -392,7 +392,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 
     // $array: ['price' => 100]
 
-可以傳入第三個參數作為該方法的預設值。要是該鍵不存在，就會回傳預設值：
+可以傳入第三個參數作為預設值。要是該鍵不存在，就會回傳預設值：
 
     $value = array_pull($array, $key, $default);
 
@@ -416,7 +416,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-set"></a>
 #### `array_set()` {#collection-method}
 
-`array_set` 函式可以使用「點」符號在深層巢狀陣列中設定一個值：
+`array_set` 函式可以使用「點」表示法在深層巢狀陣列中設定一個值：
 
     $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -427,7 +427,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-array-sort"></a>
 #### `array_sort()` {#collection-method}
 
-`array_sort` 函式會依照陣列的值來做簡易的排列：
+`array_sort` 函式會依照陣列的值由小到大來排序：
 
     $array = ['Desk', 'Table', 'Chair'];
 
@@ -501,7 +501,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-data-fill"></a>
 #### `data_fill()` {#collection-method}
 
-可以在 `data_fill` 函式中使用「點」符號來表示巢狀陣列或物件，並補齊當中所缺少的鍵值：
+可以在 `data_fill` 函式中使用「點」表示法來表示巢狀陣列或物件，並補齊當中所缺少的鍵值：
 
     $data = ['products' => ['desk' => ['price' => 100]]];
 
@@ -737,7 +737,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-kebab-case"></a>
 #### `kebab_case()` {#collection-method}
 
-`kebab_case` 函式可以將給定字串轉換成`串式命名`:
+`kebab_case` 函式可以將給定字串轉換成 `kebab-case`:
 
     $converted = kebab_case('fooBar');
 
@@ -859,7 +859,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 
     // children
 
-可以提供一個整數值作為該函式的第二個參數，這可被用來判斷字串是單數還是複數：
+可以提供一個整數值作為該函式的第二個參數，這可被用來指定要回傳單數還是複數：
 
     $plural = str_plural('child', 2);
 
@@ -921,7 +921,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-str-slug"></a>
 #### `str_slug()` {#collection-method}
 
-`str_slug` 函式可以從指定字串中產生一些對 URL 友善的「slug」：
+`str_slug` 函式根據指定的字串生成一個對 URL 友善的「slug」：
 
     $slug = str_slug('Laravel 5 Framework', '-');
 
@@ -943,7 +943,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-studly-case"></a>
 #### `studly_case()` {#collection-method}
 
-`studly_case` 函式可以將給定字串轉換成 `Studly 式命名`：
+`studly_case` 函式可以將給定字串轉換成 `StudlyCas`：
 
     $converted = studly_case('foo_bar');
 
@@ -952,7 +952,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-title-case"></a>
 #### `title_case()` {#collection-method}
 
-`title_case` 函式可以將給定字串轉換成`字首大寫`:
+`title_case` 函式可以將給定字串轉換成 `Title Case`:
 
     $converted = title_case('a nice title uses the correct case');
 
@@ -970,7 +970,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 <a name="method-trans-choice"></a>
 #### `trans_choice()` {#collection-method}
 
-`trans_choice` 函式根據詞性變化來翻譯給定的語系鍵：
+`trans_choice` 函式根據數量來翻譯給定的語系鍵：
 
     echo trans_choice('messages.notifications', $unreadCount);
 
@@ -1084,7 +1084,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 
     $container = app();
 
-你可以從容器中傳入一個類別或介面名稱來解析它：
+你可以傳入一個類別或介面名稱來使用服務容器解析功能：
 
     $api = app('HelpSpot\API');
 
@@ -1246,7 +1246,7 @@ Laravel 包含了各式各樣的全域「輔助」PHP 函式。框架本身使�
 
     dump($value1, $value2, $value3, ...);
 
-如果你想要先中斷腳本的執行，在印出變數。請改用 [`dd`](#method-dd) 函式。
+如果你想要在印出變數以後，馬上中斷腳本的執行。請改用 [`dd`](#method-dd) 函式。
 
 <a name="method-encrypt"></a>
 #### `encrypt()` {#collection-method}
