@@ -7,7 +7,7 @@
     - [必要參數](#required-parameters)
     - [可選參數](#parameters-optional-parameters)
     - [正規表示式限制](#parameters-regular-expression-constraints)
-- [具名路由](#named-routes)
+- [命名路由](#named-routes)
 - [路由群組](#route-groups)
     - [中介層](#route-group-middleware)
     - [命名空間](#route-group-namespaces)
@@ -16,8 +16,8 @@
 - [路由模型綁定](#route-model-binding)
     - [隱式綁定](#implicit-binding)
     - [顯式綁定](#explicit-binding)
-- [欺騙表單方法](#form-method-spoofing)
-- [訪問當前路由](#accessing-the-current-route)
+- [表單欺騙方法](#form-method-spoofing)
+- [訪問目前路由](#accessing-the-current-route)
 
 <a name="basic-routing"></a>
 ## 基本路由
@@ -36,7 +36,7 @@
 
     Route::get('/user', 'UsersController@index');
 
-`routes/api.php` 檔案中定義的路由會被 `RouteServiceProvider` 嵌套在一個路由群組中。群組中的路由會自動被加上 `/api` 前綴，因此你不需要手動在檔案中的每個路由做設定。可以藉由修改 `RouteServiceProvider` 類別來調整前綴及其他路由群組選項。
+`routes/api.php` 檔案中定義的路由會透過 `RouteServiceProvider` 被巢狀在一個路由群組中。群組中的路由會自動被加上 `/api` 前綴，因此你不需要手動在檔案中的每個路由做設定。可以藉由修改 `RouteServiceProvider` 類別來調整前綴及其他路由群組選項。
 
 #### 可用的路由器方法
 
@@ -61,7 +61,7 @@
 
 #### CSRF 保護
 
-任何指向 `web` 路由檔案中定義的 `POST`、`PUT` 或 `DELETE` 路由的 HTML 表單都應該包含一個 CSRF 標記欄位。否則請求會被拒絕。詳細 CSRF 保護的說明請參閱 [CSRF 文件](/docs/{{version}}/csrf)：
+任何指向 `web` 路由檔案中定義的 `POST`、`PUT` 或 `DELETE` 路由的 HTML 表單都應該包含一個 CSRF token 欄位。否則請求會被拒絕。詳細 CSRF 保護的說明請參閱 [CSRF 文件](/docs/{{version}}/csrf)：
 
     <form method="POST" action="/profile">
         {{ csrf_field() }}
@@ -71,14 +71,14 @@
 <a name="redirect-routes"></a>
 ### 重導路由
 
-如果要定義重導至另一個 URI 的路由，可以使用 `Route::redirect` 方法。此方法提供一個方便的捷徑，因此不須要定義一個完整的路由或控制器來執行單純的重導：
+如果要定義重導至另一個 URI 的路由，可以使用 `Route::redirect` 方法。此方法提供一個方便的快捷方式，所以你不需要定義ㄧ個完整的路由或控制器來執行一個單純的重導：
 
     Route::redirect('/here', '/there', 301);
 
 <a name="view-routes"></a>
 ### 視圖路由
 
-如果路由只需要回傳一個視圖，可以使用 `Route::view` 方法。如同 `redirect` 方法，此方法提供一個方便的捷徑，因此不須要定義一個完整的路由或控制器。`view` 方法的第一個參數是 URI，第二個參數是視圖名稱。此外，也可以在可選的第三個參數傳入提供給視圖的資料陣列。
+如果路由只需要回傳一個視圖，可以使用 `Route::view` 方法。如同 `redirect` 方法，此方法提供一個方便的快捷方式，因此不須要定義一個完整的路由或控制器。`view` 方法的第一個參數是 URI，第二個參數是視圖名稱。此外，也可以在可選的第三個參數傳入提供給視圖的資料陣列。
 
     Route::view('/welcome', 'welcome');
 
@@ -102,7 +102,7 @@
         //
     });
 
-路由的參數都會被放在 `{}` 大括號內，只由字母組成，且不包含 `-` 字元。使用 `_` 來取代 `-`。路由參數會依照順利來注入路由的回呼或控制器中，回呼或控制器中的參數名稱不會有任何影響。
+路由的參數都會被放在 `{}` 大括號內，只由字母組成，且不包含 `-` 字元。使用 `_` 來取代 `-`。路由參數根據它們的順序被注入到路由回呼或控制器中 - 回呼或控制器中的參數名稱不會有任何影響。
 
 <a name="parameters-optional-parameters"></a>
 ### 選擇性參數
@@ -120,7 +120,7 @@
 <a name="parameters-regular-expression-constraints"></a>
 ### 正規表示式限制
 
-可以藉由 route 實例的 `where` 方法來限制路由參數的格式。`where` 方法接受參數的名稱和限制參數格式的正規表示式：
+你可以在一個路由實例使用 `where` 方法來限制路由參數的格式。`where` 方法接受參數的名稱和限制參數格式的正規表示式：
 
     Route::get('user/{name}', function ($name) {
         //
@@ -137,7 +137,7 @@
 <a name="parameters-global-constraints"></a>
 #### 全域限制
 
-如果你想要一個路由參數總是被一個指定的正規表示式限制，可以使用 `pattern` 方法。在 `RouteServiceProvider` 中的 `boot` 方法來定義這些格式：
+如果你想要一個路由參數總是透過指定的正規表示式限制，可以使用 `pattern` 方法。在 `RouteServiceProvider` 中的 `boot` 方法來定義這些格式：
 
     /**
      * 定義你的模型綁定、格式過濾器等。
@@ -151,16 +151,16 @@
         parent::boot();
     }
 
-定義好格式後，會自動指定給所有使用相同參數名稱的路由：
+一旦定義好格式後，它將自動應用於使用該參數名稱的所有路由：
 
     Route::get('user/{id}', function ($id) {
         // {id} 為數字時才會執行...
     });
 
 <a name="named-routes"></a>
-## 具名路由
+## 命名路由
 
-具名路由讓你更方便為特定路由產生 URL 或重導。可以藉由鏈結 `name` 方法來為路由定義加上名稱：
+命名路由讓你更方便為特定路由產生 URL 或重導。可以藉由鏈結 `name` 方法來為路由定義加上名稱：
 
     Route::get('user/profile', function () {
         //
@@ -170,7 +170,7 @@
 
     Route::get('user/profile', 'UserController@showProfile')->name('profile');
 
-#### 產生具名路由的 URL
+#### 產生命名路由的 URL
 
 指定名稱給路由後，便可以在使用全域的 `route` 方法產生 URL 或重導時使用路由名稱。
 
@@ -180,7 +180,7 @@
     // 產生重導...
     return redirect()->route('profile');
 
-如果具名路由有定義參數，可以把參數傳給 `route` 方法的第二個參數。提供的參數會自動被插入到 URL 中正確的位置：
+如果命名路由有定義參數，可以把參數傳給 `route` 方法的第二個參數。提供的參數會自動被插入到 URL 中正確的位置：
 
     Route::get('user/{id}/profile', function ($id) {
         //
@@ -188,9 +188,9 @@
 
     $url = route('profile', ['id' => 1]);
 
-#### 檢查當前的路由
+#### 檢查目前路由
 
-如果你想要確定當前的請求是否有被路由到指定的具名路由，可以使用 Route 實例的 `named` 方法。例如，可以在路由中介層中檢查當前的路由名稱：
+如果你想要確定目前的請求是否有被路由到指定的命名路由，可以使用 Route 實例的 `named` 方法。例如，可以在路由中介層中檢查目前的路由名稱：
 
     /**
      * 處理傳入的請求。
@@ -251,7 +251,7 @@
     });
 
 <a name="route-group-prefixes"></a>
-### 路油前綴
+### 路由前綴
 
 `prefix` 方法可以用來為群組中的每個路由加上 URI 前綴。例如，你可能想要在群組中所有的路由 URI 加上 `admin` 前綴：
 
@@ -264,7 +264,7 @@
 <a name="route-model-binding"></a>
 ## 路由模型綁定
 
-注入模型的 ID 到路由或控制器行為時，常會查詢來取得 ID 對應的模型。Laravel 路由模型綁定提供方便的方式來自動注入類別實例至路由中。例如，除了注入一個使用者的 ID，你可以注入與給定 ID 相符的完整 `User` 模型實例。
+當注入模型的 ID 到路由或控制器行為時，你將會經常查詢來取得與該 ID 對應的模型。Laravel 路由模型綁定提供方便的方式來自動注入類別實例至路由中。例如，除了注入一個使用者的 ID，你可以注入與給定 ID 相符的完整 `User` 模型實例。
 
 <a name="implicit-binding"></a>
 ### 隱式綁定
@@ -275,10 +275,9 @@ Laravel 會自動解析路由或控制器行為中變數名稱與路由片段名
         return $user->email;
     });
 
+#### 自定鍵名
 
 由於 `$user` 變數的型別提示為 `App\User` Eloquent 模型且與 URI 的 `{user}` 片段相符，Laravel 會自動注入與請求 URI 的 ID 值對應的模型實例。如果資料庫中找不到符合的模型實例，會自動產生一個 404 HTTP 回應。
-
-#### 自定鍵名
 
 如果你想讓模型綁定取得模型類別時使用 `id` 以外的資料庫欄位，你可以覆寫 Eloquent 模型的 `getRouteKeyName` 方法：
 
@@ -314,7 +313,7 @@ Laravel 會自動解析路由或控制器行為中變數名稱與路由片段名
 
 如果資料庫中找不到符合的模型實例，會自動產生一個 404 HTTP 回應。
 
-#### 自定解析邏輯
+#### 自訂解析邏輯
 
 如果你希望使用你自己的解析邏輯，可以使用 `Route::bind` 方法。你傳遞至 `bind` 方法的`閉包`會取得 URI 的部分值，且應該回傳你想注入至路由的類別實例：
 
@@ -328,7 +327,7 @@ Laravel 會自動解析路由或控制器行為中變數名稱與路由片段名
     }
 
 <a name="form-method-spoofing"></a>
-## 欺騙表單方法
+## 表單欺騙方法
 
 HTML 表單沒有支援 `PUT`、`PATCH` 或 `DELETE` 動作。所以在定義由 HTML 表單所呼叫的 `PUT`、`PATCH` 或 `DELETE` 路由時，你會需要在表單中增加隱藏的 `_method` 欄位。隨著 `_method` 欄位送出的值將被視為 HTTP 請求方法使用：
 
@@ -342,7 +341,7 @@ HTML 表單沒有支援 `PUT`、`PATCH` 或 `DELETE` 動作。所以在定義由
     {{ method_field('PUT') }}
 
 <a name="accessing-the-current-route"></a>
-## 訪問當前路由
+## 訪問目前路由
 
 你可以用 `Route` facade 的 `current`、`currentRouteName` 和 `currentRouteAction` 方法來取得有關處理傳入請求的路由的資訊：
 
@@ -352,4 +351,4 @@ HTML 表單沒有支援 `PUT`、`PATCH` 或 `DELETE` 動作。所以在定義由
 
     $action = Route::currentRouteAction();
 
-參考 [Route facade 的基礎類別](https://laravel.com/api/{{version}}/Illuminate/Routing/Router.html) and [Route 實例](https://laravel.com/api/{{version}}/Illuminate/Routing/Route.html) 來詳閱可用的方法。
+請參考 [Route facade 的基礎類別](https://laravel.com/api/{{version}}/Illuminate/Routing/Router.html)和[路由實例](https://laravel.com/api/{{version}}/Illuminate/Routing/Route.html)這兩份 API 文件來詳閱可用的方法。
