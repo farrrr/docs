@@ -9,10 +9,10 @@
 - [執行任務](#dispatching-jobs)
     - [延遲執行](#delayed-dispatching)
     - [隊列任務鏈](#job-chaining)
-    - [Customizing The Queue & Connection](#customizing-the-queue-and-connection)
-    - [Specifying Max Job Attempts / Timeout Values](#max-job-attempts-and-timeout)
-    - [Rate Limiting](#rate-limiting)
-    - [Error Handling](#error-handling)
+    - [自訂隊列 & 連接](#customizing-the-queue-and-connection)
+    - [指定最大任務嘗試次數 / 逾時](#max-job-attempts-and-timeout)
+    - [限制執行比例](#rate-limiting)
+    - [錯誤處理](#error-handling)
 - [Running The Queue Worker](#running-the-queue-worker)
     - [Queue Priorities](#queue-priorities)
     - [Queue Workers & Deployment](#queue-workers-and-deployment)
@@ -221,11 +221,11 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
     ])->dispatch();
 
 <a name="customizing-the-queue-and-connection"></a>
-### Customizing The Queue & Connection
+### 自訂隊列 & 連結
 
-#### Dispatching To A Particular Queue
+#### 在特定的隊列中執行
 
-By pushing jobs to different queues, you may "categorize" your queued jobs and even prioritize how many workers you assign to various queues. Keep in mind, this does not push jobs to different queue "connections" as defined by your queue configuration file, but only to specific queues within a single connection. To specify the queue, use the `onQueue` method when dispatching the job:
+透過推送並任務至不同的隊列，你可以對隊列任務進行「分類」，讓多個隊列任務之間分配不同的執行優先順序和 Worker 的執行數量。記住，這樣的行為並不會將對列任務推送到隊列設定檔內定義的「連線」。而只會將隊列任務在單一連線內推送到指定的隊列。在執行隊列任務時呼叫 `onQueue` 方法能指定隊列：
 
     <?php
 
@@ -238,22 +238,22 @@ By pushing jobs to different queues, you may "categorize" your queued jobs and e
     class PodcastController extends Controller
     {
         /**
-         * Store a new podcast.
+         * 儲存一個新推播
          *
          * @param  Request  $request
          * @return Response
          */
         public function store(Request $request)
         {
-            // Create podcast...
+            // 建立推播...
 
             ProcessPodcast::dispatch($podcast)->onQueue('processing');
         }
     }
 
-#### Dispatching To A Particular Connection
+#### 在特定的連線中執行
 
-If you are working with multiple queue connections, you may specify which connection to push a job to. To specify the connection, use the `onConnection` method when dispatching the job:
+如果你正嘗試使用多個隊列連線，你可以指定要將對列任務推送到哪個連線。在執行隊列任務時呼叫 `onConnection` 方法能指定隊列任務推送至特定的連線：
 
     <?php
 
@@ -266,35 +266,35 @@ If you are working with multiple queue connections, you may specify which connec
     class PodcastController extends Controller
     {
         /**
-         * Store a new podcast.
-         *
+         * 儲存一個新推播
+         *
          * @param  Request  $request
          * @return Response
          */
         public function store(Request $request)
         {
-            // Create podcast...
+            // 建立推播...
 
             ProcessPodcast::dispatch($podcast)->onConnection('sqs');
         }
     }
 
-Of course, you may chain the `onConnection` and `onQueue` methods to specify the connection and the queue for a job:
+當然,你可以串連 `onConnection` 和 `onQueue` 方法指定任務的連線和隊列：
 
     ProcessPodcast::dispatch($podcast)
                   ->onConnection('sqs')
                   ->onQueue('processing');
 
 <a name="max-job-attempts-and-timeout"></a>
-### Specifying Max Job Attempts / Timeout Values
+### 指定最大任務嘗試次數 / 逾時
 
-#### Max Attempts
+#### 最大嘗試次數 
 
-One approach to specifying the maximum number of times a job may be attempted is via the `--tries` switch on the Artisan command line:
+指定最大任務嘗試次數的一種方法是透過在執行 Artisan 指令時啟用 `--tries` 選項：
 
     php artisan queue:work --tries=3
 
-However, you may take a more granular approach by defining the maximum number of attempts on the job class itself. If the maximum number of attempts is specified on the job, it will take precedence over the value provided on the command line:
+不過，更精細的方式則是在任務類別內定義最大的嘗試次數。如果任務類別內指定了最大嘗試次數，在執行上述 Artisan 命令時類別內指定的最大次數優先於命令列指定的次數：
 
     <?php
 
@@ -303,7 +303,7 @@ However, you may take a more granular approach by defining the maximum number of
     class ProcessPodcast implements ShouldQueue
     {
         /**
-         * The number of times the job may be attempted.
+         * 隊列任務最大的嘗試次數
          *
          * @var int
          */
@@ -311,12 +311,12 @@ However, you may take a more granular approach by defining the maximum number of
     }
 
 <a name="time-based-attempts"></a>
-#### Time Based Attempts
+#### 基於計時的嘗試
 
-As an alternative to defining how many times a job may be attempted before it fails, you may define a time at which the job should timeout. This allows a job to be attempted any number of times within a given time frame. To define the time at which a job should timeout, add a `retryUntil` method to your job class:
+作為替代單純定義任務失敗時的最大嘗試次數的另一個方式，你可以定義任務的逾時時間，這讓任務可以在指定的時間內可以被重試無數次。在隊列任務類別內新增 `retryUntil` 方法來定義任務的最大逾時時間：
 
     /**
-     * Determine the time at which the job should timeout.
+     * 預估該隊列任務多久會逾時
      *
      * @return \DateTime
      */
@@ -325,17 +325,17 @@ As an alternative to defining how many times a job may be attempted before it fa
         return now()->addSeconds(5);
     }
 
-> {tip} You may also define a `retryUntil` method on your queued event listeners.
+> {tip} 你也可以在你的隊列事件監聽類別內定義 `retryUntil` 方法。
 
-#### Timeout
+#### 逾時
 
-> {note} The `timeout` feature is optimized for PHP 7.1+ and the `pcntl` PHP extension.
+> {note} `timeout` 功能在 PHP 7.1+ 版本及 `pcntl` PHP 擴充元件均已優化。
 
-Likewise, the maximum number of seconds that jobs can run may be specified using the `--timeout` switch on the Artisan command line:
+同理，執行 Artisan 命令時使用 `--timeout` 選項能夠指定任務的最大秒數：
 
     php artisan queue:work --timeout=30
 
-However, you may also define the maximum number of seconds a job should be allowed to run on the job class itself. If the timeout is specified on the job, it will take precedence over any timeout specified on the command line:
+然而，你或許也想要在任務類別內定義任務允許被執行的最大秒數，如果在任務內指定了逾時，其優先權高於在 Artisan 命令列指定的秒數：
 
     <?php
 
@@ -344,7 +344,7 @@ However, you may also define the maximum number of seconds a job should be allow
     class ProcessPodcast implements ShouldQueue
     {
         /**
-         * The number of seconds the job can run before timing out.
+         * 任務在多久的時間內允許執行的最大秒數
          *
          * @var int
          */
@@ -352,38 +352,38 @@ However, you may also define the maximum number of seconds a job should be allow
     }
 
 <a name="rate-limiting"></a>
-### Rate Limiting
+### 限制執行比例
 
-> {note} This feature requires that your application can interact with a [Redis server](/docs/{{version}}/redis).
+> {note} 使用這個功能的前提是你的應用程式有根 [Redis 伺服器](/docs/{{version}}/redis) 進行互動
 
-If your application interacts with Redis, you may throttle your queued jobs by time or concurrency. This feature can be of assistance when your queued jobs are interacting with APIs that are also rate limited. For example, using the `throttle` method, you may throttle a given type of job to only run 10 times every 60 seconds. If a lock can not be obtained, you should typically release the job back onto the queue so it can be retried later:
+如果你的應用程式與 Redis 有所互動，你可以藉由時間或是併發次數限制隊列任務的執行。這個功能能夠協助你的隊列任務在與一些具備請求限制的 APIs 互動進行比例限制，舉例來說，使用 `throttle` 方法能夠限制該類型的任務只能在每 60 秒內執行 10 次。若無法鎖定，通常會將任務釋放回隊列以便稍後進行重試：
 
     Redis::throttle('key')->allow(10)->every(60)->then(function () {
-        // Job logic...
+        // 任務邏輯...
     }, function () {
-        // Could not obtain lock...
+        // 無法獲得鎖定...
 
         return $this->release(10);
     });
 
-> {tip} In the example above, the `key` may be any string that uniquely identifies the type of job you would like to rate limit. For example, you may wish to construct the key based on the class name of the job and the IDs of the Eloquent models it operates on.
+> {tip} 在上面的例子中， `key` 可能是任何的獨一無二的字串用來識別你想要限制執行比例的任務類型。比如，你可能會想要以類別名稱和對應操作 Eloquent 類別的 ID 作為鍵值。
 
-Alternatively, you may specify the maximum number of workers that may simultaneously process a given job. This can be helpful when a queued job is modifying a resource that should only be modified by one job at a time. For example, using the `funnel` method, you may limit jobs of a given type to only be processed by one worker at a time:
+另外，你可以指定同時處理隊列任務的 Worker 最大數量，這在限制隊列任務只能一次存取單一資源時特別有用。舉例來說，使用 `funnel` 方法能夠限制該類型的任務在同一時間內只能一次被單一個 Worker 處理：
 
     Redis::funnel('key')->limit(1)->then(function () {
-        // Job logic...
+        // 任務邏輯...
     }, function () {
-        // Could not obtain lock...
+        // 無法獲得鎖定...
 
         return $this->release(10);
     });
 
-> {tip} When using rate limiting, the number of attempts your job will need to run successfully can be hard to determine. Therefore, it is useful to combine rate limiting with [time based attempts](#time-based-attempts).
+> {tip} 在限制執行比利時，很難得知任務真正所需的最大嘗試次數，因此，同時限制執行比例和[逾時嘗試](#time-based-attempts)十分有效。
 
 <a name="error-handling"></a>
-### Error Handling
+### 錯誤處理
 
-If an exception is thrown while the job is being processed, the job will automatically be released back onto the queue so it may be attempted again. The job will continue to be released until it has been attempted the maximum number of times allowed by your application. The maximum number of attempts is defined by the `--tries` switch used on the `queue:work` Artisan command. Alternatively, the maximum number of attempts may be defined on the job class itself. More information on running the queue worker [can be found below](#running-the-queue-worker).
+如果執行隊列任務時一個例外狀況被拋出，該任務會自動的被釋放回隊列並且重新嘗試執行。該任務會在應用程式允許的最大嘗試次數內繼續地被執行和釋放回隊列，可藉由 `queue:work` Artisan 命令的 `--tries` 選項定義任務的最大嘗試次數。另外，也可以在任務類別內定義最大嘗試次數，更多關於執行隊列 Worker [請詳閱下列的資訊](#running-the-queue-worker)。
 
 <a name="running-the-queue-worker"></a>
 ## Running The Queue Worker
