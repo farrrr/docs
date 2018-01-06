@@ -8,7 +8,7 @@
     - [類別結構](#class-structure)
 - [執行任務](#dispatching-jobs)
     - [延遲執行](#delayed-dispatching)
-    - [Job Chaining](#job-chaining)
+    - [隊列任務鏈](#job-chaining)
     - [Customizing The Queue & Connection](#customizing-the-queue-and-connection)
     - [Specifying Max Job Attempts / Timeout Values](#max-job-attempts-and-timeout)
     - [Rate Limiting](#rate-limiting)
@@ -211,9 +211,9 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
 > {note} The Amazon SQS queue service has a maximum delay time of 15 minutes.
 
 <a name="job-chaining"></a>
-### Job Chaining
+### 隊列任務鏈
 
-Job chaining allows you to specify a list of queued jobs that should be run in sequence. If one job in the sequence fails, the rest of the jobs will not be run. To execute a queued job chain, you may use the `withChain` method on any of your dispatchable jobs:
+隊列任務鏈允許你指定一系列的隊列任務，並且依序的執行這些任務。如果隊列任務鏈中的其中一個工作失敗了，整個任務不會繼續被執行。你可以在任何被執行的隊列任務呼叫`withChain` 方法執行任務鏈：
 
     ProcessPodcast::withChain([
         new OptimizePodcast,
