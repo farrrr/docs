@@ -28,7 +28,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-預設的 Laravel 應用程式結構的宗旨是不論大型或小型的應用程式都可以為它們提供一個良好的開始。當然，你可以自由的依據你的喜好來規劃應用程式。Laravel 幾乎不會去不限制任何給定類別的位置，前提是 Composer 要能夠自動載入這個類別。
+Laravel 預設的應用程式結構主旨是為大型或小型應用程式提供一個好的起始點。當然，你可以自由的依據你的喜好來規劃應用程式。Laravel 幾乎不會去不限制任何給定類別的位置，前提是 Composer 要能夠自動載入這個類別。
 
 #### 模型目錄在哪裡?
 
@@ -47,7 +47,7 @@
 <a name="the-bootstrap-directory"></a>
 #### Bootstrap 目錄
 
-`bootstrap` 目錄放置啟動框架的 `app.php` 檔案。這個目錄也放置一個 `cache` 目錄，其中包含用於性能優化的框架產生檔案，例如，路由和服務快取的檔案。
+`bootstrap` 目錄放置啟動框架的 `app.php` 檔案。這個目錄也放置一個 `cache` 目錄，其中包含框架為效能最佳化所產生的檔案，像是路由和服務快取的檔案。
 
 <a name="the-config-directory"></a>
 #### Config 目錄
@@ -57,17 +57,17 @@
 <a name="the-database-directory"></a>
 #### Database 目錄
 
-`database` 目錄放置用來資料庫遷移和資料填充的檔案。如果你希望，你也可以使用目錄來存放 SQLite 資料庫。ㄋ
+`database` 目錄放置用來資料庫遷移和資料填充的檔案。如果你希望，你也可以使用目錄來存放 SQLite 資料庫。
 
 <a name="the-public-directory"></a>
 #### Public 目錄
 
-`public` 目錄放置 `index.php` 檔案，這是進入應用程式並自動載入設定的所有請求的入口。這個目錄也放置你的前端資源，像是圖像、JavaScript 和 CSS。
+`public` 目錄放置 `index.php` 檔案，這是進入應用程式並自動載入設定的所有請求的入口。這個目錄也放置你的前端資源，像是圖片、JavaScript 和 CSS。
 
 <a name="the-resources-directory"></a>
 #### Resources 目錄
 
-`resources` 目錄放置你的視圖以及原生、尚未編譯過的資源，像是 LESS、SASS 或 JavaScript。目錄也放置所有語系檔案。
+`resources` 目錄放置你的視圖以及原生、尚未編譯過的資源，像是 LESS、SASS 或 JavaScript。這個目錄也放置你所有的語系檔案。
 
 <a name="the-routes-directory"></a>
 #### Routes 目錄
@@ -102,9 +102,9 @@
 <a name="the-app-directory"></a>
 ## App 目錄
 
-大部分的應用程式都會放在 `app` 目錄中。預設這個目錄使用命名空間 App 並藉由 Composer 自動載入[採用 PSR-4 自動載入標準](http://www.php-fig.org/psr/psr-4/).
+大部分的應用程式都會放在 `app` 目錄中。預設這個目錄使用命名空間 App 並藉由 Composer 使用 [PSR-4 自動載入標準](http://www.php-fig.org/psr/psr-4/)自動載入。
 
-`app` 目錄放置多種額外的目錄，像是 `Console`、`Http` 和 `Providers`。可以將 `Console` 和 `Http` 目錄試想為提供 API 進入應用程式的核心。HTTP 協定和 CLI 都是跟應用程式進行互動的機制，但實際上並不包含應用程式邏輯。換句話說，它們是兩種簡單地釋出指令給應用程式的方法。`Console` 目錄包含你全部的 Artisan 指令，而 `Http` 目錄包含你的控制器、中介層和請求。
+`app` 目錄放置多種額外的目錄，像是 `Console`、`Http` 和 `Providers`。可以將 `Console` 和 `Http` 目錄看作提供 API 進入應用程式的核心。HTTP 協定和 CLI 都是跟應用程式進行互動的機制，但實際上並不包含應用程式邏輯。換句話說，它們是兩種簡單地釋出指令給應用程式的方法。`Console` 目錄包含你全部的 Artisan 指令，而 `Http` 目錄包含你的控制器、中介層和請求。
 
 當你使用 Artisan 指令 `make` 產生類別的時候，其他的目錄才會被建立到 `app` 目錄下。例如執行 `make:job` 指令產生任務類別時，`app/Jobs` 目錄才會出現在目錄中。
 
@@ -123,7 +123,7 @@ Events 目錄預設不存在，會在你使用 `event:generate` 或 `make:event`
 <a name="the-exceptions-directory"></a>
 #### Exceptions 目錄
 
-`Exceptions` 目錄包含應用程式的異常處理程序，同時也是個處置應用程式丟擲異常的好位置。如果你想自定義異常的記錄和渲染，你應該修改此目錄下的 `Handler` 類別。
+`Exceptions` 目錄包含應用程式的異常處理程序，同時也是放置你應用程式拋出任何異常的地方。如果你想自定義異常的記錄和渲染，你應該修改此目錄下的 `Handler` 類別。
 
 <a name="the-http-directory"></a>
 #### Http 目錄
@@ -138,7 +138,7 @@ Events 目錄預設不存在，會在你使用 `event:generate` 或 `make:event`
 <a name="the-listeners-directory"></a>
 #### Listeners 目錄
 
-這個目錄預設不存在，可以通過執行 `event:generate` 和 `make:listener` 指令建立。`Listeners` 目錄包含處理[事件](/docs/{{version}}/events)的類別（事件監聽器），事件監聽器接收一個事件並提供對該事件發生後的響應邏輯，例如，`UserRegistered` 事件可以被 `SendWelcomeEmail` 監聽器處理。
+這個目錄預設不存在，可以通過執行 `event:generate` 和 `make:listener` 指令建立。`Listeners` 目錄包含處理[事件](/docs/{{version}}/events)的類別，事件監聽器接收一個事件並提供對該事件發生後的響應邏輯，例如，`UserRegistered` 事件可以被 `SendWelcomeEmail` 監聽器處理。
 
 <a name="the-mail-directory"></a>
 #### Mail 目錄
