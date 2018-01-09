@@ -21,16 +21,16 @@
 <a name="configuration"></a>
 ### 設定
 
-Session 設定檔被存放在 `config/session.php`。請確實的查看檔案中的可用選項。預設的 Laravel 被設定使用 `file` Session 驅動，這對於許多應用程式來說算是不錯。在正式上線的應用程式中，你可能會考慮使用 `memcached` 或 `redis` 驅動來追求更快的 Session 性能。
+Session 設定檔被存放在 `config/session.php`。請確實的查看檔案中的可用選項。預設的 Laravel 被設定使用 `file` Session 驅動，這對於許多應用程式來說算是不錯。在正式上線的應用程式中，你可能會考慮使用 `memcached` 或 `redis` 驅動來追求更快的 Session 效能。
 
- Session `driver` 設定選項用來定義每個請求所儲存的 Session 資料位置。Laravel 內建幾個很棒的驅動，且能馬上應用：
+Session `driver` 設定選項用來定義每個請求所儲存的 Session 資料位置。Laravel 內建幾個很棒的驅動，且能馬上應用：
 
 <div class="content-list" markdown="1">
-- `file` - 將 Session 儲存到 `storage/framework/sessions` 中。
-- `cookie` - 將 Session 安全的且加密的存到 Cookie 中。
-- `database` - 將 Session 儲存到關聯資料庫中。
-- `memcached` / `redis` - 將 Session 其中一個可以快速且基於快取的儲存系統中。
-- `array` - 將 Session 暫存在 PHP 陣列中。
+- `file` - Session 被儲存到 `storage/framework/sessions` 中。
+- `cookie` - Session 被儲存到安全且被加密的 Cookie 中。
+- `database` - Session 被儲存到關聯資料庫中。
+- `memcached` / `redis` - Session 被儲存到其中一個快速且基於快取的儲存系統中。
+- `array` - Session 被儲存到一個 PHP 陣列中且不會被保留。
 </div>
 
 > {tip} 陣列式驅動被用於[測試](/docs/{{version}}/testing)的時候，並防止 Session 中的資料被永久儲存。
@@ -40,7 +40,7 @@ Session 設定檔被存放在 `config/session.php`。請確實的查看檔案中
 
 #### 資料庫
 
-在使用 `database` Session 驅動時，你會需要建立一個資料表還放置 Session 項目。以下是使用 `Schema` 建立資料表的範例：
+在使用 `database` Session 驅動時，你會需要建立一個資料表來放置 Session 項目。以下是使用 `Schema` 建立資料表的範例：
 
     Schema::create('sessions', function ($table) {
         $table->string('id')->unique();
@@ -59,7 +59,7 @@ Session 設定檔被存放在 `config/session.php`。請確實的查看檔案中
 
 #### Redis
 
-在使用 Laravel 搭配 Redis Session 之前，你會需要透過 Composer 來安裝`predis/predis` 套件（～1.0）。你可以在 `database` 設定檔中設定你的 Redis。在 `session` 設定檔中，`connection` 選項可被用於指定 Session 要使用哪一個 Redis 連線。
+在使用 Laravel 搭配 Redis Session 之前，你會需要透過 Composer 來安裝`predis/predis` 套件（~1.0）。你可以在 `database` 設定檔中設定你的 Redis。在 `session` 設定檔中，`connection` 選項可被用於指定 Session 要使用哪一個 Redis 連線。
 
 <a name="using-the-session"></a>
 ## 使用 Session
@@ -67,7 +67,7 @@ Session 設定檔被存放在 `config/session.php`。請確實的查看檔案中
 <a name="retrieving-data"></a>
 ### 取得資料
 
-Laravel 有兩種主要的方式來使用 Session 資料：全域的 `session` 輔助函式和透過 `Request` 實例。首先，‘讓我們觀察透過 `Request` 實例來存取該 Session，這個實例能直接注入在控制器的方法上。但請你記得，控制器方法依賴是透過 Laravel [服務容器](/docs/{{version}}/container) 來自動注入的：
+Laravel 有兩種主要的方式來使用 Session 資料：全域的 `session` 輔助函式和透過 `Request` 實例。首先，讓我們觀察透過 `Request` 實例來存取該 Session，這個實例能直接注入在控制器的方法上。但請你記得，控制器方法依賴是透過 Laravel [服務容器](/docs/{{version}}/container)來自動注入的：
 
     <?php
 
@@ -79,7 +79,7 @@ Laravel 有兩種主要的方式來使用 Session 資料：全域的 `session` �
     class UserController extends Controller
     {
         /**
-         * 為特定的使用者顯示個人資料。
+         * 顯示特定使用者的個人資料。
          *
          * @param  Request  $request
          * @param  int  $id
@@ -116,7 +116,7 @@ Laravel 有兩種主要的方式來使用 Session 資料：全域的 `session` �
         session(['key' => 'value']);
     });
 
-> {tip} 不論事透過 HTTP 請求實例，還是使用全域的 `session` 輔助函式，這兩者之間並無實際上的差異。能透過 `assertSessionHas` 方法在所有測試案例中[測試](/docs/{{version}}/testing)這兩種方法。
+> {tip} 不論是透過 HTTP 請求實例，還是使用全域的 `session` 輔助函式，這兩者之間並無實際上的差異。能透過 `assertSessionHas` 方法在所有測試案例中[測試](/docs/{{version}}/testing)這兩種方法。
 
 #### 取得所有 Session 資料
 
@@ -222,7 +222,7 @@ Laravel 有兩種主要的方式來使用 Session 資料：全域的 `session` �
 - `open` 方法通常用在基於檔案的 session 儲存系統中。因為 Larvel 內建就有 `file` 的驅動，你幾乎不用在方法內寫任何東西。你可以讓這個方法保持空的。只是基於不良的介面設計（我們將在之後討論），PHP 要求必實作此方法。
 - `close` 方法跟 `open` 方法很像，通常可以忽略，對大多數的驅動而言都不需要。
 - `read` 方法必須根據給予的 `$sessionId` 回傳關聯的 session 資料的字串版本。在驅動中取得或儲存資料都不需要做任何的編碼跟序列化的動作，因為 Laravel 會幫你完成序列化。
-- `write` 方法要能將與 `$sessionId` 關聯的 `$data` 字串存入永久儲存系統，如 MongoDB、Dynamo 等等。再說一次，你不應該執行任何序列化——Laravel 都幫你處理好啦。will have already handled that for you.
+- `write` 方法要能將與 `$sessionId` 關聯的 `$data` 字串存入永久儲存系統，如 MongoDB、Dynamo 等等。再說一次，你不應該執行任何序列化 - Laravel 都已經為你處理。
 - `destroy` 方法要能從永久儲存系統刪除與 `$sessionId` 關聯的資料。
 - `gc` 方法要能刪除給予 `$lifetime` 之前的所有資料，`$lifetime` 是一個 UNIX 的時間戳記。在 Memcached 和 Redis 這類會自動過期的系統中，可以讓此方法保持空的。
 </div>
