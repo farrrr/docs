@@ -12,13 +12,13 @@
     - [URL 的處理](#url-processing)
     - [Source Maps](#css-source-maps)
 - [使用 JavaScript](#working-with-scripts)
-    - [Vendor 萃取](#vendor-extraction)
+    - [Vendor 抽取](#vendor-extraction)
     - [React](#react)
     - [原生 JS](#vanilla-js)
     - [自訂 Webpack 設定](#custom-webpack-configuration)
 - [複製檔案與目錄](#copying-files-and-directories)
 - [版控與快取的清除](#versioning-and-cache-busting)
-- [Browsersync 的重新載入](#browsersync-reloading)
+- [Browsersync 重新載入](#browsersync-reloading)
 - [環境變數](#environment-variables)
 - [通知](#notifications)
 
@@ -59,7 +59,7 @@ Mix 是 [Webpack](https://webpack.js.org) 最上層的設定層。如果你要�
     // 執行所有 Mix 任務...
     npm run dev
 
-    // 執行所有 Mix 任務和縮小輸出...
+    // 執行所有 Mix 任務和壓縮輸出...
     npm run production
 
 #### 即時監控資源的變化
@@ -106,7 +106,7 @@ Mix 是 [Webpack](https://webpack.js.org) 最上層的設定層。如果你要�
 
     mix.sass('resources/assets/sass/app.scss', 'public/css');
 
-又再說一次，類似 `less` 方法，你可以編譯多個 Sass 檔案到他們所屬的 CSS 檔案，甚至可以自訂產生的 CSS 的輸出目錄：
+再說一次，類似 `less` 方法，你可以編譯多個 Sass 檔案到他們所屬的 CSS 檔案，甚至可以自訂產生的 CSS 的輸出目錄：
 
     mix.sass('resources/assets/sass/app.sass', 'public/css')
        .sass('resources/assets/sass/admin.sass', 'public/css/admin');
@@ -157,7 +157,7 @@ Mix 是 [Webpack](https://webpack.js.org) 最上層的設定層。如果你要�
 <a name="url-processing"></a>
 ### URL 處理
 
-因為 Laravel Mix 建構在，所以理解一些 Webpack 概念是很重要的。為了 CSS 編譯，Webpack 會在你的樣式表中重寫並優化任何 `url()` 呼叫。 雖然剛開始聽起來很起怪，但這是一個非常強大的功能。試想一下，我們想要編譯圖像的相對路徑的 Sass：
+因為 Laravel Mix 建構在 Webpack 上，所以理解一些 Webpack 概念是很重要的。為了 CSS 編譯，Webpack 會在你的樣式表中重寫並優化任何 `url()` 呼叫。 雖然剛開始聽起來很起怪，但這是一個非常強大的功能。試想一下，我們想要編譯包含圖片相對路徑的 Sass：
 
     .example {
         background: url('../images/example.png');
@@ -213,7 +213,7 @@ Mix 提供幾個功能來協助你使用 JavaScript 檔案，像是編譯 ECMASc
 
 將所有應用程式特定的 JavaScript 與 Vendor 函式庫綁定再一起的潛在缺點，就是要進行長期快取時會很困難。例如，對你的應用程式的程式碼只做一次更新就要強制瀏覽器重新下載所有 vendor 函式庫，就算其他內容沒有異動。
 
-如果打算頻繁的更新應用程式的 JavaScript，你應該考慮將所有的 Vendor 函式庫抽到自己的檔案中。這個方式，對應用程式的程式碼的更動不會影響到大型 `vendor.js` 檔案的快取。你可以使用 Mix 的 `extract` 方法來輕易做到：
+如果打算頻繁的更新應用程式的 JavaScript，你應該考慮將所有的 Vendor 函式庫抽取到自己的檔案中。這個方式，對應用程式的程式碼的更動不會影響到大型 `vendor.js` 檔案的快取。你可以使用 Mix 的 `extract` 方法來輕易做到：
 
     mix.js('resources/assets/js/app.js', 'public/js')
        .extract(['vue'])
@@ -235,7 +235,7 @@ Mix 提供幾個功能來協助你使用 JavaScript 檔案，像是編譯 ECMASc
 <a name="react"></a>
 ### React
 
-Mix 能自動安裝 React 所需的 Babel 插件。請用 `mix.react()` 來取代 `mix.js()` 呼叫：
+Mix 能自動安裝 React 所需的 Babel 插件。請呼叫 `mix.react()` 來取代 `mix.js()`：
 
     mix.react('resources/assets/js/app.jsx', 'public/js');
 
@@ -253,7 +253,7 @@ Mix 會在後台下載對應版本的 `babel-preset-react` Babel 插件。
 
 這個選項對於不需要 JavaScript 撰寫 webpack 的舊專案特別好用。
 
-> {tip} `mix.scripts()` 的微小差別是 `mix.babel()`。該方法簽署與 `scripts` 相同。然而，相連的檔案會接收 Babel 編譯。將任何 ES2015 程式碼翻成所有瀏覽器都能理解的原生 JavaScript to vanilla JavaScript that all browsers will understand.
+> {tip} `mix.scripts()` 的微小差別是 `mix.babel()`。該方法簽署與 `scripts` 相同。然而，相連的檔案會接收 Babel 編譯，將任何 ES2015 程式碼翻成所有瀏覽器都能理解的原生 JavaScript。
 
 <a name="custom-webpack-configuration"></a>
 ### 自訂 Webpack 設定
@@ -262,7 +262,7 @@ Mix 會在後台下載對應版本的 `babel-preset-react` Babel 插件。
 
 #### 合併自訂設定
 
-Mix 提供一個好用的 `webpackConfig` 方法，可以讓你合併任何大小的 Webpack 設定來覆寫原本的設定。這是一個特別誘人的選擇，因為它根本不需要你複製和維護 `webpack.config.js` 檔案。`webpackConfig` 方可接受一個物件，這物件應該具有任何你希望應用的 [Webpack-specific 設定](https://webpack.js.org/configuration/)。
+Mix 提供一個好用的 `webpackConfig` 方法，可以讓你合併任何大小的 Webpack 設定來覆寫原本的設定。這是一個特別吸引人的選擇，因為它根本不需要你複製和維護 `webpack.config.js` 檔案。`webpackConfig` 方可接受一個物件，這物件應該具有任何你希望應用的 [Webpack-specific 設定](https://webpack.js.org/configuration/)。
 
     mix.webpackConfig({
         resolve: {
@@ -297,7 +297,7 @@ Mix 提供一個好用的 `webpackConfig` 方法，可以讓你合併任何大�
     mix.js('resources/assets/js/app.js', 'public/js')
        .version();
 
-在產生版控檔案之後，你將不知道確切的檔案名稱。所以你應該[視圖](/docs/{{version}}/views)中使用 Laravel 全域的 `mix` 函式來正確的載入被雜湊的資源。`mix` 函式會自動確認雜湊檔案的當前名稱：
+在產生版控檔案之後，你將不知道確切的檔案名稱。所以你應該[視圖](/docs/{{version}}/views)中使用 Laravel 全域的 `mix` 函式來正確的載入被雜湊的資源。`mix` 函式會自動確認雜湊檔案的目前名稱：
 
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
 
@@ -310,7 +310,7 @@ Mix 提供一個好用的 `webpackConfig` 方法，可以讓你合併任何大�
     }
 
 <a name="browsersync-reloading"></a>
-## 重載 Browsersync
+## Browsersync 重新載入
 
 [BrowserSync](https://browsersync.io/) 能自動監控檔案的變化，並將該變化注入到瀏覽器，而不需要再重新整理。你可以呼叫 `mix.browserSync()` 方法來啟用這個輔助工具：
 
