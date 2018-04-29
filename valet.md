@@ -18,9 +18,9 @@
 
 Valet 是專屬於 MacOS 的 Laravel 開發環境。既不用 Vagrant，也不用 `/etc/hosts` 檔案，就能夠使用本機終端機來公開並共享你的網站。_沒錯！我們也很喜歡。_
 
-Laravel Valet 設定 MacOS 在啟動伺服器時會在背景執行 [Nginx](https://www.nginx.com/)。然後，使用 [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq)，Valet 會將所有本機伺服器上安裝的專案全都代理到 `*.dev` 網域上。
+Laravel Valet 設定 MacOS 在啟動伺服器時會在背景執行 [Nginx](https://www.nginx.com/)。然後，使用 [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq)，Valet 會將所有本機伺服器上安裝的專案全都代理到 `*.test` 網域上。
 
-換句話說，這個極快的 Laravel 開發環境只會用到 7 MB 的記憶體。Valet 並非能完全取代 Vagrant 或 Homestead，但如果你想要靈活、極快、或更輕盈的開發環境，這會是一個很讚的選擇。
+換句話說，這個極快的 Laravel 開發環境只會用到 7 MB 的記憶體。Valet 並非能完全取代 Vagrant 或 Homestead，但如果你想要靈活、極快、或更輕盈的開發環境，這會是一個很好的選擇。
 
 Valet 預設就支援以下這些內容，當然，實際支援的內容還有更多：
 
@@ -53,9 +53,9 @@ Valet 預設就支援以下這些內容，當然，實際支援的內容還有�
 <a name="valet-or-homestead"></a>
 ### Valet 與 Homestead
 
-就如你所知的那樣，Laravel 提供了另一個開發環境，也就是 [Homestead](/docs/{{version}}/homestead)。Homestead 和 Valet 不同的地方在於他們主要客群想使用什麼方式來建立開發環境。Homestead 提供一個完整的 Ubuntu 虛擬機，並自動化 Nginx 設定。如果你想要完全虛擬化的 Linux  開發環境或者在 Windows / Linux 系統環境上開發，Homestead 會是一個奇妙的選擇。
+就如你所知的那樣，Laravel 提供了另一個開發環境，也就是 [Homestead](/docs/{{version}}/homestead)。Homestead 和 Valet 不同的地方在於他們主要客群想使用什麼方式來建立開發環境。Homestead 提供一個完整的 Ubuntu 虛擬機，並自動化 Nginx 設定。如果你想要完全虛擬化的 Linux  開發環境或者在 Windows / Linux 系統環境上開發，Homestead 會是一個很好的選擇。
 
-Valet 只支援 MacOS，並且會要求你在本機環境上直接安裝 PHP 和 資料庫伺服器。你可以使用 [Homebrew](http://brew.sh/) 的 `brew install php71` 和 `brew install mysql` 指令來輕鬆的安裝。Valet 提供了一個極快的本機開發環境，且只會佔用到極小的資源，所以這對於只會用到 PHP 和 MySQL 而不需要超級完整的虛擬開發環境的開發者而言，真的很讚！
+Valet 只支援 MacOS，並且會要求你在本機環境上直接安裝 PHP 和資料庫伺服器。你可以使用 [Homebrew](http://brew.sh/) 的 `brew install php72` 和 `brew install mysql` 指令來輕鬆的安裝。Valet 提供了一個極快的本機開發環境，且只會佔用到極小的資源，所以這對於只會用到 PHP 和 MySQL 而不需要完整的虛擬開發環境的開發者而言真的很好！
 
 不論是 Valet 還是 Homestead 都是設定 Laravel 開發環境的最佳選項。請根據你與團隊的喜好與需求來做選擇。
 
@@ -66,20 +66,20 @@ Valet 只支援 MacOS，並且會要求你在本機環境上直接安裝 PHP 和
 
 <div class="content-list" markdown="1">
 - 使用 `brew update` 來安裝或更新 [Homebrew](http://brew.sh/) 的最新的版本。
-- 使用 Homebrew 的 `brew install homebrew/php/php71` 指令來安裝 PHP 7.1。
+- 使用 Homebrew 的 `brew install homebrew/php/php72` 指令來安裝 PHP 7.2。
 - 使用 Composer 的 `composer global require laravel/valet` 指令來安裝 Valet。並確認 `~/.composer/vendor/bin` 目錄有在你系統的 「PATH」。
 - 執行 `valet install` 指令。這指令會為你設定並安裝 Valet 和 DnsMasq，並於系統啟動時自動註冊守護行程。
 </div>
 
-Valet 一旦安裝好了，就可以在終端機上使用像是 `ping foobar.dev` 指令來測試任何 `*.dev` 網域的連線狀態。如果有成功安裝 Valet ，你應該會看到這個網域回應 `127.0.0.1`。
+Valet 一旦安裝好了，就可以在終端機上使用像是 `ping foobar.test` 指令來測試任何 `*.test` 網域的連線狀態。如果有成功安裝 Valet ，你應該會看到這個網域回應 `127.0.0.1`。
 
 Valet 會在每次被啟動時自動開啟他的守護行程。一旦完成了第一次的 Valet 安裝，就不需要再執行 `valet start` 或 `valet install` 指令了。
 
 #### 使用其它的網域
 
-預設的 Valet 能為你的專案來使用 `.dev` TLD。如果你不滿意這個網域，你能使用 `valet domain tld-name` 指令來使用想要的其它網域。
+預設的 Valet 能為你的專案來使用 `.test` TLD。如果你不滿意這個網域，你能使用 `valet domain tld-name` 指令來使用想要的其它網域。
 
-例如，如果你想要使用 `.app` 網域，而不是 `.dev`。請執行 `valet domain app`，Valet 會自動在 `*.app` 網域來開始你的專案。
+例如，如果你想要使用 `.app` 網域，而不是 `.test`。請執行 `valet domain app`，Valet 會自動在 `*.app` 網域來開始你的專案。
 
 #### 資料庫
 
@@ -119,10 +119,10 @@ Valet 一旦安裝好了，你可以開始準備啟動專案。Valet 提供兩�
 <div class="content-list" markdown="1">
 - 請先執行像是 `mkdir ~/Sites` 指令在你的 MacOS 上建立一個新的目錄。接著依序執行 `cd ~/Sites` 和 `valet park` 指令。這個指令會將當前執行目錄註冊為 Valet 搜尋專案所用的路徑。
 - 接下來，在這個目錄中建立一個新的 Laravel 專案：`laravel new blog`。
-- 在你的瀏覽器上開啟 `http://blog.dev` 。
+- 在你的瀏覽器上開啟 `http://blog.test` 。
 </div>
 
-**就只有這些步驟！**現在任何在被「Park」標記的目錄中的 Laravel 專案會自動使用 `http://folder-name.dev` 慣例來啟動。
+**就只有這些步驟！**現在任何在被「Park」標記的目錄中的 Laravel 專案會自動使用 `http://folder-name.test` 慣例來啟動。
 
 <a name="the-link-command"></a>
 **`link` 指令**
@@ -131,7 +131,7 @@ Valet 一旦安裝好了，你可以開始準備啟動專案。Valet 提供兩�
 
 <div class="content-list" markdown="1">
 - 要使用該指令，請導航到其中一個專案，並在終端機中執行 `valet link app-name` 指令。Valet 會在 `~/.valet/Sites` 中建立一個指向當前專案目錄的符號連結。
-- 執行 `link` 指令後，你就能在瀏覽器的 `http://app-name.dev` 連結來存取該專案。
+- 執行 `link` 指令後，你就能在瀏覽器的 `http://app-name.test` 連結來存取該專案。
 </div>
 
 若要查詢所有已連結目錄的清單，請執行 `valet links` 指令。你可以使用 `valet unlink app-name` 指令來取消某個連結符號。
@@ -141,7 +141,7 @@ Valet 一旦安裝好了，你可以開始準備啟動專案。Valet 提供兩�
 <a name="securing-sites"></a>
 **使用 TLS 保護**
 
-預設的 Valet 只會啟動未加密的 HTTP。然而，如果你想要使用 HTTP/2 的加密 TLS 來啟動專案，請使用 `secure` 指令。例如，如果你的專案被啟動在 Valet 上的 `laravel.dev` 網域，你你應該執行以下指令來保護它：
+預設的 Valet 只會啟動未加密的 HTTP。然而，如果你想要使用 HTTP/2 的加密 TLS 來啟動專案，請使用 `secure` 指令。例如，如果你的專案被啟動在 Valet 上的 `laravel.test` 網域，你你應該執行以下指令來保護它：
 
     valet secure laravel
 
@@ -152,7 +152,7 @@ Valet 一旦安裝好了，你可以開始準備啟動專案。Valet 提供兩�
 <a name="sharing-sites"></a>
 ## 共享專案
 
-Valet 甚至可以使用一個指令將你的本機專案共享於世界外。一旦安裝了 Valet，就不需要安裝額外的軟體。
+Valet 甚至包括與世界分享你的本機網站的指令。一旦安裝了 Valet，就不需要安裝額外的軟體。
 
 若要共享專案，請導航到終端機中的專案目錄，並執行 `valet share` 指令。會將可被公開存取的 URL 放入剪貼簿中，並準備貼到瀏覽器。就這樣。
 
