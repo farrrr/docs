@@ -5,13 +5,13 @@
 <a name="upgrade-5.5.0"></a>
 ## 從 5.4 升級到 5.5.0
 
-#### 預估升級時間為一小時
+#### 預估升級時間：1 小時
 
 > {note} 我們試圖記錄每個重大的改變。由於有些重大的改變在框架最隱密的地方，但事實上只有一小部分可能會影響到你的應用程式。
 
 ### PHP
 
-Laravel 5.5 需要 PHP 7.0.0 或更高的版本。
+Laravel 5.5 要求 PHP 7.0.0 或更高的版本。
 
 ### 升級依賴項目
 
@@ -27,7 +27,7 @@ Laravel 5.5 需要 PHP 7.0.0 或更高的版本。
 
 當然，別忘了檢查應用程式使用的第三方套件，並檢查是否有無支援 Laravel 5.5。
 
-#### Laravel 一鍵安裝包
+#### Laravel Installer
 
 > {tip} 如果你平常都是透過 `laravel new` 指令來安裝 Laravel，你應該使用 `composer global update` 指令來更新 Laravel 全域安裝版本。
 
@@ -45,15 +45,23 @@ Laravel 5.5 的 Swift Mailer 現在要求 `~6.0` 版本。
 
 ### Artisan
 
+#### 自動載入指令
+
+Artisan 能在 Laravel 5.5 中自動的發現指令，這樣你就不需要手動將它們註冊到核心中。若要使用這個新功能，你應該底下的程式碼新增到 `App\Console\Kernel` 類別的 `commands`：
+
+    $this->load(__DIR__.'/Commands');
+
 #### `fire` 方法
 
 在 Artisan 指令中上的任何 `fire` 方法，現在被重新命名為 `handle`。
 
 #### `optimize` 指令
 
-近來 PHP 的 op-code 快取有明顯的改良，之後就不再需要使用 Artisan 的 `optimize` 指令。你應該從部署的腳本上移除任何對這個指令的任何引用，因為它會在 Laravel 之後的版本被移除。
+最近 PHP 的 op-code 快取有進行了改善，之後就不需要使用 Artisan 的 optimize 指令。你應該從部署的腳本上移除任何對這個指令的任何引用，因為它會在 Laravel 之後的版本被移除。
 
 ### 授權
+
+> {note} 當你從 Laravel 5.4 升級到 5.5 時，所有的 `remember_me` cookie 會因此而失效並且將使用者登出。
 
 #### `authorizeResource` 控制器方法
 
@@ -102,7 +110,6 @@ Laravel 5.5 的 Swift Mailer 現在要求 `~6.0` 版本。
 
 `getQualifiedForeignKeyName` 方法被重新命名為 `getQualifiedForeignPivotKeyName`。
 
-
 #### 模型的 `is` 方法
 
 如果你覆寫了 Eloquent 模型的 `is` 方法，你應該從該方法中移除`模型`的型別注入。這會讓 `is` 方法可以接受 `null` 參數：
@@ -148,7 +155,6 @@ The protected `$parent` property on the在 `Illuminate\Database\Eloquent\Relatio
 然而在 Laravel 5.5，預設不在使用別名。如果你想要附加 `_count` 到結果的欄位，你必須在定義別名時指定後綴給它：
 
     $users = User::withCount('foo as bar_count')->get();
-
 
 #### 模型方法與屬性名稱
 
@@ -356,4 +362,4 @@ Laravel Tinker 現在支援在引用應用程式類別時省略命名空間。�
 
 ### 其他
 
-我們也鼓勵你查看 `laravel/laravel` [GitHub 儲存庫](https://github.com/laravel/laravel)中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/5.4...master)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
+我們也鼓勵你查看 `laravel/laravel` [GitHub 儲存庫](https://github.com/laravel/laravel)中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/5.4...5.5)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
