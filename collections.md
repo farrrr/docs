@@ -18,7 +18,6 @@
         return empty($name);
     });
 
-
 如你所見，`Collection` 類別允許你鏈結它的方法以對底層的陣列流暢地進行映射與刪減。一般來說，每一個 `Collection` 方法會回傳一個全新的 `Collection` 實例。
 
 <a name="creating-collections"></a>
@@ -49,13 +48,12 @@
     
     // ['FIRST', 'SECOND']
 
-
 一般來說, 你可以將巨集定義在 [service provider](/docs/{{version}}/providers) 裡.
 
 <a name="available-methods"></a>
 ## 可用的方法
 
-在這份文件剩餘的部份，我們將會探討每一個 `Collection` 類別上可用的方法。要先知道的是，以下所有的方法，都可以用串鏈式的方式處理陣列。另外，大部分的方法都會回傳一個新的`Collection`實例，讓你在必要時，還有原始的數組可使用。
+在這份文件剩餘的部份，我們將會探討每一個 `Collection` 類別上可用的方法。要先知道的是，以下所有的方法，都可以用串鏈式的方式處理陣列。另外，大部分的方法都會回傳一個新的 `Collection` 實例，讓你在必要時，還有原始的數組可使用。
 
 <style>
     #collection-method-list > p {
@@ -185,7 +183,7 @@
 <a name="method-all"></a>
 #### `all()` {#collection-method .first-collection-method}
 
-`all` 方法單純地回傳該集合所代表的底層陣列：
+`all` 方法回傳該集合所代表的底層陣列：
 
     collect([1, 2, 3])->all();
 
@@ -194,12 +192,12 @@
 <a name="method-average"></a>
 #### `average()` {#collection-method}
 
-此為 [`avg`](#method-avg) 方法的別名.
+此為 [`avg`](#method-avg) 方法的別名。
 
 <a name="method-avg"></a>
 #### `avg()` {#collection-method}
 
-`avg` 方法會回傳指定key所對應數值的 [平均值](https://en.wikipedia.org/wiki/Average): 
+`avg` 方法會回傳指定 key 所對應數值的[平均值](https://en.wikipedia.org/wiki/Average)：
 
     $average = collect([['foo' => 10], ['foo' => 10], ['foo' => 20], ['foo' => 40]])->avg('foo');
 
@@ -312,7 +310,7 @@
 <a name="method-containsstrict"></a>
 #### `containsStrict()` {#collection-method}
 
-這個方法的用法與[`contains`](#method-contains)相同，但所有數值都會用"嚴格模式"來比較。
+這個方法的用法與 [`contains`](#method-contains) 相同，但所有數值都會用「嚴格模式」來比較。
 
 <a name="method-count"></a>
 #### `count()` {#collection-method}
@@ -380,12 +378,12 @@
         ]
     */
 
-如果你不想停止執行，可以使用[`dump`](#method-dump)方法替代。
+如果你不想停止執行，可以使用 [`dump`](#method-dump) 方法替代。
 
 <a name="method-diff"></a>
 #### `diff()` {#collection-method}
 
-`diff` 方法會比較其他集合或純PHP `array` 裡的值。最後返回有在原始集合裡，但沒有在給定集合內的值。
+`diff` 方法會比較其他集合或純 PHP `array` 裡的值。最後返回有在原始集合裡，但沒有在給定集合內的值。
 
     $collection = collect([1, 2, 3, 4, 5]);
 
@@ -398,7 +396,7 @@
 <a name="method-diffassoc"></a>
 #### `diffAssoc()` {#collection-method}
 
-`diffAssoc` 方法會比較其他集合或純PHP `array` 的鍵與值。最後返回有在原始集合裡，但沒有在給定集合內的鍵與值: 
+`diffAssoc` 方法會比較其他集合或純 PHP `array` 的鍵與值。最後返回有在原始集合裡，但沒有在給定集合內的鍵與值：
 
     $collection = collect([
         'color' => 'orange',
@@ -420,7 +418,7 @@
 <a name="method-diffkeys"></a>
 #### `diffKeys()` {#collection-method}
 
-`diffKeys` 方法會比較其他集合或以純PHP `array` 的鍵為比較標的。最後返回有在原始集合裡，但沒有在給定集合內的鍵與其對應的值: 
+`diffKeys` 方法會比較其他集合或純 PHP `array` 的鍵與值。最後返回有在原始集合裡，但沒有在給定集合內的鍵與其對應的值：
 
     $collection = collect([
         'one' => 10,
@@ -444,7 +442,7 @@
 <a name="method-dump"></a>
 #### `dump()` {#collection-method}
 
-`dump` 方法會傾印出此集合的所有元素:
+`dump` 方法會傾印出此集合的所有元素：
 
     $collection = collect(['John Doe', 'Jane Doe']);
 
@@ -459,7 +457,7 @@
         }
     */
 
-如果你想在傾印後停止執行程式，可使用[`dd`](#method-dd)方法代替。
+如果你想在傾印後停止執行程式，可使用 [`dd`](#method-dd) 方法代替。
 
 <a name="method-each"></a>
 #### `each()` {#collection-method}
@@ -498,7 +496,7 @@
 <a name="method-every"></a>
 #### `every()` {#collection-method}
 
-`every` 方法用於檢驗所有元素是否通過所給予的測試: 
+`every` 方法用於檢驗所有元素是否通過所給予的測試：
 
     collect([1, 2, 3, 4])->every(function ($value, $key) {
         return $value > 2;
@@ -519,7 +517,7 @@
 
     // ['product_id' => 1]
 
-與 `except` 相反的方法請查看 [only](#method-only).
+與 `except` 相反的方法請查看 [only](#method-only)。
 
 <a name="method-filter"></a>
 #### `filter()` {#collection-method}
@@ -536,7 +534,7 @@
     
     // [3, 4]
 
-如果沒有提供回呼函式，就會移除所有等於 `false` 的元素:
+如果沒有提供回呼函式，就會移除所有等於 `false` 的元素：
 
     $collection = collect([1, 2, 3, null, false, '', 0, []]);
 
@@ -544,7 +542,7 @@
 
     // [1, 2, 3]
 
-與 `filter` 相對的方法可以檢視 [reject](#method-reject) .
+與 `filter` 相對的方法可以檢視 [reject](#method-reject)。
 
 <a name="method-first"></a>
 #### `first()` {#collection-method}
@@ -566,7 +564,7 @@
 <a name="method-flatmap"></a>
 #### `flatMap()` {#collection-method}
 
-`flatMap` 方法將集合內元素傳入回呼函式中，此回呼函式可對每個元素任意修改並回傳，最後由回傳的元素形成一個新的集合，即是`flattened`一個階層後的結果。
+`flatMap` 方法將集合內元素傳入回呼函式中，此回呼函式可對每個元素任意修改並回傳，從而形成一個修改過的新項目集合。該陣列會被扁平化成同一個層級：
 
     $collection = collect([
         ['name' => 'Sally'],
@@ -595,7 +593,7 @@
 
     // ['taylor', 'php', 'javascript'];
 
-你還可以帶入"深度"參數
+你還可以帶入「深度」參數
 
     $collection = collect([
         'Apple' => [
@@ -617,7 +615,7 @@
         ]
     */
 
-在這例子中，若沒有帶入"深度"參數，將會得到`['iPhone 6S', 'Apple', 'Galaxy S7', 'Samsung']`的結果。提供深度可指定從哪一階層開始。
+在這例子中，若沒有傳入「深度」參數，將會得到`['iPhone 6S', 'Apple', 'Galaxy S7', 'Samsung']`的結果。提供深度可指定從哪一階層開始。
 
 <a name="method-flip"></a>
 #### `flip()` {#collection-method}
@@ -645,12 +643,12 @@
 
     // ['framework' => 'laravel']
 
-> **注意：**與大多數其他集合的方法不同，`forget` 不會回傳修改過後的新集合；它會直接修改它被呼叫的集合。
+> {note} 與大多數的集合的方法不同，`forget` 不會回傳修改過後的新集合，而是會直接修改原先呼叫的集合。
 
 <a name="method-forpage"></a>
 #### `forPage()` {#collection-method}
 
-`forPage` 方法回傳含有可以用來在給定頁碼顯示的項目的新集合。第一個參數是頁數，第二個則是每頁要顯示的比數。
+`forPage` 方法回傳含有可以用來在給定頁碼顯示的項目的新集合。第一個參數是頁數，第二個則是每頁要顯示的項目筆數。
 
     $collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
@@ -748,9 +746,7 @@
 <a name="method-implode"></a>
 #### `implode()` {#collection-method}
 
-`implode` 方法連接集合中的項目。它的參數依集合中的項目類型而定。
-
-假如集合含有陣列或物件，你應該傳入你希望連接的屬性的鍵，以及你希望放在數值之間的「黏著」字串：
+`implode` 方法連接集合中的項目。它的參數依集合中的項目類型而定。假如集合含有陣列或物件，你應該傳入你希望連接的屬性的鍵，以及你希望放在數值之間的「黏著」字串：
 
     $collection = collect([
         ['account_id' => 1, 'product' => 'Desk'],
@@ -780,13 +776,10 @@
 
     // [0 => 'Desk', 2 => 'Chair']
 
-如你所見，最後出來的集合將會保留原始集合的鍵。
-
 <a name="method-intersectbykeys"></a>
 #### `intersectByKeys()` {#collection-method}
 
-`intersectByKeys` 方法移除任何給定`陣列`或集合內所沒有的鍵值。
-The `intersectByKeys` method removes any keys from the original collection that are not present in the given `array` or collection:
+`intersectByKeys` 方法從原始集合中移除任何給定`陣列`或集合內所沒有的鍵值。
 
     $collection = collect([
         'serial' => 'UX301', 'type' => 'screen', 'year' => 2009
@@ -803,7 +796,7 @@ The `intersectByKeys` method removes any keys from the original collection that 
 <a name="method-isempty"></a>
 #### `isEmpty()` {#collection-method}
 
-假如集合是空的，`isEmpty` 方法會回傳 `true`：否則回傳 `false`：
+假如集合是空的，`isEmpty` 方法會回傳 `true`，否則回傳 `false`：
 
     collect([])->isEmpty();
 
@@ -812,7 +805,7 @@ The `intersectByKeys` method removes any keys from the original collection that 
 <a name="method-isnotempty"></a>
 #### `isNotEmpty()` {#collection-method}
 
-假如集合不是空的，`isNotEmpty` 方法會回傳 `true`：否則回傳 `false`：
+假如集合不是空的，`isNotEmpty` 方法會回傳 `true`，否則回傳 `false`：
 
     collect([])->isNotEmpty();
 
@@ -890,17 +883,17 @@ The `intersectByKeys` method removes any keys from the original collection that 
 <a name="method-macro"></a>
 #### `macro()` {#collection-method}
 
-靜態的 `macro` 方法，允許你在執行期間動態加入 `集合` 類別內。可參考 [extending collections](#extending-collections) 章節獲得更多資訊。
+靜態的 `macro` 方法，允許你在執行期間動態加入 `Collection` 類別內。可參考 [extending collections](#extending-collections) 章節獲得更多資訊。
 
 <a name="method-make"></a>
 #### `make()` {#collection-method}
 
-靜態的 `make` 方法，可產生新的集合，見 [Creating Collections](#creating-collections) 章節。
+靜態的 `make` 方法，可產生新的集合，見 [建立集合](#creating-collections) 章節。
 
 <a name="method-map"></a>
 #### `map()` {#collection-method}
 
-`map` 方法遍歷整個集合並將每一個數值傳入給定的回呼函式。回呼函式可以任意修改並回傳項目，於是形成修改過的項目組成的新集合：
+`map` 方法遍歷整個集合並將每一個數值傳入給定的回呼函式。回呼函式可以任意修改並回傳項目，從而形成一個修改過的新項目集合：
 
     $collection = collect([1, 2, 3, 4, 5]);
 
@@ -912,12 +905,12 @@ The `intersectByKeys` method removes any keys from the original collection that 
     
     // [2, 4, 6, 8, 10]
 
-> **注意：**正如集合大多數其他的方法一樣，`map` 回傳一個新集合實例；它並沒有修改被呼叫的集合。假如你想改變原始的集合，得使用 [`transform`](#method-transform) 方法。
+> {note} 如同大多數的集合方法一樣，`map` 回傳一個新集合實例。它並沒有修改到原本的集合。假如你想改變原始的集合，得使用 [`transform`](#method-transform) 方法。
 
 <a name="method-mapinto"></a>
 #### `mapInto()` {#collection-method}
 
-`mapInto()` 方法遍歷整個集合，並將每個數值傳入指定類別實體的建構子中：
+`mapInto()` 方法遍歷整個集合，並將每個值傳入指定類別實體的建構子中：
 
     class Currency
     {
@@ -944,7 +937,7 @@ The `intersectByKeys` method removes any keys from the original collection that 
 <a name="method-mapspread"></a>
 #### `mapSpread()` {#collection-method}
 
-`mapSpread` 方法遍歷整個集合，並將下一階層的巢狀數值傳入給定的回呼函式，回呼函式可以任意修改並回傳項目，於是形成修改過的項目組成的新集合：
+`mapSpread` 方法遍歷整個集合，並將下一階層的巢狀數值傳入給定的回呼函式，回呼函式可以任意修改並回傳項目，從而形成一個修改過的新項目集合：
 
     $collection = collect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
@@ -961,7 +954,7 @@ The `intersectByKeys` method removes any keys from the original collection that 
 <a name="method-maptogroups"></a>
 #### `mapToGroups()` {#collection-method}
 
-`mapToGroups` 方法依據回呼函式將各項目分組。該回呼函式必須回傳有關聯的 鍵 / 值 組陣列，最後組成新的集合。
+`mapToGroups` 方法依據回呼函式將各項目分組。該回呼函式會回傳有關聯的鍵值對陣列，最後組成新的集合。
 
     $collection = collect([
         [
@@ -998,7 +991,7 @@ The `intersectByKeys` method removes any keys from the original collection that 
 <a name="method-mapwithkeys"></a>
 #### `mapWithKeys()` {#collection-method}
 
-`mapWithKeys` 方法遍歷整個集合並將每個數值（包含鍵）傳進回呼函式。該回呼函式必須回傳只包含一對 鍵 / 值 的組合：
+`mapWithKeys` 方法遍歷整個集合並將每個數值（包含鍵）傳進回呼函式。該回呼函式會回傳只包含一對鍵與值的組合：
 
     $collection = collect([
         [
