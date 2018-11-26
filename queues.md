@@ -1,7 +1,7 @@
 # 隊列
 
 - [簡介](#introduction)
-    - [連接 Vs. 隊列](#connections-vs-queues)
+    - [連接與隊列的比較](#connections-vs-queues)
     - [隊列驅動基本要求](#driver-prerequisites)
 - [建立任務](#creating-jobs)
     - [產生任務類別](#generating-job-classes)
@@ -9,14 +9,14 @@
 - [執行任務](#dispatching-jobs)
     - [延遲執行](#delayed-dispatching)
     - [隊列任務鏈](#job-chaining)
-    - [自訂隊列 & 連接](#customizing-the-queue-and-connection)
+    - [自訂隊列與連接](#customizing-the-queue-and-connection)
     - [指定最大任務嘗試次數 / 逾時](#max-job-attempts-and-timeout)
     - [限制執行比例](#rate-limiting)
     - [錯誤處理](#error-handling)
 - [執行 Queue Worker](#running-the-queue-worker)
     - [隊列優先權](#queue-priorities)
-    - [Queue Workers & 部署](#queue-workers-and-deployment)
-    - [任務到期 & 逾時](#job-expirations-and-timeouts)
+    - [Queue Workers 與部署](#queue-workers-and-deployment)
+    - [任務到期與逾時](#job-expirations-and-timeouts)
 - [設定 Supervisor](#supervisor-configuration)
 - [處理失敗的任務](#dealing-with-failed-jobs)
     - [清理失敗的任務](#cleaning-up-after-failed-jobs)
@@ -34,7 +34,7 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
 隊列的設定檔位於 `config/queue.php`。在這個檔案內你可以馬上找到隊列連接的相關驅動設定，包含框架、資料庫、[Beanstalkd](https://kr.github.io/beanstalkd/)、[Amazon SQS](https://aws.amazon.com/sqs/)、[Redis](https://redis.io) 和以本機同步驅動執行任務的設定。使用 `null` 隊列驅動則可以很容易的丟棄所有隊列任務。
 
 <a name="connections-vs-queues"></a>
-### 連接 Vs. 隊列
+### 連接與隊列
 
 在使用 Laravel 隊列之前，必須先明確了解「連接」與「隊列」之間的區別。在 `config/queue.php` 設定檔中有一個 `connections` 的設定選項，這個選項定義了連接隊列的後端服務，像是 Amazon SQS、Beanstalk 或是 Redis。每一個定義的「連接、，可以擁有多個不同的「隊列」，隊列內有許多的隊列任務，堆疊起來。
 
@@ -186,7 +186,6 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
 
     namespace App\Http\Controllers;
 
-    use Carbon\Carbon;
     use App\Jobs\ProcessPodcast;
     use Illuminate\Http\Request;
     use App\Http\Controllers\Controller;
@@ -204,7 +203,7 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
             // 新增推播 ...
 
             ProcessPodcast::dispatch($podcast)
-                    ->delay(Carbon::now()->addMinutes(10));
+                    ->delay(now()->addMinutes(10));
         }
     }
 
@@ -221,7 +220,7 @@ Laravel 隊列為各式各樣的隊列後端服務提供了一個統一的 API�
     ])->dispatch();
 
 <a name="customizing-the-queue-and-connection"></a>
-### 自訂隊列 & 連結
+### 自訂隊列與連結
 
 #### 在特定的隊列中執行
 
@@ -439,7 +438,7 @@ Queue workers 守護進程並不會在每個任務被執行前 "重啟" 整個�
 > {tip} 隊列使用[快取](/docs/{{version}}/cache)儲存重啟訊號，所以你必須在使用這個功能前確保應用程式的快取驅動正確的被設定
 
 <a name="job-expirations-and-timeouts"></a>
-### 任務到期 & 逾時
+### 任務到期與逾時
 
 #### 任務逾期
 
@@ -459,7 +458,7 @@ Queue workers 守護進程並不會在每個任務被執行前 "重啟" 整個�
 
 #### Queue Worker 閒置間隔
 
-當一個任務被放置至隊列中，Queue worker 會不間斷的在隊列間持續處理任務。然而，`sleep` 選項設定了 Queue worker 在沒有新的任務被推送進隊列時應該 "閒置" 多久，處於閒置狀態時，Queue worker 並不會處理任何閒置期間新進的隊列任務，直到 Queue worker 回復工作狀態時才會被處理。
+當一個任務被放置至隊列中，Queue worker 會不間斷的在隊列間持續處理任務。然而，`sleep` 選項設定了 Queue worker 在沒有新的任務被推送進隊列時應該「閒置」多久，處於閒置狀態時，Queue worker 並不會處理任何閒置期間新進的隊列任務，直到 Queue worker 回復工作狀態時才會被處理。
 
     php artisan queue:work --sleep=3
 
@@ -468,7 +467,7 @@ Queue workers 守護進程並不會在每個任務被執行前 "重啟" 整個�
 
 #### 安裝 Supervisor
 
-Supervisor 是一個 Linux 系統內的程序監看工具，同時能夠自動重啟失敗的 `queue:work` 程序。在 Ubuntu 發行版中你可以使用以下指令安裝 Supervisor ：
+Supervisor 是一個 Linux 系統內的程序監看工具，同時能夠自動重啟失敗的 `queue:work` 程序。在 Ubuntu 發行版中你可以使用以下指令安裝 Supervisor：
 
     sudo apt-get install supervisor
 
@@ -492,7 +491,7 @@ Supervisor 設定檔通常會位於 `/etc/supervisor/conf.d` 目錄。在這個�
 
 #### 啟動 Supervisor
 
-一旦設定檔案被建立，你可以使用以下指令更新及啟動 Supervisor ：
+一旦設定檔案被建立，你可以使用以下指令更新及啟動 Supervisor：
 
     sudo supervisorctl reread
 
