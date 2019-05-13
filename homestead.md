@@ -20,6 +20,7 @@
     - [連接埠](#ports)
     - [共享環境變數](#sharing-your-environment)
     - [多個 PHP 版本](#multiple-php-versions)
+    - [網頁伺服器](#web-servers)
 - [網路介面](#network-interfaces)
 - [更新 Homestead](#updating-homestead)
 - [特定虛擬機設定](#provider-specific-settings)
@@ -47,8 +48,9 @@ Homestead 可以在任何 Windows、MacOS 或 Linux 系統上執行，並內建�
 - PHP 7.0
 - PHP 5.6
 - Nginx
+- Apache（可選）
 - MySQL
-- MariaDB
+- MariaDB（可選）
 - Sqlite3
 - PostgreSQL
 - Composer
@@ -57,6 +59,7 @@ Homestead 可以在任何 Windows、MacOS 或 Linux 系統上執行，並內建�
 - Memcached
 - Beanstalkd
 - Mailhog
+- Elasticsearch（可選）
 - ngrok
 </div>
 
@@ -66,13 +69,13 @@ Homestead 可以在任何 Windows、MacOS 或 Linux 系統上執行，並內建�
 <a name="first-steps"></a>
 ### 第一個步驟
 
-在啟動 Homestead 環境之前，你必須先安裝 [VirtualBox 5.2](https://www.virtualbox.org/wiki/Downloads)、[VMWare](https://www.vmware.com) 或者是 [Parallels](https://www.parallels.com/products/desktop/)，接著安裝 [Vagrant](https://www.vagrantup.com/downloads.html)。這些軟體在各個常用的平台都有提供易用的視覺化安裝程式。
-
-
+在啟動 Homestead 環境之前，你必須先安裝 [VirtualBox 5.2](https://www.virtualbox.org/wiki/Downloads)、[VMWare](https://www.vmware.com) 、 [Parallels](https://www.parallels.com/products/desktop/)，或是 [Hyper-V](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)，接著安裝 [Vagrant](https://www.vagrantup.com/downloads.html)。這些軟體在各個常用的平台都有提供易用的視覺化安裝程式。
 
 若要使用 VMware provider，你將需要同時購買 VMware Fusion / Workstation 以及 [VMware Vagrant plug-in](https://www.vagrantup.com/vmware)。雖然這不是免費的，但是 VMware 能夠在共享資料夾上提供較快的性能。
 
 若要使用 Parallels provider，你將需要安裝 [Parallels Vagrant plug-in](https://github.com/Parallels/vagrant-parallels)。這是免費的。
+
+受限於 [Vagrant 的限制](https://www.vagrantup.com/docs/hyperv/limitations.html)，Hyper-V 可為你忽略所有的網路設定。
 
 #### 安裝 Homestead Vagrant Box
 
@@ -84,18 +87,16 @@ Homestead 可以在任何 Windows、MacOS 或 Linux 系統上執行，並內建�
 
 #### 安裝 Homestead
 
-你可以簡單地透過手動 clone 資源庫的方式來安裝 Homestead。建議將資源庫複製到你的「home」目錄中的 Homestead 資料夾，如此一來 Homestead box 就能提供主機服務給你所有的 Laravel 專案：
+你可以透過手動 clone 資源庫的方式來安裝 Homestead。建議將資源庫複製到你的「home」目錄中的 Homestead 資料夾，如此一來 Homestead box 就能提供主機服務給你所有的 Laravel 專案：
 
-    cd ~
-
-    git clone https://github.com/laravel/homestead.git Homestead
+git clone https://github.com/laravel/homestead.git ~/Homestead
 
 你應該檢查一下 Homestead 的標籤版本，因為 `master` 分支並非是穩定版本。你能在 [GitHub 發佈頁面](https://github.com/laravel/homestead/releases)上找到最新的穩定版本：
 
-    cd Homestead
+    cd ~/Homestead
 
     // 複製預期的版本...
-    git checkout v7.0.1
+    git checkout v7.1.2
 
 如果你已經複製了 Homestead 資源庫，就可以從 Homestead 目錄中執行 `bash init.sh` 指令來建立 `Homestead.yaml` 設定檔。`Homestead.yaml` 檔案會被放置在 Homestead 目錄中：
 
@@ -110,7 +111,7 @@ Homestead 可以在任何 Windows、MacOS 或 Linux 系統上執行，並內建�
 
 #### 設定你的虛擬機
 
-在 `Homestead.yaml` 檔案中的 `provider` 是用來設定你想要使用哪一個 Vagrant 提供者，像是：`virtualbox`、`vmware_fusion` 或 `vmware_workstation`。你可以根據喜好來決定提供者：
+在 `Homestead.yaml` 檔案中的 `provider` 是用來設定你想要使用哪一個 Vagrant 提供者，像是：`virtualbox`、`vmware_fusion`、`vmware_workstation`、`parallels` 或 `hyperv`。你可以根據喜好來決定提供者：
 
     provider: virtualbox
 
@@ -149,7 +150,6 @@ Homestead 可以在任何 Windows、MacOS 或 Linux 系統上執行，並內建�
           options:
               rsync__args: ["--verbose", "--archive", "--delete", "-zz"]
               rsync__exclude: ["node_modules"]
-
 
 #### 設定 Nginx 網站
 
@@ -214,14 +214,16 @@ Windows:
 <a name="installing-elasticsearch"></a>
 ### 安裝 Elasticsearch
 
-若要安裝 Elasticsearch，請將 `elasticsearch` 選項新增到你的 `Homestead.yaml` 檔案。預設的安裝會建立一個名為「homestead」的集群，並分配 2GB 記憶體給它。你絕對不行將作業系統一半的記憶體分配給 Elasticsearch，所以請確認你的 Homestead 機器是否至少有 4GB 的記憶體：
+若要安裝 Elasticsearch，請將 `elasticsearch` 選項新增到你的 `Homestead.yaml` 檔案。預設的安裝會建立一個名為「homestead」的集群。你絕對不行將作業系統一半的記憶體分配給 Elasticsearch，所以請確認你的 Homestead 機器是否至少有兩倍的記憶體：
 
     box: laravel/homestead
     ip: "192.168.10.10"
     memory: 4096
     cpus: 4
     provider: virtualbox
-    elasticsearch: true
+    elasticsearch: 6
+
+> {tip} 可以到 [Elasticsearch 官方文件](https://www.elastic.co/guide/en/elasticsearch/reference/current)找到更多設定方法。
 
 <a name="aliases"></a>
 ### 別名
@@ -278,8 +280,7 @@ Windows:
 
 homestead 的資料庫已經設定了 MySQL 與 Postgres 兩種資料庫。為了方便使用，Laravel 的 `.env` 檔案預設會設定框架會使用此資料庫。
 
-如果要從本機資料庫的客戶端連接到 MySQL 或 PostgreSQL 資料庫，你應該連接到 `127.0.0.1` 和 port `33060`（MySQL）或 `54320`（
-PostgreSQL）。資料庫的帳號及密碼為 `homestead` / `secret`。
+如果要從本機資料庫的客戶端連接到 MySQL 或 PostgreSQL 資料庫，你應該連接到 `127.0.0.1` 和 port `33060`（MySQL）或 `54320`（PostgreSQL）。資料庫的帳號及密碼為 `homestead` / `secret`。
 
 > {note} 在本機電腦你應該只使用這些非標準的連接埠來連接資料庫。因為當 Laravel 執行於虛擬主機中時，你會在 Laravel 的資料庫設定檔使用預設的 3306 及 5432 連接埠。
 
@@ -309,7 +310,7 @@ Homestead 支援幾種類型的網站來讓你輕易的執行非 Laravel 的專�
     sites:
         - map: symfony2.test
           to: /home/vagrant/code/Symfony/web
-          type: symfony2
+          type: "symfony2"
 
 目前可用的網站類型有：`apache`、`laravel`（預設）、`proxy`、`silverstripe`、`statamic`、`symfony2` 和 `symfony4`。
 
@@ -422,6 +423,13 @@ Homestead 6 在同一個虛擬機上支援了多個 PHP 版本的切換。你可
     php7.1 artisan list
     php7.2 artisan list
 
+<a name="web-servers"></a>
+### 網頁伺服器
+
+Homestead 預設採用 Nginx 作為網頁伺服器。然而，如果指定 `apache` 作為網站類型，就會改安裝 Apache。雖然兩個網站伺服器都能安裝，但無法同時*運行*。`flip` 是簡易切換網頁伺服器的指令。`flip` 指令會自行確定運行中的伺服器已關閉，才會接著啟動另一台機器。你可以透過 SSH 進到 Homestead 機器上執行該指令：
+
+    flip
+
 <a name="network-interfaces"></a>
 ## 網路介面
 
@@ -451,9 +459,9 @@ Homestead 6 在同一個虛擬機上支援了多個 PHP 版本的切換。你可
 
     vagrant box update
 
-接著，你需要更新 Homestead 原始碼。如果你已經複製了儲存庫，你可以簡單的在儲存庫的位置透過 `git pull origin master` 更新。
+接著，你需要更新 Homestead 原始碼。如果你已經複製了儲存庫，你可以在儲存庫的位置透過 `git pull origin master` 更新。
 
-如果你已經透過專案的 `composer.json` 安裝 Homestead，你應該確保 `composer.json` 檔案包含 `"laravel/homestead": "^6"` 然後更新你的dependencies:
+如果你已經透過專案的 `composer.json` 安裝 Homestead，你應該確保 `composer.json` 檔案包含 `"laravel/homestead": "^7"` 然後更新你的相依套件：
 
     composer update
 
@@ -463,7 +471,17 @@ Homestead 6 在同一個虛擬機上支援了多個 PHP 版本的切換。你可
 <a name="provider-specific-virtualbox"></a>
 ### VirtualBox
 
+#### `natdnshostresolver`
+
 預設的 Homestead 會將 `natdnshostresolver` 設定為 `on`。這可以讓 Homestead 去使用本機作業系統的 DNS 設定。如果你想要覆寫這個行為，請新增下面幾行到你的 `Homestead.yaml` 檔案：
 
     provider: virtualbox
     natdnshostresolver: off
+
+#### Windows 的捷徑
+
+如果無法再 Windows 機器上運作該捷徑，你可能需要新增以下內容到 `Vagrantfile` 檔案中：
+
+    config.vm.provider "virtualbox" do |v|
+        v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+    end
