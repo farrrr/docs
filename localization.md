@@ -21,7 +21,7 @@ Laravel 的本地化功能提供方便的方法來取得多語系的字串，讓
             /es
                 messages.php
 
-語系檔單純地回傳鍵值為字串的陣列。例如：
+語系檔會回傳鍵值為字串的陣列。例如：
 
     <?php
 
@@ -68,7 +68,7 @@ Laravel 的本地化功能提供方便的方法來取得多語系的字串，讓
             /zh-TW
                 messages.php
 
-語系檔單純地回傳鍵值為字串的陣列。例如：
+語系檔會回傳鍵值為字串的陣列。例如：
 
     <?php
 
@@ -83,7 +83,7 @@ Laravel 的本地化功能提供方便的方法來取得多語系的字串，讓
 
 對有大量翻譯需求的網站來說，為每個字串定義一個「短鍵值」很快就會在視圖中使用時令人困惑。因此，Laravel 也支援以「預設」語系的字串來作為定義翻譯字串的鍵值。
 
-以翻譯字串為鍵值的語系檔存放在 `resources/land` 的 JSON 檔案中。例如，如果網站想支援中文，應該要建立一個 `resources/lang/zh-TW.json` 檔案：
+以翻譯字串為鍵值的語系檔存放在`resources/land`的 JSON 檔案中。例如，如果網站想支援中文，應該要建立一個 `resources/lang/zh-TW.json` 檔案：
 
     {
         "I love programming.": "我愛寫程式。"
@@ -92,28 +92,28 @@ Laravel 的本地化功能提供方便的方法來取得多語系的字串，讓
 <a name="retrieving-translation-strings"></a>
 ## 取出翻譯字串
 
-你可以使用 `__` 輔助函式來從語系檔中取出內容。`__` 方法第一個參數是檔案跟翻譯字串的鍵值。例如，從 `resources/lang/messages.php` 語系檔中取出 `welcome` 翻譯字串：
+你可以使用`__`輔助函式來從語系檔中取出內容。`__`方法第一個參數是檔案跟翻譯字串的鍵值。例如，從 `resources/lang/messages.php` 語系檔中取出 `welcome` 翻譯字串：
 
     echo __('messages.welcome');
 
     echo __('I love programming.');
 
-如果你是使用 [Blade 模板引擎](/docs/{{version}}/blade)，可以用 `{{ }}` 語法或 `@land` 指令來回傳翻譯字串：
+如果你是使用 [Blade 模板引擎](/docs/{{version}}/blade)，可以用`{{ }}`語法或 `@land` 指令來回傳翻譯字串：
 
     {{ __('messages.welcome') }}
 
     @lang('messages.welcome')
 
-如果指定的翻譯字串不存在，`__` 方法只會回傳翻譯字串鍵值。所以在使用上面的範例，`__` 方法在翻譯字串不存在時翻譯會回傳 `messages.welcome`。
+如果指定的翻譯字串不存在，`__`方法只會回傳翻譯字串鍵值。所以在使用上面的範例，`__`方法在翻譯字串不存在時翻譯會回傳 `messages.welcome`。
 
 <a name="replacing-parameters-in-translation-strings"></a>
 ### 在翻譯字串中取代參數
 
-你也可以在翻譯字串中定義佔位符。所有佔位符都要以 `:` 前綴。例如，可以定義一個有佔位名稱的歡迎訊息：
+你也可以在翻譯字串中定義佔位符。所有佔位符都要以`:`前綴。例如，可以定義一個有佔位名稱的歡迎訊息：
 
     'welcome' => 'Welcome, :name',
 
-要取代翻譯字串中的佔位符，需把替代品的陣列傳給 `__` 方法的第二個參數：
+要取代翻譯字串中的佔位符，需把替代品的陣列傳給`__`方法的第二個參數：
 
     echo __('messages.welcome', ['name' => 'dayle']);
 
@@ -122,11 +122,10 @@ Laravel 的本地化功能提供方便的方法來取得多語系的字串，讓
     'welcome' => 'Welcome, :NAME', // Welcome, DAYLE
     'goodbye' => 'Goodbye, :Name', // Goodbye, Dayle
 
-
 <a name="pluralization"></a>
 ### 複數化
 
-複數化是個複雜的問題，不同語言對於複數化有不同的規則。使用 「|」 字元，可以區分單複數字串格式：
+複數化是個複雜的問題，不同語言對於複數化有不同的規則。使用「|」字元，可以區分單複數字串格式：
 
     'apples' => 'There is one apple|There are many apples',
 
@@ -137,6 +136,12 @@ Laravel 的本地化功能提供方便的方法來取得多語系的字串，讓
 定義好有複數化選項的翻譯字串後，便可以用 `trans_choice` 方法來取得指定「數量」的內容。在這個範例中，因為數量大於一，會複數格式的翻譯字串：
 
     echo trans_choice('messages.apples', 10);
+
+你也可以在多個設定中定義佔位符屬性。這些佔位符可以透過傳入一組陣列作為第三個參數到 `trans_choice` 函式中替換內容：
+
+    'minutes_ago' => '{1} :value minute ago|[2,*] :value minutes ago',
+
+    echo trans_choice('time.minutes_ago', 5, ['value' => 5]);
 
 <a name="overriding-package-language-files"></a>
 ## 覆寫套件的語言檔
