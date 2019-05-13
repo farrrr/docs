@@ -67,7 +67,7 @@ Laravel 的 `package.json` 檔案已引入 `bootstrap-sass` 套件來協助你�
         require('./components/ExampleComponent.vue')
     );
 
-要在應用程式中使用該元件，你可以簡單地將它放入 HTML 模板。例如，在執行 Artisan 的 `make:auth` 指令來產生應用程式的認證與註冊畫面後，你就可以將元件放入 `home.blade.php` Blade 模板中：
+要在應用程式中使用該元件，你可以將它放入 HTML 模板。例如，在執行 Artisan 的 `make:auth` 指令來產生應用程式的認證與註冊畫面後，你就可以將元件放入 `home.blade.php` Blade 模板中：
 
     @extends('layouts.app')
 
