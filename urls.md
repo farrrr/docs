@@ -19,7 +19,7 @@ Laravel 提供幾個輔助函式來協助你產生 URL。當然，這些有助�
 <a name="generating-basic-urls"></a>
 ### 產生基本的 URL
 
-`url` 輔助函式可被用於應用程式的任何一個 URL。被產生的 URL 會自動從當前的請求中套用 HTTP 協定（或 HTTPS）和主機：
+`url` 輔助函式可被用於應用程式的任何一個 URL。被產生的 URL 會自動使用當前請求所用的傳輸協定（HTTP 或 HTTPS）和主機：
 
     $post = App\Post::find(1);
 
