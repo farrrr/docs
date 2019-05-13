@@ -400,8 +400,8 @@ Markdown mailable 使用 Blade 元件跟 Markdown 語法的組合，讓你可以
     @component('mail::table')
     | Laravel    | 表格    | 範例   |
     | ---------- |:------:| ------:|
-    | 第二列      | 置中    | $10    |
-    | 第三列      | 靠右    | $20    |
+    | 第二列      | 置中    |    $10 |
+    | 第三列      | 靠右    |    $20 |
     @endcomponent
 
 <a name="customizing-the-components"></a>
@@ -411,7 +411,7 @@ Markdown mailable 使用 Blade 元件跟 Markdown 語法的組合，讓你可以
 
     php artisan vendor:publish --tag=laravel-mail
 
-此指令會把 Markdown 郵件元件發布到 `resources/views/vendor/mail` 目錄中。`mail` 目錄包含 `html` 和 `markdown` 目錄，每個目錄都包含它們對每個可用組件的相應表示。你可以隨意自定這些組件。
+此指令會把 Markdown 郵件元件發布到 `resources/views/vendor/mail` 目錄中。`mail` 目錄包含 `html` 和 `markdown` 目錄，每個目錄都包含它們對每個可用組件的相應表示。在 `html` 目錄中的元件是用於產生你的電子信箱的 HTML 範本，而 `markdown` 目錄則適用於產生純文字的範本。你可以隨意自定這些組件。
 
 #### 自定 CSS
 
