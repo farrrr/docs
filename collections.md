@@ -27,7 +27,7 @@
 
     $collection = collect([1, 2, 3]);
 
-> {提示} [Eloquent](/docs/{{version}}/eloquent) 查詢結果，每次都會回傳`Collection`的實例。
+> {tip} [Eloquent](/docs/{{version}}/eloquent) 查詢結果，每次都會回傳`Collection`的實例。
 
 <a name="extending-collections"></a>
 ### 擴充集合
@@ -937,7 +937,7 @@
 <a name="method-mapspread"></a>
 #### `mapSpread()` {#collection-method}
 
-`mapSpread` 方法遍歷整個集合，並將下一階層的巢狀數值傳入給定的回呼函式，回呼函式可以任意修改並回傳項目，從而形成一個修改過的新項目集合：
+`mapSpread` 方法會去遍歷整個集合，並將下一層的巢狀陣列傳入指定的回呼函式，回呼函式可以任意修改並回傳項目，從而形成一個修改過的新項目集合：
 
     $collection = collect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
@@ -1435,13 +1435,13 @@
 
 假如你需要更進階的排序，你可以傳入回呼函式以你自己的演算法進行`排序`。參考 PHP 文件的 [`usort`](http://php.net/manual/en/function.usort.php#refsect1-function.usort-parameters)，這是集合的 `sort` 方法在背後所使用的函式。
 
-> **注意：** 要排序內含陣列或物件的集合，見 [`sortBy`](#method-sortby) 和 [`sortByDesc`](#method-sortbydesc) 方法。
+> {tip} 要排序內含陣列或物件的集合，見 [`sortBy`](#method-sortby) 和 [`sortByDesc`](#method-sortbydesc) 方法。
 
 
 <a name="method-sortby"></a>
 #### `sortBy()` {#collection-method}
 
-`sortBy` 方法以給定的鍵排序集合。 排序過的集合保有原來的陣列鍵。在這個例子中我們用了 [`values`](#method-values) 方法重設鍵為連續的數字索引：
+`sortBy` 方法以給定的鍵排序集合。排序過的集合保有原來的陣列鍵。在這個例子中我們用了 [`values`](#method-values) 方法重設鍵為連續的數字索引：
 
     $collection = collect([
         ['name' => 'Desk', 'price' => 200],
@@ -1630,7 +1630,7 @@
     
     // [9, 18, 27, 36, 45, 54, 63, 72, 81, 90]
 
-這個方法與產生[Eloquent](/docs/{{version}}/eloquent)模型的工廠結合會非常好用。
+這個方法與產生 [Eloquent](/docs/{{version}}/eloquent) 模型的工廠結合會非常好用。
 
     $categories = Collection::times(3, function ($number) {
         return factory(Category::class)->create(['name' => 'Category #'.$number]);
@@ -1661,7 +1661,7 @@
         ]
     */
 
-> **注意：**`toArray` 也會轉換所有內嵌的物件為陣列。假如你希望取得原本的底層陣列，改用 [`all`](#method-all) 方法。
+> {note} `toArray` 也會轉換所有內嵌的物件為陣列。假如你希望取得原本的底層陣列，改用 [`all`](#method-all) 方法。
 
 <a name="method-tojson"></a>
 #### `toJson()` {#collection-method}
@@ -1689,7 +1689,7 @@
     
     // [2, 4, 6, 8, 10]
 
-> **注意：**與大多數其他集合的方法不同，`transform` 會修改集合本身。如果你希望建立新集合，就改用 [`map`](#method-map) 方法。
+> {note} 與大多數其他集合的方法不同，`transform` 會修改集合本身。如果你希望建立新集合，就改用 [`map`](#method-map) 方法。
 
 <a name="method-union"></a>
 #### `union()` {#collection-method}
@@ -1781,7 +1781,7 @@
     
     // [1, 2, 3, 5]
 
-與`unless`相對的方法可檢視[`when`](#method-when)。
+與 `unless` 相對的方法可檢視[`when`](#method-when)。
 
 <a name="method-unwrap"></a>
 #### `unwrap()` {#collection-method}
@@ -1840,7 +1840,7 @@
     
     // [1, 2, 3, 4]
 
-與`when`相對的方法可檢視[`unless`](#method-unless)。
+與 `when` 相對的方法可檢視 [`unless`](#method-unless)。
 
 <a name="method-where"></a>
 #### `where()` {#collection-method}
@@ -1865,12 +1865,12 @@
         ]
     */
 
-`where` 方法是用「寬鬆」比對來進行。這意味著字串型態的數字會等於有相同數值的數字。可使用[`whereStrict`](#method-wherestrict)方法做嚴格比對。
+`where` 方法是用「寬鬆」比對來進行。這意味著字串型態的數字會等於有相同數值的數字。可使用 [`whereStrict`](#method-wherestrict)方法做嚴格比對。
 
 <a name="method-wherestrict"></a>
 #### `whereStrict()` {#collection-method}
 
-這方法與[`where`](#method-where)方法有相同的行為，但都是以嚴格模式比對所有值。
+這方法與 [`where`](#method-where) 方法有相同的行為，但都是以嚴格模式比對所有值。
 
 <a name="method-wherein"></a>
 #### `whereIn()` {#collection-method}
@@ -1895,12 +1895,12 @@
         ]
     */
 
-`whereIn` 方法是用「寬鬆」比對來進行。這意味著字串型態的數字會等於有相同數值的數字。可使用[`whereInStrict`](#method-whereinstrict)方法做嚴格比對。
+`whereIn` 方法是用「寬鬆」比對來進行。這意味著字串型態的數字會等於有相同數值的數字。可使用 [`whereInStrict`](#method-whereinstrict)方法做嚴格比對。
 
 <a name="method-whereinstrict"></a>
 #### `whereInStrict()` {#collection-method}
 
-這方法與[`whereIn`](#method-wherein)方法有相同的行為，但都是以嚴格模式比對所有值。
+這方法與 [`whereIn`](#method-wherein) 方法有相同的行為，但都是以嚴格模式比對所有值。
 
 <a name="method-wherenotin"></a>
 #### `whereNotIn()` {#collection-method}
@@ -1925,12 +1925,12 @@
         ]
     */
 
-`whereNotIn` 方法是用「寬鬆」比對來進行。這意味著字串型態的數字會等於有相同數值的數字。可使用[`whereNotInStrict`](#method-wherenotinstrict)方法做嚴格比對。
+`whereNotIn` 方法是用「寬鬆」比對來進行。這意味著字串型態的數字會等於有相同數值的數字。可使用 [`whereNotInStrict`](#method-wherenotinstrict)方法做嚴格比對。
 
 <a name="method-wherenotinstrict"></a>
 #### `whereNotInStrict()` {#collection-method}
 
-這方法與[`whereNotIn`](#method-wherenotin)方法有相同的行為，但都是以嚴格模式比對所有值。
+這方法與 [`whereNotIn`](#method-wherenotin) 方法有相同的行為，但都是以嚴格模式比對所有值。
 
 <a name="method-wrap"></a>
 #### `wrap()` {#collection-method}
@@ -1971,15 +1971,15 @@
 <a name="higher-order-messages"></a>
 ## 高階訊息傳遞
 
-集合也支援"高階訊息傳遞", 這對於集合的一般方法來說是捷徑。 集合裡提供高階訊息傳遞的方法有: `average`, `avg`, `contains`, `each`, `every`, `filter`, `first`, `flatMap`, `map`, `partition`, `reject`, `sortBy`, `sortByDesc`, 和 `sum`。
+集合也支援「高階訊息傳遞」，這對於集合的一般方法來說是捷徑。集合裡提供高階訊息傳遞的方法有：`average`，`avg`，`contains`，`each`，`every`，`filter`，`first`，`flatMap`，`map`，`partition`，`reject`，`sortBy`，`sortByDesc` 和 `sum`。
 
-每個高階訊息傳遞像是存取集合的動態屬性一樣。 例如, 我們用高階訊息傳遞的`each`來讓集合內的每個元素都呼叫一個方法:
+每個高階訊息傳遞像是存取集合的動態屬性一樣。例如，我們用高階訊息傳遞的 `each` 來讓集合內的每個元素都呼叫一個方法：
 
     $users = User::where('votes', '>', 500)->get();
 
     $users->each->markAsVip();
 
-同樣的, 我們可以用`sum`高階訊息傳遞去收集集合內使用者的"votes"總數:
+同樣的，我們可以用`sum`高階訊息傳遞去收集集合內使用者的「votes」總數：
 
     $users = User::where('group', 'Development')->get();
 
