@@ -1,55 +1,55 @@
-# Upgrade Guide
+# 升級指南
 
-- [Upgrading To 7.0 From 6.x](#upgrade-7.0)
+- [從 6.x 升級到 7.0](#upgrade-7.0)
 
 <a name="high-impact-changes"></a>
-## High Impact Changes
+## 高度影響的變更
 
 <div class="content-list" markdown="1">
 - [Authentication Scaffolding](#authentication-scaffolding)
-- [Date Serialization](#date-serialization)
-- [Symfony 5 Related Upgrades](#symfony-5-related-upgrades)
+- [日期序列化](#date-serialization)
+- [Symfony 5 相關升級](#symfony-5-related-upgrades)
 </div>
 
 <a name="medium-impact-changes"></a>
-## Medium Impact Changes
+## 中度影響的變更
 
 <div class="content-list" markdown="1">
-- [Blade Components & "Blade X"](#blade-components-and-blade-x)
-- [CORS Support](#cors-support)
-- [Factory Types](#factory-types)
-- [Markdown Mail Template Updates](#markdown-mail-template-updates)
-- [The `Blade::component` Method](#the-blade-component-method)
-- [The `assertSee` Assertion](#assert-see)
-- [The `different` Validation Rule](#the-different-rule)
-- [Unique Route Names](#unique-route-names)
+- [Blade 元件與「Blade X」](#blade-components-and-blade-x)
+- [支援 CORS](#cors-support)
+- [工廠類型](#factory-types)
+- [Markdown 信件模板升級](#markdown-mail-template-updates)
+- [`Blade::component` 方法](#the-blade-component-method)
+- [`assertSee` 斷言](#assert-see)
+- [`different` 驗證規則](#the-different-rule)
+- [唯一路由名字]](#unique-route-names)
 </div>
 
 <a name="upgrade-7.0"></a>
-## Upgrading To 7.0 From 6.x
+## 從 6.x 升級到 7.0
 
-#### Estimated Upgrade Time: 15 Minutes
+#### 預估升級時間：15 分鐘
 
-> {note} We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application.
+> {note} 我們嘗試記錄每個重大變更。由於有些重大的變更是在框架最隱密的地方，但實際上只有一小部分的變更會影響你的應用程式。
 
-### Symfony 5 Required
+### 需要 Symfony 5
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-Laravel 7 upgraded its underlying Symfony components to the 5.x series, which is now also the new minimum compatible version.
+Laravel 7 已經升級底層的 Symfony 系列元件至 5.x，也作為當前最新的最低相容性版本。
 
-### PHP 7.2.5 Required
+### 需要 PHP 7.2.5
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The new minimum PHP version is now 7.2.5.
+PHP 版本最低需求為 7.2.5。
 
 <a name="updating-dependencies"></a>
-### Updating Dependencies
+### 升級依賴項目
 
-Update your `laravel/framework` dependency to `^7.0` in your `composer.json` file. In addition, update your `nunomaduro/collision` dependency to `^4.1`, `phpunit/phpunit` dependency to `^8.5`, `laravel/tinker` dependency to `^2.0`, and `facade/ignition` to `^2.0`.
+在 `composer.json` 檔升級你的 `laravel/framework` 依賴項目到 `^7.0`。此外，升級你的 `nunomaduro/collision` 依賴項目到 `^4.1`、 `phpunit/phpunit` 升級至 `^8.5`、`laravel/tinker` 升級至 `^2.0`、還有 `facade/ignition` 升級至 `^2.0`。
 
-The following first-party packages have new major releases to support Laravel 7. If there are any, read through their individual upgrade guides before upgrading:
+下列的官方套件已有新的版本來支援 Laravel 7。如果有安裝其中的套件，請在升級之前詳讀個別的升級指南：
 
 - [Browser Kit Testing v6.0](https://github.com/laravel/browser-kit-testing/blob/master/UPGRADE.md)
 - [Envoy v2.0](https://github.com/laravel/envoy/blob/master/UPGRADE.md)
@@ -58,18 +58,18 @@ The following first-party packages have new major releases to support Laravel 7.
 - [Scout v8.0](https://github.com/laravel/scout/blob/master/UPGRADE.md)
 - [Telescope v3.0](https://github.com/laravel/telescope/releases)
 - [Tinker v2.0](https://github.com/laravel/tinker/blob/2.x/CHANGELOG.md)
-- UI v2.0 (No changes necessary)
+- UI v2.0 (不需要更改))
 
-Finally, examine any other third-party packages consumed by your application and verify you are using the proper version for Laravel 7 support.
+最後，請檢查你的應用程式所使用的第三方套件的版本是否能支援 Laravel 7。
 
 <a name="symfony-5-related-upgrades"></a>
-### Symfony 5 Related Upgrades
+### Symfony 5 的相關升級
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-Laravel 7 utilizes the 5.x series of the Symfony components. Some minor changes to your application are required to accommodate this upgrade.
+Laravel 7 採用 Symfony 5.x 的元件系列。所以要適應這次的升級，還需要做一些小變更。
 
-First, the `report`, `render`, `shouldReport`, and `renderForConsole` methods of your application's `App\Exceptions\Handler` class should accept instances of the `Throwable` interface instead of `Exception` instances:
+首先，`App\Exceptions\Handler` 類別的 `report`、`render`、`shouldReport` 和 `renderForConsole` 方法只接受 `Throwable` interface 的實例，而不是 `Exception` 實例：
 
     use Throwable;
 
@@ -78,53 +78,53 @@ First, the `report`, `render`, `shouldReport`, and `renderForConsole` methods of
     public function render($request, Throwable $exception);
     public function renderForConsole($output, Throwable $exception);
 
-Next, please update your `session` configuration file's `secure` option to have a fallback value of `null`:
+接著，請更新你的 `session` 設定檔的 `secure` 選項的預設值為 `null`：
 
     'secure' => env('SESSION_SECURE_COOKIE', null),
 
-Symfony Console, which is the underlying component that powers Artisan, expects all commands to return an integer. Therefore, you should ensure that any of your commands which return a value are returning integers:
+Symfony Console 是 Artisan 底層運行的主要元件，並預期所有指令都回傳一個整數。因此，你必須確保任何指令的回傳值都是整數。
 
     public function handle()
     {
-        // Before...
+        // 升級前...
         return true;
 
-        // After...
+        // 升級後...
         return 0;
     }
 
-### Authentication
+### 認證
 
 <a name="authentication-scaffolding"></a>
-#### Scaffolding
+#### 起手式
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-All authentication scaffolding has been moved to the `laravel/ui` repository. If you are using Laravel's authentication scaffolding, you should install the `^2.0` release of this package and the package should be installed in all environments. If you were previously including this package in the `require-dev` portion of your application's `composer.json` file, you should move it to the `require` section:
+所有認證相關的前端套件都已經搬到 `laravel/ui` 儲存庫了。如果你有使用到 Laravel 的認證相關的前端套件，就需要在所有的專案中安裝該套件的 `^2.0` 版本。若你曾把這個套件設置在 `composer.json` 檔案的 `require-dev` 之中，請把它移至 `require` 的區塊：
 
     composer require laravel/ui "^2.0"
 
-#### The `TokenRepositoryInterface`
+#### `TokenRepositoryInterface`
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-A `recentlyCreatedToken` method has been added to the `Illuminate\Auth\Passwords\TokenRepositoryInterface` interface. If you are writing a custom implementation of this interface, you should add this method to your implementation.
+`recentlyCreatedToken` 方法已經加入到 `Illuminate\Auth\Passwords\TokenRepositoryInterface` 介面。如果你正在撰寫這個介面的特定實作，你應該將該方法加入到你的實作中。
 
 ### Blade
 
 <a name="the-blade-component-method"></a>
-#### The `component` Method
+#### `component` 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `Blade::component` method has been renamed to `Blade::aliasComponent`. Please update your calls to this method accordingly.
+`Blade::component` 方法已經重新命名為 `Blade::aliasComponent`。請更新有用到這個方法的地方。
 
 <a name="blade-components-and-blade-x"></a>
-#### Blade Components & "Blade X"
+#### Blade 元件與「Blade X」
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Laravel 7 includes first-party support for Blade "tag components". If you wish to disable Blade's built-in tag component functionality, you may call the `withoutComponentTags` method from the `boot` method of your `AppServiceProvider`:
+Laravel 7 引入了官方支援的 Blade「標籤元件」。如果你想要停用 Blade 的內建標籤元件功能，可以從 `AppServiceProvider` 的 `boot` 方法上呼叫 `withoutComponentTags` 方法：
 
     use Illuminate\Support\Facades\Blade;
 
@@ -132,28 +132,28 @@ Laravel 7 includes first-party support for Blade "tag components". If you wish t
 
 ### Eloquent
 
-#### The `addHidden` / `addVisible` Methods
+#### `addHidden` / `addVisible` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The undocumented `addHidden` and `addVisible` methods have been removed. Instead, please use the `makeHidden` and `makeVisible` methods.
+不在文件上的 `addHidden` 和 `addVisible` 方法已經正式移除了。並以 `makeHidden` 和 `makeVisible` 方法取而代之。
 
-#### The `booting` / `booted` Methods
+#### `booting` / `booted` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `booting` and `booted` methods have been added to Eloquent to provide a place to conveniently define any logic that should execute during the model "boot" process. If you already have model methods with these names, you will need to rename your methods so they do not conflict with the newly added methods.
+Eloquent 加入了 `booting` 和 `booted` 方法來更方便的定義模型在「boot」階段的任何邏輯。如果你有模型已經定義了這些方法，你需要將它們重新命名來避免與新加入的方法產生衝突。
 
 <a name="date-serialization"></a>
-#### Date Serialization
+#### 日期序列化
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-Laravel 7 uses a new date serialization format when using the `toArray` or `toJson` method on Eloquent models. To format dates for serialization, the framework now uses Carbon's `toJSON` method, which produces an ISO-8601 compatible date including timezone information and fractional seconds. In addition, this change provides better support and integration with client-side date parsing libraries.
+在 Eloquent 模型上使用 `toArray` 或 `toJson` 方法的時候，Laravel 7 將採用新的日期序列化格式。框架現在使用 Carbon 的 `toJSON` 方法來格式化日期，這個方法可以產生包含時區資訊與小數秒的國際標準 ISO-8601 日期格式。此外，這個改變可以提供更好的支援與整合客戶端的解析日期的函式庫。
 
-Previously, dates would be serialized to a format like the following: `2019-12-02 20:01:00`. Dates serialized using the new format will appear like: `2019-12-02T20:01:00.283041Z`. Please note that ISO-8601 dates are always expressed in UTC.
+在過去，日期會被序列化成這個格式：`2019-12-02 20:01:00`。現在新的序列化後的日期格式會像是：`2019-12-02T20:01:00.283041Z`。請注意，國際標準 ISO-8601 始終以 UTC 表示。
 
-If you would like to keep using the previous behavior you can override the `serializeDate` method on your model:
+如果你想要維持之前的做法，你可以覆寫模型的 `serializeDate` 方法：
 
     use DateTimeInterface;
 
@@ -168,145 +168,145 @@ If you would like to keep using the previous behavior you can override the `seri
         return $date->format('Y-m-d H:i:s');
     }
 
-> {tip} This change only affects serialization of models and model collections to arrays and JSON. This change has no effect on how dates are stored in your database.
+> {tip} 這個改變只會影響模型和模型集合被序列化成陣列與 JSON。這個改變並不影響如何在資料庫中儲存日期。
 
 <a name="factory-types"></a>
-#### Factory Types
+#### 工廠類型
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Laravel 7 removes the "factory types" feature. This feature has been undocumented since October 2016. If you are still using this feature, you should upgrade to [factory states](/docs/{{version}}/database-testing#factory-states), which provide more flexibility.
+Laravel 7 移除了「工廠類型」的功能。這個功能自 2016 年十月以來未被記錄在文件上。如果你還有在使用這個功能，你必須更換成[工廠狀態](/docs/{{version}}/database-testing#factory-states)，來提供更多的可塑性。
 
-#### The `getOriginal` Method
+#### `getOriginal` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `$model->getOriginal()` method will now respect any casts and mutators defined on the model. Previously, this method returned the uncast, raw attributes. If you would like to continue retrieving the raw, uncast values, you may use the `getRawOriginal` method instead.
+`$model->getOriginal()` 方法現在將不再優先於模型上定義的任何修改器與型別轉換器。在過去，這個方法會回傳轉換之前的原始屬性。如果你想要繼續取得原始未轉換的型別的值，你可以使用 `getRawOriginal` 方法來取代。
 
-#### Route Binding
+#### 路由綁定
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `resolveRouteBinding` method of the `Illuminate\Contracts\Routing\UrlRoutable` interface now accepts a `$field` argument. If you were implementing this interface by hand, you should update your implementation.
+`Illuminate\Contracts\Routing\UrlRoutable` 介面的 `resolveRouteBinding` 方法接受 `$field` 參數。如果你是手動實作這個介面，則必須更新它。
 
-In addition, the `resolveRouteBinding` method of the `Illuminate\Database\Eloquent\Model` class also now accepts a `$field` parameter. If you were overriding this method, you should update your method to accept this argument.
+還有，`Illuminate\Database\Eloquent\Model` 類別的 `resolveRouteBinding` 方法現在還接受 `$field` 的參數。如果你想要覆寫這個方法，就必須加入這個參數。
 
-Finally, the `resolveRouteBinding` method of the `Illuminate\Http\Resources\DelegatesToResources` trait also now accepts a `$field` parameter. If you were overriding this method, you should update your method to accept this argument.
+最後，`Illuminate\Http\Resources\DelegatesToResources` trait 的 `resolveRouteBinding` 方法現在也接受 `$field` 參數。如果你想要覆寫這個方法，就必須加入這個參數。
 
 ### HTTP
 
-#### PSR-7 Compatibility
+#### PSR-7 相容性
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The Zend Diactoros library for generating PSR-7 responses has been deprecated. If you are using this package for PSR-7 compatibility, please install the `nyholm/psr7` Composer package instead. In addition, please install the `^2.0` release of the `symfony/psr-http-message-bridge` Composer package.
+不推薦使用 Zend Diactoros 函式庫來產生 PSR-7 的回應。如果正好使用這個套件來處理 PSR-7 的相容性，請改安裝 `nyholm/psr7` Composer 套件。還有，請安裝 `symfony/psr-http-message-bridge` 的 `^2.0` 版本的 Composer 套件。
 
 ### Mail
 
-#### Configuration File Changes
+#### 設定檔的變更
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-In order to support multiple mailers, the default `mail` configuration file has changed in Laravel 7.x to include an array of `mailers`. However, in order to preserve backwards compatibility, the Laravel 6.x format of this configuration file is still supported. So, no changes are **required** when upgrading to Laravel 7.x; however, you may wish to [examine the new `mail` configuration file](https://github.com/laravel/laravel/blob/develop/config/mail.php) structure and update your file to reflect the changes.
+為了支援多個信件功能，在 Laravel 7.x 中的預設 `mail` 設定檔已改用 `mailers` 的陣列。然而，為了維持 6.x 的相容性，仍會繼續支援 Laravel 6.x 格式的設定檔。因此，升級到 Laravel 7.x 時不需要做任何的更改。但是，你可能想要[檢查新的 `mail` 設定檔](https://github.com/laravel/laravel/blob/develop/config/mail.php)架構並更新設定檔。
 
 <a name="markdown-mail-template-updates"></a>
-#### Markdown Mail Template Updates
+#### Markdown 信件模板更新
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The default Markdown mail templates have been refreshed with a more professional and appealing design. In addition, the undocumented `promotion` Markdown mail component has been removed.
+預設的 Markdown 信件模板已汰換成更專業與吸引人的設計。此外，尚未記錄在正式文件的 `promotion` Markdown 信件元件已正式被移除了。
 
-Because indentation has special meaning within Markdown, Markdown mail templates expect unindented HTML. If you've previously published Laravel's default mail templates, you'll need to re-publish your mail templates or manually unindent them:
+由於縮排在 Markdown 具有特別的意義，因此 Markdown 信件模板需要不縮排的 HTML。如果你之前已經發佈了 Laravel 的預設信件模板，則需要重新發佈信件模板或手動取消縮排：
 
     php artisan vendor:publish --tag=laravel-mail --force
 
-#### Swift Mailer Bindings
+#### Swift Mailer 綁定
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-Laravel 7.x doesn't provide `swift.mailer` and `swift.transport` container bindings. You may now access these objects through the `mailer` binding:
+Laravel 7.x 不在提供 `swift.mailer` 和 `swift.transport` 容器綁定了。你現在可以透過 `mailer` 來存取綁定的物件：
 
     $swiftMailer = app('mailer')->getSwiftMailer();
 
     $swiftTransport = $swiftMailer->getTransport();
 
-### Resources
+### Resource
 
-#### The `Illuminate\Http\Resources\Json\Resource` Class
+#### `Illuminate\Http\Resources\Json\Resource` 類別
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The deprecated `Illuminate\Http\Resources\Json\Resource` class has been removed. Your resources should extend the `Illuminate\Http\Resources\Json\JsonResource` class instead.
+現在已刪除 `Illuminate\Http\Resources\Json\Resource` 這個不推薦的類別。你的 Resource 應該改使用`Illuminate\Http\Resources\Json\JsonResource` 類別來繼承。
 
-### Routing
+### 路由
 
-#### The Router `getRoutes` Method
+#### 路由器的 `getRoutes` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The router's `getRoutes` method now returns an instance of `Illuminate\Routing\RouteCollectionInterface` instead of `Illuminate\Routing\RouteCollection`.
+路由器的 `getRoutes` 方法現在會回傳 `Illuminate\Routing\RouteCollectionInterface` 實例來取代 `Illuminate\Routing\RouteCollection`。
 
 <a name="unique-route-names"></a>
-#### Unique Route Names
+#### 唯一的路由名字 Route Names
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Even though never officially documented, previous Laravel releases allow you to define two different routes with the same name. In Laravel 7 this is no longer possible and you should always provide unique names for your routes. Routes with duplicate names can cause unexpected behavior in multiple areas of the framework.
+儘管從未寫入正式文件中，但在過去的 Laravel 版本可以讓你為兩個不同的路由定義一樣的名字。在 Laravel 7 中，是無法再讓你這樣做，你必須為你的路由取一個不重複的名字。名字重複的路由會導致框架的許多地方產生非預期的行為。
 
 <a name="cors-support"></a>
-#### CORS Support
+#### 支援 CORS
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Cross-Origin Resource Sharing (CORS) support is now integrated by default. If you are using any third-party CORS libraries you are now advised to use the [new `cors` configuration file](https://github.com/laravel/laravel/blob/master/config/cors.php).
+現在預設支援已經整合好的跨來源資料共用（CORS）。如果你現在正在使用任何第三方的 CORS 函式庫，則建議你使用[新的 `cors` 設定檔](https://github.com/laravel/laravel/blob/master/config/cors.php).
 
-Next, install the underlying CORS library as a dependency of your application:
+接著，為應用程式的依賴項目安裝底層 CORS 函式庫：
 
     composer require fruitcake/laravel-cors
 
-Finally, add the `\Fruitcake\Cors\HandleCors::class` middleware to your `App\Http\Kernel` global middleware list.
+最後，加入 `\Fruitcake\Cors\HandleCors::class` 中介層到你的 `App\Http\Kernel` 全域中介層清單中。
 
 ### Session
 
-#### The `array` Session Driver
+#### 由 `array` 驅動的 Session
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `array` session driver data is now persistent for the current request. Previously, data stored in the `array` session could not be retrieved even during the current request.
+由 `array` 驅動的 Session 資料現在會保留在當前的請求。在過去，即使還在請求階段，也無法取得儲存在 `array` Session 的資料。
 
-### Testing
+### 測試
 
 <a name="assert-see"></a>
-#### The `assertSee` Assertion
+#### `assertSee` 斷言
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `assertSee`, `assertDontSee`, `assertSeeText`, `assertDontSeeText`, `assertSeeInOrder` and `assertSeeTextInOrder` assertions on the `TestResponse` class will now automatically escape values. If you are manually escaping any values passed to these assertions you should no longer do so. If you need to assert unescaped values, you may pass `false` as the second argument to the method.
+在 `TestResponse` 類別上的 `assertSee`、`assertDontSee`、`assertSeeText`、`assertDontSeeText`、`assertSeeInOrder` 和 `assertSeeTextInOrder` 的斷言現在會自動跳脫值。如果你是手動跳脫任何傳入的值到這些斷言，則不用繼續這樣做了。如果你需要斷言未跳脫的值，可以在這些方法的第二個參數傳入 `false`。
 
 <a name="test-response"></a>
-#### The `TestResponse` Class
+#### `TestResponse` 類別
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `Illuminate\Foundation\Testing\TestResponse` class has been renamed to `Illuminate\Testing\TestResponse`. If you're extending this class, make sure to update the namespace.
+`Illuminate\Foundation\Testing\TestResponse` 類別已重新命名為 `Illuminate\Testing\TestResponse`。如果你有使用過這個類別，請確保有更新這個命名空間。
 
 <a name="assert-class"></a>
-#### The `Assert` Class
+#### `Assert` 類別
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
 The `Illuminate\Foundation\Testing\Assert` class has been renamed to `Illuminate\Testing\Assert`. If you're using this class, make sure to update the namespace.
 
-### Validation
+### 驗證
 
 <a name="the-different-rule"></a>
-#### The `different` Rule
+#### `different` 規則
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `different` rule will now fail if one of the specified parameters is missing from the request.
+現在，`different` 規則會因為請求中缺少指定的參數而失敗。
 
 <a name="miscellaneous"></a>
-### Miscellaneous
+### 其他
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/6.x...master) and choose which updates are important to you.
+我們也鼓勵你查看 `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel) GitHub 儲存庫中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/6.x...master)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
