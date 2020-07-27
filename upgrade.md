@@ -6,7 +6,7 @@
 ## 高度影響的變更
 
 <div class="content-list" markdown="1">
-- [Authentication Scaffolding](#authentication-scaffolding)
+- [認證起手式](#authentication-scaffolding)
 - [日期序列化](#date-serialization)
 - [Symfony 5 相關升級](#symfony-5-related-upgrades)
 </div>
@@ -181,7 +181,7 @@ Laravel 7 移除了「工廠類型」的功能。這個功能自 2016 年十月�
 
 **影響程度：低**
 
-`$model->getOriginal()` 方法現在將不再優先於模型上定義的任何修改器與型別轉換器。在過去，這個方法會回傳轉換之前的原始屬性。如果你想要繼續取得原始未轉換的型別的值，你可以使用 `getRawOriginal` 方法來取代。
+`$model->getOriginal()`  方法現在將包含模型內定義的修改器與型別轉換器邏輯。在過去，這個方法會回傳轉換之前的原始屬性。如果你想要繼續取得原始未轉換的型別的值，你可以使用 `getRawOriginal` 方法來取代。
 
 #### 路由綁定
 
@@ -199,7 +199,7 @@ Laravel 7 移除了「工廠類型」的功能。這個功能自 2016 年十月�
 
 **影響程度：低**
 
-不推薦使用 Zend Diactoros 函式庫來產生 PSR-7 的回應。如果正好使用這個套件來處理 PSR-7 的相容性，請改安裝 `nyholm/psr7` Composer 套件。還有，請安裝 `symfony/psr-http-message-bridge` 的 `^2.0` 版本的 Composer 套件。
+已經棄用 Zend Diactoros 函式庫來產生 PSR-7 的回應。如果正好使用這個套件來處理 PSR-7 的相容性，請改安裝 `nyholm/psr7` Composer 套件。還有，請安裝 `symfony/psr-http-message-bridge` 的 `^2.0` 版本的 Composer 套件。
 
 ### Mail
 
@@ -236,7 +236,7 @@ Laravel 7.x 不在提供 `swift.mailer` 和 `swift.transport` 容器綁定了。
 
 **影響程度：低**
 
-現在已刪除 `Illuminate\Http\Resources\Json\Resource` 這個不推薦的類別。你的 Resource 應該改使用`Illuminate\Http\Resources\Json\JsonResource` 類別來繼承。
+現在已經棄用 `Illuminate\Http\Resources\Json\Resource` 類別。你的 Resource 應該改使用`Illuminate\Http\Resources\Json\JsonResource` 類別來繼承。
 
 ### 路由
 
@@ -247,7 +247,7 @@ Laravel 7.x 不在提供 `swift.mailer` 和 `swift.transport` 容器綁定了。
 路由器的 `getRoutes` 方法現在會回傳 `Illuminate\Routing\RouteCollectionInterface` 實例來取代 `Illuminate\Routing\RouteCollection`。
 
 <a name="unique-route-names"></a>
-#### 唯一的路由名字 Route Names
+#### 唯一的路由名字
 
 **影響程度：中**
 
