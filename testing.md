@@ -34,7 +34,9 @@ Laravel 在建立時有考慮到測試這件事。事實上，內建已經支援
     // 在單元測試目錄建立一個測試...
     php artisan make:test UserTest --unit
 
-測試一旦被產生，你可以像是在使用 PHPUnit 來定義測試方法。若要執行測試，只要在終端機執行 `phpunit` 指令：
+> {tip} 可用 [Stub 發布指令](/docs/{{version}}/artisan#stub-customization) 來客製化 Test Stub
+
+測試一旦被產生，你可以像是在使用 PHPUnit 來定義測試方法。若要執行測試，只要在終端機執行 `phpunit` 或 `artisan test` 指令：
 
     <?php
 
@@ -54,7 +56,7 @@ Laravel 在建立時有考慮到測試這件事。事實上，內建已經支援
             $this->assertTrue(true);
         }
     }
-   
+
 > {note} 如果你在測試類別中定義自己的 `setUp` / `tearDown` 方法，請別忘了呼叫 `parent::setUp()` / `parent::tearDown()`。
 
 <a name="artisan-test-runner"></a>
