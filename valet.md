@@ -193,14 +193,14 @@ Valet 預設會將傳入的流量限制為內部的 `127.0.0.1` 介面。這樣�
 
     <?php
 
-    // 為 foo.test 專案的 $_SERVER['key'] 設「值」．．．
+    // 為 foo.test 專案的 $_SERVER['key'] 設「值」……
     return [
         'foo' => [
             'key' => 'value',
         ],
     ];
 
-    // 為所有專案的 $_SERVER['key'] 設「值」．．．
+    // 為所有專案的 $_SERVER['key'] 設「值」……
     return [
         '*' => [
             'key' => 'value',
