@@ -1,96 +1,97 @@
-# Upgrade Guide
+# 升級指南
 
-- [Upgrading To 5.6.30 From 5.6](#upgrade-5.6.30)
-- [Upgrading To 5.6.0 From 5.5](#upgrade-5.6.0)
+- [從 5.6 升級到 5.6.30](#upgrade-5.6.30)
+- [從 5.5 升級到 5.6.0](#upgrade-5.6.0)
 
 <a name="upgrade-5.6.30"></a>
-## Upgrading To 5.6.30 From 5.6 (Security Release)
+## 從 5.6 升級到 5.6.30（安全性更新版本）
 
-Laravel 5.6.30 is a security release of Laravel and is recommended as an immediate upgrade for all users. Laravel 5.6.30 also contains a breaking change to cookie encryption and serialization logic, so please read the following notes carefully when upgrading your application.
+Laravel 5.6.30 是 Laravel 安全性更新版本，建議所有使用者即刻升級。Laravel 5.6.30 也有對 Cookie 加密與序列化邏輯的重大變更，所以在升級應用程式前請詳閱以下說明。
 
-**This vulnerability may only be exploited if your application encryption key (`APP_KEY` environment variable) has been accessed by a malicious user.** Typically, it is not possible for users of your application to gain access to this value. However, ex-employees that had access to the encryption key may be able to use the key to attack your applications. If you have any reason to believe your encryption key is in the hands of a malicious party, you should **always** rotate the key to a new value.
+**這個漏洞只會在惡意使用者持有了你的應用程式的加密金鑰（`APP_KEY` 環境變數）時發生。**一般情況下，你的使用者是不可能存取到這個值。然而，有權限存取加密金鑰的前員工就有機會使用這個金鑰來攻擊你的應用程式。如果你有任何理由來讓你相信自身的加密金鑰已落入不肖人士手裡，則**一定要**翻新這個金鑰的值。
 
-### Cookie Serialization
+### Cookie 序列化
 
-Laravel 5.6.30 disables all serialization / unserialization of cookie values. Since all Laravel cookies are encrypted and signed, cookie values are typically considered safe from client tampering. **However, if your application's encryption key is in the hands of a malicious party, that party could craft cookie values using the encryption key and exploit vulnerabilities inherent to PHP object serialization / unserialization, such as calling arbitrary class methods within your application.**
+Laravel 5.6.30 已經停用所有 Cookie 值的序列化與反序列化。由於所有 Laravel Cookie 都有被加密與簽章的，所以理論上 Cookie 的值是可以防止客戶端的竄改的。**然而，如果你的應用程式的加密金鑰落入不肖人士手中，則他們可以使用該加密金鑰來製作 Cookie 值，並利用 PHP 物件的序列化與反序列化的既有漏洞，像是在應用程式內呼叫任意類別的方法。**
 
-Disabling serialization on all cookie values will invalidate all of your application's sessions and users will need to log into the application again (unless they have a `remember_token` set, in which case the user will be logged into a new session automatically). In addition, any other encrypted cookies your application is setting will have invalid values. For this reason, you may wish to add additional logic to your application to validate that your custom cookie values match an expected list of values; otherwise, you should discard them.
+停用所有 Cookie 值的序列化會使你的應用程式的所有 Session 無效，以及所有使用者會需要再次登入應用程式（如果他們有用到 `remember_token`，這時使用者會自動被登入）。還有，你的應用程式當時正在加密 Cookie 任何值都會無效喔。也因為這樣，你可能希望加入額外的邏輯到應用程式來驗證自訂的 Cookie 值是否與預期的值清單相符；如果沒有相符，你應該捨棄他們。
 
-#### Configuring Cookie Serialization
+#### 設定 Cookie 序列化
 
-Since this vulnerability is not able to be exploited without access to your application's encryption key, we have chosen to provide a way to re-enable encrypted cookie serialization while you make your application compatible with these changes. To enable / disable cookie serialization, you may change the static `serialize` property of the `App\Http\Middleware\EncryptCookies` [middleware](https://github.com/laravel/laravel/blob/5.6/app/Http/Middleware/EncryptCookies.php):
+因為無法存取你應用程式的加密金鑰，所以這個漏洞無法被使用。我們選擇了一種做法來提供你在重新啟用加密的 Cookie 序列化時也能讓應用程式相容這些變更。要啟用與停用 Cookie 序列化，可以更改 `App\Http\Middleware\EncryptCookies` [中介層](https://github.com/laravel/laravel/blob/5.6/app/Http/Middleware/EncryptCookies.php)的 `serialize` 靜態屬性：
 
     /**
-     * Indicates if cookies should be serialized.
+     * 是否要序列化 Cookie。
      *
      * @var bool
      */
     protected static $serialize = true;
 
-> **Note:** When encrypted cookie serialization is enabled, your application will be vulnerable to attack if its encryption key is accessed by a malicious party. If you believe your key may be in the hands of a malicious party, you should rotate the key to a new value before enabling encrypted cookie serialization.
+> **注意：** 當你啟用加密的 Cookie 序列化後，若應用程式的加密金鑰落入不肖人士手中，就容易遭受攻擊。如果你認為你的金鑰落入不肖人士手中，你應該在啟用加密 Cookie 序列化之前翻新金鑰的值。
 
 ### Dusk 4.0.0
 
-Dusk 4.0.0 has been released and does not serialize cookies. If you choose to enable cookie serialization, you should continue to use Dusk 3.0.0. Otherwise, you should upgrade to Dusk 4.0.0.
+已發布 Dusk 4.0.0，且不會序列化 Cookie。如果你選擇啟用 Cookie 序列化，你應該繼續使用 Dusk 3.0.0。不然，你應該升級到 4.0.0。
 
 ### Passport 6.0.7
 
-Passport 6.0.7 has been released with a new `Laravel\Passport\Passport::withoutCookieSerialization()` method. Once you have disabled cookie serialization, you should call this method within your application's `AppServiceProvider`.
+已發布 Passport 6.0.7，並加入 `Laravel\Passport\Passport::withoutCookieSerialization()` 新方法。在你停用 Cookie 序列化後，你可以在應用程式的 `AppServiceProvider` 中呼叫這個方法。
 
 <a name="upgrade-5.6.0"></a>
-## Upgrading To 5.6.0 From 5.5
+## 從 5.5 升級到 5.6.0
 
-#### Estimated Upgrade Time: 10 - 30 Minutes
+#### 預估升級時間：10 - 30 分鐘
 
-> {note} We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application.
+> {note} 我們嘗試記錄每個重大變更。由於有些重大的變更是在框架最隱密的地方，但實際上只有一小部分的變更會影響你的應用程式。
 
 ### PHP
 
-Laravel 5.6 requires PHP 7.1.3 or higher.
+Laravel 5.6 需要 PHP 7.1.3 或更高的版本。
 
-### Updating Dependencies
+### 更新依賴項目
 
-Update your `laravel/framework` dependency to `5.6.*` and your `fideloper/proxy` dependency to `^4.0` in your `composer.json` file.
+在 `composer.json` 檔案中更新 `laravel/framework` 到 `5.6.*` 還有 `fideloper/proxy` 更新到 `^4.0`。
 
-If you are using the `laravel/browser-kit-testing` package, you should update the package to `4.*` in your composer.json file.
+如果你有使用 `laravel/browser-kit-testing` 套件，則要在 composer.json 更新該套件到 `4.*`。
 
-In addition, if you are using the following first-party Laravel packages, you should upgrade them to their latest release:
+還有，如果你有使用第三方的 Laravel 套件，你應該升級他們到他們最後發布的版本：
 
 <div class="content-list" markdown="1">
-- Dusk (Upgrade To `^3.0`)
-- Passport (Upgrade To `^6.0`)
-- Scout (Upgrade To `^4.0`)
+- Dusk（升級到 `^3.0`）
+- Passport（升級到 `^6.0`）
+- Scout（升級到 `^4.0`）
 </div>
 
-Of course, don't forget to examine any 3rd party packages consumed by your application and verify you are using the proper version for Laravel 5.6 support.
+最後，請檢查你的應用程式所使用的第三方套件的版本是否能支援 Laravel 5.6。
 
 #### Symfony 4
 
-All of the underlying Symfony components used by Laravel have been upgraded to the Symfony `^4.0` release series. If you are directly interacting with Symfony components within your application, you should review the [Symfony change log](https://github.com/symfony/symfony/blob/master/UPGRADE-4.0.md).
+Laravel 所使用的底層 Symfony 元件都已升級到 `^4.0` 發布的版本。如果你有在應用程式中直接使用 Symfony 元件，請你先看 [Symfony 更新記錄](https://github.com/symfony/symfony/blob/master/UPGRADE-4.0.md)。
 
 #### PHPUnit
 
-You should update the `phpunit/phpunit` dependency of your application to `^7.0`.
+你應該升級 `phpunit/phpunit` 到 `^7.0`。
 
-### Arrays
+### 陣列
 
-#### The `Arr::wrap` Method
+#### `Arr::wrap` 方法
 
-Passing `null` to the `Arr::wrap` method will now return an empty array.
+現在傳入 `null` 到 `Arr::warp` 方法會回傳一組空陣列。
 
 ### Artisan
 
-#### The `optimize` Command
+#### `optimize` 命令
 
-The previously deprecated `optimize` Artisan command has been removed. With recent improvements to PHP itself including the OPcache, the `optimize` command no longer provides any relevant performance benefit. Therefore, you may remove `php artisan optimize` from the `scripts` within your `composer.json` file.
+之前棄用的 `optimize` Artisan 命令已被移除。隨著近年來 PHP 自身的 OPcache 的改良，`optimize` 命令不再提供任何相關的性能優化。因此，你可以從 `composer.json` 檔案移除 `scripts` 中的 `php artisan optimize`。
 
 ### Blade
 
-#### HTML Entity Encoding
+#### HTML 實體編碼
 
-In previous versions of Laravel, Blade (and the `e` helper) would not double encode HTML entities. This was not the default behavior of the underlying `htmlspecialchars` function and could lead to unexpected behavior when rendering content or passing in-line JSON content to JavaScript frameworks.
+在之前的 Laravel 版本中，Blade（與 `e` 輔助函式）不會對 HTML 實體進行二次編碼。這並不是底層 `htmlspecialchars` 底層預設的用法，且
+在渲染內容或直接傳遞 JSON 內容到 JaveScript 框架時可能會導致意外發生。
 
-In Laravel 5.6, Blade and the `e` helper will double encode special characters by default. This brings these features into alignment with the default behavior of the underlying `htmlspecialchars` PHP function. If you would like to maintain the previous behavior of preventing double encoding, you may use the `Blade::withoutDoubleEncoding` method:
+在 Laravel 5.6，Blade 與 `e` 輔助函式預設會對特殊字元做二次編碼。讓這些功能與預設 PHP 底層的 `htmlspecialchars` 函式的用法保持一致性。如果你想要維持過去防止防止二次編碼的用法，可以使用 `Blade::withoutDoubleEncoding`：
 
     <?php
 
@@ -102,7 +103,7 @@ In Laravel 5.6, Blade and the `e` helper will double encode special characters b
     class AppServiceProvider extends ServiceProvider
     {
         /**
-         * Bootstrap any application services.
+         * 啟動任何應用程式服務。
          *
          * @return void
          */
@@ -112,75 +113,76 @@ In Laravel 5.6, Blade and the `e` helper will double encode special characters b
         }
     }
 
-### Cache
+### 快取
 
-#### The Rate Limiter `tooManyAttempts` Method
+#### 限制使用率 `tooManyAttempts` 方法
 
-The unused `$decayMinutes` parameter was removed from this method's signature. If you were overriding this method with your own implementation, you should also remove the argument from your method's signature.
+已經從這個方法中移除未被使用 `$decayMinutes` 參數。如果你有自己的實例覆寫過這個方法，也請從這個方法中刪除該參數。
 
-### Database
+### 資料庫
 
-#### Index Order Of Morph Columns
+#### 多型欄位的索引排序
 
-The indexing of the columns built by the `morphs` migration method has been reversed for better performance. If you are using the `morphs` method in one of your migrations, you may receive an error when attempting to run the migration's `down` method. If the application is still in development, you may use the `migrate:fresh` command to rebuild the database from scratch. If the application is in production, you should pass an explicit index name to the `morphs` method.
+為了提高性能，將對調建構 `morphs` 遷移方法的欄位索引。如果你有在 Migrate 中用過 `morphs` 方法，則會在執行 Migrate 的 `down` 方法時收到錯誤訊息。如果應用程式還在開發階段，你可以使用 `migrate:fresh` 命令來重頭開始重建資料庫。如果應用程式已正式上線，則要把索引名稱傳遞給 `morphs` 方法。
 
-#### `MigrationRepositoryInterface` Method Addition
+#### 新增 `MigrationRepositoryInterface` 方法
 
-A new `getMigrationsBatches` method has been added to the `MigrationRepositoryInterface`. In the very unlikely event that you were defining your own implementation of this class, you should add this method to your implementation. You may view the default implementation in the framework as an example.
+新的 `getMigrationsBatches` 方法已新增到 `MigrationRepositoryInterface`。你可能在極少數的情況下會定義這個類別到自己的實例上，請將這個方法加到你的實例中。你能以框架為例來查看預設的實例。
 
 ### Eloquent
 
-#### The `getDateFormat` Method
+#### `getDateFormat` 方法
 
-This `getDateFormat` method is now `public` instead of `protected`.
+`getDateFormat` 方法現在是 `public`，而不是 `protected`。
 
-### Hashing
+### 雜湊化
 
-#### New Configuration File
+#### 新的設定檔
 
-All hashing configuration is now housed in its own `config/hashing.php` configuration file. You should place a copy of the [default configuration file](https://github.com/laravel/laravel/blob/5.6/config/hashing.php) in your own application. Most likely, you should maintain the `bcrypt` driver as your default driver. However, `argon` is also supported.
+現在所有的雜湊設定都放在 `config/hashing.php` 設定檔。你可以在自己的應用程式放置[預設設定檔](https://github.com/laravel/laravel/blob/5.6/config/hashing.php)的副本。你想必會將 `bcrypt` 驅動繼續做為預設的驅動。不過，也有支援 `argon`。
 
-### Helpers
+### 輔助函式
 
-#### The `e` Helper
+#### `e` 輔助方法
 
-In previous versions of Laravel, Blade (and the `e` helper) would not double encode HTML entities. This was not the default behavior of the underlying `htmlspecialchars` function and could lead to unexpected behavior when rendering content or passing in-line JSON content to JavaScript frameworks.
+在之前的 Laravel 版本中，Blade（與 `e` 輔助函式）不會對 HTML 實體進行二次編碼。這並不是底層 `htmlspecialchars` 底層預設的用法，且
+在渲染內容或直接傳遞 JSON 內容到 JaveScript 框架時可能會導致意外發生。
 
-In Laravel 5.6, Blade and the `e` helper will double encode special characters by default. This brings these features into alignment with the default behavior of the underlying `htmlspecialchars` PHP function. If you would like to maintain the previous behavior of preventing double encoding, you may pass `false` as the second argument to the `e` helper:
+在 Laravel 5.6，Blade 與 `e` 輔助函式預設會對特殊字元做二次編碼。讓這些功能與預設 PHP 底層的 `htmlspecialchars` 函式的用法保持一致性。果你想要維持過去防止防止二次編碼的用法，可以傳入 `false` 到 `e` 輔助函式的第二個參數：
 
     <?php echo e($string, false); ?>
 
-### Logging
+### 日誌系統
 
-#### New Configuration File
+#### 新的設定檔
 
-All logging configuration is now housed in its own `config/logging.php` configuration file. You should place a copy of the [default configuration file](https://github.com/laravel/laravel/blob/5.6/config/logging.php) in your own application and tweak the settings based on your application's needs.
+現在所有日誌設定全都放置在 `config/logging.php` 設定檔。你可以在自己的應用程式放置[預設設定檔](https://github.com/laravel/laravel/blob/5.6/config/logging.php)的副本，並依據應用程式的需求來調整設定。
 
-The `log` and `log_level` configuration options may be removed from the `config/app.php` configuration file.
+可以從 `config/app.php` 設定檔中刪除 `log` 和 `log_level` 設定選項。
 
-#### The `configureMonologUsing` Method
+#### `configureMonologUsing` 方法
 
-If you were using the `configureMonologUsing` method to customize the Monolog instance for your application, you should now create a `custom` Log channel. For more information on how to create custom channels, check out the [full logging documentation](/docs/5.6/logging#creating-custom-channels).
+如果你有用到 `configureMonologUsing` 方法來為你的應用程式客製化 Monolog 實例。你現在能建立 `custom` 日誌頻道。更多關於如何建立自訂頻道，請詳閱[完整日誌文件](/docs/5.6/logging#creating-custom-channels)。
 
-#### The Log `Writer` Class
+#### 日誌 `Writer` 類別
 
-The `Illuminate\Log\Writer` class has been renamed to `Illuminate\Log\Logger`. If you were explicitly type-hinting this class as a dependency of one of your application's classes, you should update the class reference to the new name. Or, alternatively, you should strongly consider type-hinting the standardized `Psr\Log\LoggerInterface` interface instead.
+`Illuminate\Log\Writer` 類別已重新命名為 `Illuminate\Log\Logger`。如果你有使用這個類別作為應用程式的依賴項目之一，應該更新該類別到新名字。或者，你可以考慮使用標準化的 `Psr\Log\LoggerInterface` 來取代之。
 
-#### The `Illuminate\Contracts\Logging\Log` Interface
+#### `Illuminate\Contracts\Logging\Log` 介面
 
-This interface has been removed since this interface was a total duplication of the `Psr\Log\LoggerInterface` interface. You should type-hint the `Psr\Log\LoggerInterface` interface instead.
+由於這個介面完全重複 `Psr\Log\LoggerInterface` 介面，所以已移除這個介面。你應該使用 `Psr\Log\LoggerInterface` 介面來取代。
 
-### Mail
+### 郵件
 
-#### `withSwiftMessage` Callbacks
+#### `withSwiftMessage` 回呼
 
-In previous releases of Laravel, Swift Messages customization callbacks registered using `withSwiftMessage` were called _after_ the content was already encoded and added to the message. These callbacks are now called _before_ the content is added, which allows you to customize the encoding or other message options as needed.
+在 Laravel 之前的版本，在內容準備好編碼並加到訊息_之後_，才使用 `withSwiftMessage` 來註冊 Swift 訊息客製化回呼。現在這些回呼會在內容被加入_之前_呼叫，這能讓你根據需求來客製化編碼或其他訊息選項。
 
-### Pagination
+### 分頁
 
 #### Bootstrap 4
 
-The pagination links generated by the paginator now default to Bootstrap 4. To instruct the paginator to generate Bootstrap 3 links, call the `Paginator::useBootstrapThree` method from the `boot` method of your `AppServiceProvider`:
+現在分頁器產生的分頁連結預設會是 Bootstrap 4。要讓分頁器產生 Bootstrap 3 連結，可以從 `AppServiceProvider` 的 `boot` 方法呼叫 `Paginator::useBootstrapThree` 方法：
 
     <?php
 
@@ -192,7 +194,7 @@ The pagination links generated by the paginator now default to Bootstrap 4. To i
     class AppServiceProvider extends ServiceProvider
     {
         /**
-         * Bootstrap any application services.
+         * 啟動任何應用程式服務。
          *
          * @return void
          */
@@ -204,39 +206,39 @@ The pagination links generated by the paginator now default to Bootstrap 4. To i
 
 ### Resources
 
-#### The `original` Property
+#### `original` 屬性
 
-The `original` property of [resource responses](/docs/5.6/eloquent-resources) is now set to the original model instead of a JSON string / array. This allows for easier inspection of the response's model during testing.
+[resource 回應](/docs/5.6/eloquent-resources)的 `original` 屬性現在設為原生模型，而不是 JSON 字串與陣列。這可以在測試過程中更容易的檢查回應的模型。
 
-### Routing
+### 路由
 
-#### Returning Newly Created Models
+#### 回傳新建立的模型時
 
-When returning a newly created Eloquent model directly from a route, the response status will now automatically be set to `201` instead of `200`. If any of your application's tests were explicitly expecting a `200` response, those tests should be updated to expect `201`.
+直接從路由回傳新建立的 Eloquent 模型會自動回應 `201` 的狀態，而不是 `200`。如果你的應用程式的任何測試有預期回應 `200`，則應該更新這些測試預期為 `201`。
 
-### Trusted Proxies
+### 可信任的代理
 
-Due to underlying changes in the trusted proxy functionality of Symfony HttpFoundation, slight changes must be made to your application's `App\Http\Middleware\TrustProxies` middleware.
+因為 Symfony HttpFoundation 的可信任代理功能的底層有更動，所以必須修改你的應用程式的中介層。
 
-The `$headers` property, which was previously an array, is now a bit property that accepts several different values. For example, to trust all forwarded headers, you may update your `$headers` property to the following value:
+`$headers` 屬性在過去是一組陣列，現在則是一個 bit 屬性，可以接受不同的值。例如，要信任所有轉發的標頭，你可以把 `$headers` 屬性更新為下列的值：
 
     use Illuminate\Http\Request;
 
     /**
-     * The headers that should be used to detect proxies.
+     * 被用於檢查代理的標頭。
      *
      * @var int
      */
     protected $headers = Request::HEADER_X_FORWARDED_ALL;
 
-For more information on the available `$headers` values, check out the full documentation on [trusting proxies](/docs/5.6/requests#configuring-trusted-proxies).
+更多關於 `$headers` 值的資訊，請詳閱[信任代理](/docs/5.6/requests#configuring-trusted-proxies)上的所有文件。
 
-### Validation
+### 驗證
 
-#### The `ValidatesWhenResolved` Interface
+#### `ValidatesWhenResolved` 介面
 
-The `validate` method of the `ValidatesWhenResolved` interface / trait has been renamed to `validateResolved` in order to avoid conflicts with the `$request->validate()` method.
+為了避免與 `$request->validate()` 方法衝突，已將 `ValidatesWhenResolved` interface／trait 重新命名為 `validateResolved`。
 
-### Miscellaneous
+### 其他
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/5.5...5.6) and choose which updates are important to you.
+我們也鼓勵你查看 `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel) GitHub 儲存庫中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/5.5...5.6)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
