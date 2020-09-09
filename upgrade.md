@@ -1,205 +1,205 @@
-# Upgrade Guide
+# 升級指南
 
-- [Upgrading To 5.8.0 From 5.7](#upgrade-5.8.0)
+- [從 5.7 升級到 5.8.0](#upgrade-5.8.0)
 
 <a name="high-impact-changes"></a>
-## High Impact Changes
+## 高度影響的變更
 
 <div class="content-list" markdown="1">
-- [Cache TTL In Seconds](#cache-ttl-in-seconds)
-- [Cache Lock Safety Improvements](#cache-lock-safety-improvements)
-- [Environment Variable Parsing](#environment-variable-parsing)
-- [Markdown File Directory Change](#markdown-file-directory-change)
-- [Nexmo / Slack Notification Channels](#nexmo-slack-notification-channels)
-- [New Default Password Length](#new-default-password-length)
+- [快取 TTL 改以秒為單位](#cache-ttl-in-seconds)
+- [快取 Lock 的安全性優化](#cache-lock-safety-improvements)
+- [解析環境變數](#environment-variable-parsing)
+- [Markdown 檔案目錄的變更](#markdown-file-directory-change)
+- [Nexmo / Slack 通知頻道](#nexmo-slack-notification-channels)
+- [新的預設密碼長度](#new-default-password-length)
 </div>
 
 <a name="medium-impact-changes"></a>
-## Medium Impact Changes
+## 中度影響的變更
 
 <div class="content-list" markdown="1">
-- [Container Generators & Tagged Services](#container-generators)
-- [SQLite Version Constraints](#sqlite)
-- [Prefer String And Array Classes Over Helpers](#string-and-array-helpers)
-- [Deferred Service Providers](#deferred-service-providers)
-- [PSR-16 Conformity](#psr-16-conformity)
-- [Model Names Ending With Irregular Plurals](#model-names-ending-with-irregular-plurals)
-- [Custom Pivot Models With Incrementing IDs](#custom-pivot-models-with-incrementing-ids)
+- [產生器與被標籤服務](#container-generators)
+- [SQLite 版本限制](#sqlite)
+- [比起輔助函式，更傾向於字串與陣列的類別](#string-and-array-helpers)
+- [延長服務提供者](#deferred-service-providers)
+- [PSR-16 一致性](#psr-16-conformity)
+- [模型名稱以不規則複數結尾](#model-names-ending-with-irregular-plurals)
+- [自訂中介模型的遞增標號](#custom-pivot-models-with-incrementing-ids)
 - [Pheanstalk 4.0](#pheanstalk-4)
 - [Carbon 2.0](#carbon-2.0)
 </div>
 
 <a name="upgrade-5.8.0"></a>
-## Upgrading To 5.8.0 From 5.7
+## 從 5.7 升級到 5.8.0
 
-#### Estimated Upgrade Time: 1 Hour
+#### 預估升級時間：1 小時
 
-> {note} We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application.
+> {note} 我們嘗試記錄每個重大變更。由於有些重大的變更是在框架最隱密的地方，但實際上只有一小部分的變更會影響你的應用程式。
 
 <a name="updating-dependencies"></a>
-### Updating Dependencies
+### 更新依賴項目
 
-Update your `laravel/framework` dependency to `5.8.*` in your `composer.json` file.
+在 `composer.json` 檔案中更新 `laravel/framework` 到 `5.8.*`。
 
-Next, examine any 3rd party packages consumed by your application and verify you are using the proper version for Laravel 5.8 support.
+最後，請檢查你的應用程式所使用的第三方套件的版本是否能支援 Laravel 5.8。
 
 <a name="the-application-contract"></a>
-### The `Application` Contract
+### `Application` Contract
 
-#### The `environment` Method
+#### `environment` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `environment` method signature of the `Illuminate\Contracts\Foundation\Application` contract [has changed](https://github.com/laravel/framework/pull/26296). If you are implementing this contract in your application, you should update the method signature:
+`Illuminate\Contracts\Foundation\Application` Contract 的 `environment` 方法[已有些改變](https://github.com/laravel/framework/pull/26296)。如果你有實作這個 Contract，請更新該方法：
 
     /**
-     * Get or check the current application environment.
+     * 取得或檢查當前應用程式的環境。
      *
      * @param  string|array  $environments
      * @return string|bool
      */
     public function environment(...$environments);
 
-#### Added Methods
+#### 新增方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `bootstrapPath`, `configPath`, `databasePath`, `environmentPath`, `resourcePath`, `storagePath`, `resolveProvider`, `bootstrapWith`, `configurationIsCached`, `detectEnvironment`, `environmentFile`, `environmentFilePath`, `getCachedConfigPath`, `getCachedRoutesPath`, `getLocale`, `getNamespace`, `getProviders`, `hasBeenBootstrapped`, `loadDeferredProviders`, `loadEnvironmentFrom`, `routesAreCached`, `setLocale`, `shouldSkipMiddleware` and `terminate`  methods [were added to the `Illuminate\Contracts\Foundation\Application` contract](https://github.com/laravel/framework/pull/26477).
+[`Illuminate\Contracts\Foundation\Application` contract](https://github.com/laravel/framework/pull/26477) 已加入的方法有 `bootstrapPath`、`configPath`、`databasePath`、`environmentPath`、`resourcePath`、`storagePath`、`resolveProvider`、`bootstrapWith`、`configurationIsCached`、`detectEnvironment`、`environmentFile`、`environmentFilePath`、`getCachedConfigPath`、`getCachedRoutesPath`、`getLocale`、`getNamespace`、`getProviders`、`hasBeenBootstrapped`、`loadDeferredProviders`、`loadEnvironmentFrom`、`routesAreCached`、`setLocale`、`shouldSkipMiddleware` 和 `terminate` 方法。
 
-In the very unlikely event you are implementing this interface, you should add these methods to your implementation.
+如果你正在實作這個介面，請將這些方法加到你的實作中。
 
 <a name="authentication"></a>
-### Authentication
+### 認證
 
-#### Password Reset Notification Route Parameter
+#### 密碼重設通知的路由參數
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-When a user requests a link to reset their password, Laravel generates the URL using the `route` helper to create a URL to the `password.reset` named route. When using Laravel 5.7, the token is passed to the `route` helper without an explicit name, like so:
+當使用者請求一組用來重設密碼的連結時，Laravel 會使用 `route` 輔助方法來產生 URL，該路由會以 `password.reset` 來命名並建立。若是使用 Laravel 5.7，Token 要被傳入沒有指定鍵名的 `route` 輔助函式，例如：
 
     route('password.reset', $token);
 
-When using Laravel 5.8, the token is passed to the `route` helper as an explicit parameter:
+若是使用 Laravel 5.8，Token 要被傳入指定鍵名參數的 `route` 輔助函式：
 
     route('password.reset', ['token' => $token]);
 
-Therefore, if you are defining your own `password.reset` route, you should ensure that it contains a `{token}` parameter in its URI.
+所以，如果你正在定義自己的 `password.reset` 路由，請確認該 URI 是否有包含 `{token}` 參數。
 
 <a name="new-default-password-length"></a>
-#### New Default Password Length
+#### 新的預設密碼長度
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-The required password length when choosing or resetting a password was [changed to eight characters](https://github.com/laravel/framework/pull/25957). You should update any validation rules or logic within your application to match this new eight character default.
+選擇或重設密碼所需的密碼長度[已改為八個字元](https://github.com/laravel/framework/pull/25957)。請更新在應用程式中任何驗證規則或邏輯來符合這個新預設的八個字元。
 
-If you need to preserve the previous six character length or a different length, you may extend the `Illuminate\Auth\Passwords\PasswordBroker` class and overwrite the `validatePasswordWithDefaults` method with custom logic.
+若需要保留之前六個字元的長度或其他長度，可以繼承 `Illuminate\Auth\Passwords\PasswordBroker` 類別並覆寫 `validatePasswordWithDefaults` 方法的自訂邏輯。
 
 <a name="cache"></a>
-### Cache
+### 快取
 
 <a name="cache-ttl-in-seconds"></a>
-#### TTL in seconds
+#### TTL 改以秒為單位
 
-**Likelihood Of Impact: Very High**
+**影響程度：非常高**
 
-In order to allow a more granular expiration time when storing items, the cache item time-to-live has changed from minutes to seconds. The `put`, `putMany`, `add`, `remember` and `setDefaultCacheTime` methods of the `Illuminate\Cache\Repository` class and its extended classes, as well as the `put` method of each cache store were updated with this changed behavior. See [the related PR](https://github.com/laravel/framework/pull/27276) for more info.
+為了在儲存項目時能有更細節的有效時間設定，快取項目的有效時間已從分鐘改為秒鐘。這已更新了 `Illuminate\Cache\Repository` 類別與繼承的類別的 `put`、`putMany`、`add`、`remember` 和 `setDefaultCacheTime` 方法，以及每個儲存快取的 `put` 方法。請詳閱[這個 PR](https://github.com/laravel/framework/pull/27276) 來獲得更多資訊。
 
-If you are passing an integer to any of these methods, you should update your code to ensure you are now passing the number of seconds you wish the item to remain in the cache. Alternatively, you may pass a `DateTime` instance indicating when the item should expire:
+如果有傳遞數值給這些方法，請更新程式碼來確保現在傳遞的數字是預期要保留在快取的秒數。此外，你可以傳遞 `DateTime` 實例來設定該項目的有效時間：
 
-    // Laravel 5.7 - Store item for 30 minutes...
+    // Laravel 5.7 - 儲存項目 30 分鐘...
     Cache::put('foo', 'bar', 30);
 
-    // Laravel 5.8 - Store item for 30 seconds...
+    // Laravel 5.8 - 儲存項目 30 秒鐘...
     Cache::put('foo', 'bar', 30);
 
-    // Laravel 5.7 / 5.8 - Store item for 30 seconds...
+    // Laravel 5.7 / 5.8 - 儲存項目 30 秒鐘...
     Cache::put('foo', 'bar', now()->addSeconds(30));
 
-> {tip} This change makes the Laravel cache system fully compliant with the [PSR-16 caching library standard](https://www.php-fig.org/psr/psr-16/).
+> {tip} 這個變更讓 Laravel 快取系統完全符合於 [PSR-16 快取函式庫標準](https://www.php-fig.org/psr/psr-16/)。
 
 <a name="psr-16-conformity"></a>
-#### PSR-16 Conformity
+#### PSR-16 一致性
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-In addition to [the return value changes from below](#the-repository-and-store-contracts), the TTL argument of the `put`, `putMany` and `add` method's of the `Illuminate\Cache\Repository` class was updated to conform better with the PSR-16 spec. The new behavior provides a default of `null` so a call without specifying a TTL will result in storing the cache item forever. Additionally, storing cache items with a TTL of 0 or lower will remove items from the cache. See [the related PR](https://github.com/laravel/framework/pull/27217) for more info.
+除了[後面會提到的回傳值變更](#the-repository-and-store-contracts)外，`Illuminate\Cache\Repository` 類別的 `put`、`putMany` 和 `add` 方法的 TTL 參數也更新成 PSR-16 標準規範。新的用法會提供 `null` 預設值，所以不指定 TTL 就會導致永久儲存項目的快取。還有，將儲存 TTL 設為 0 或更低的快取項目會被從快取中移除。請詳閱[這個 PR](https://github.com/laravel/framework/pull/27265) 來獲得更多資訊。
 
-The `KeyWritten` event [was also updated](https://github.com/laravel/framework/pull/27265) with these changes.
+這些變更[也更新了](https://github.com/laravel/framework/pull/27265) `KeyWritten` 事件。
 
 <a name="cache-lock-safety-improvements"></a>
-#### Lock Safety Improvements
+#### Lock 的安全性優化
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-In Laravel 5.7 and prior versions of Laravel, the "atomic lock" feature provided by some cache drivers could have unexpected behavior leading to the early release of locks.
+在 Laravel 5.7 與更之前的 Laravel 版本，某些快取驅動提供的「原子鎖」功能會在發生非預期的行為下導致提早釋出鎖定。
 
-For example: **Client A** acquires lock `foo` with a 10 second expiration. **Client A** actually takes 20 seconds to finish its task. The lock is released automatically by the cache system 10 seconds into **Client A's** processing time. **Client B** acquires lock `foo`. **Client A** finally finishes its task and releases lock `foo`, inadvertently releasing **Client B's** hold on the lock. **Client C** is now able to acquire the lock.
+例如：**使用者 A** 取得 10 秒有效時間來鎖定 `foo`。**使用者 A** 實際上花費了 20 秒才完成任務。快取系統會在**使用者 A** 處理執行的十秒後自動釋放鎖定。**使用者 B** 取得了鎖定的 `foo`。**使用者 A** 最後完成了任務並釋放了 `foo` 的鎖定，這也不小心的把**使用者 B** 的鎖定給釋放掉。此時**使用者 C** 能夠取得該鎖定。
 
-In order to mitigate this scenario, locks are now generated with an embedded "scope token" which allows the framework to ensure that, under normal circumstances, only the proper owner of a lock can release a lock.
+為了降低這個情況發生，現在 Laravel 會加入「Scope Token」來產生鎖定。在正常的情況下，只有正確的鎖定擁有者才能釋放該鎖定。
 
-If you are using the `Cache::lock()->get(Closure)` method of interacting with locks, no changes are required:
+如果你正在使用 `Cache::lock()->get(Closure)` 方法來鎖定，則不需要修改：
 
     Cache::lock('foo', 10)->get(function () {
-        // Lock will be released safely automatically...
+        // 鎖會被自動安全的釋放...
     });
 
-However, if you are manually calling `Cache::lock()->release()`, you must update your code to maintain an instance of the lock. Then, after you are done performing your task, you may call the `release` method on **the same lock instance**. For example:
+然而，如果你是手動呼叫 `Cache::lock()->release()`，必須更新程式碼來維護鎖的實例。接著，在完成任務之後，可以在**同個鎖的實力**上呼叫 `release` 方法。例如：
 
     if (($lock = Cache::lock('foo', 10))->get()) {
-        // Perform task...
+        // 執行任務...
 
         $lock->release();
     }
 
-Sometimes, you may wish to acquire a lock in one process and release it in another process. For example, you may acquire a lock during a web request and wish to release the lock at the end of a queued job that is triggered by that request. In this scenario, you should pass the lock's scoped "owner token" to the queued job so that the job can re-instantiate the lock using the given token:
+有時你想要在一個進程中取得鎖定，並在另一個進程中釋放它。例如，在網頁請求期間取得鎖，並想要在該請求觸發的隊列任務結束時釋放該鎖定。在這個情況下，可以傳入該鎖的「擁有者 Token」到隊列的任務中，以便任務可以使用給定的 Token 來重新實例化鎖定：
 
-    // Within Controller...
+    // 在控制器中...
     $podcast = Podcast::find(1);
 
     if (($lock = Cache::lock('foo', 120))->get()) {
         ProcessPodcast::dispatch($podcast, $lock->owner());
     }
 
-    // Within ProcessPodcast Job...
+    // 在 ProcessPodcast 任務中...
     Cache::restoreLock('foo', $this->owner)->release();
 
-If you would like to release a lock without respecting its current owner, you may use the `forceRelease` method:
+如果你想要釋放非當前鎖定的擁有者的鎖，可以使用 `forceRelease` 方法
 
     Cache::lock('foo')->forceRelease();
 
 <a name="the-repository-and-store-contracts"></a>
-#### The `Repository` and `Store` Contracts
+#### `Repository` 與 `Store` Contract
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-In order to be fully compliant with `PSR-16` the return values of the `put` and `forever` methods of the `Illuminate\Contracts\Cache\Repository` contract and the return values of the `put`, `putMany` and `forever` methods of the `Illuminate\Contracts\Cache\Store` contract [have been changed](https://github.com/laravel/framework/pull/26726) from `void` to `bool`.
+為了符合 `PSR-16`，`Illuminate\Contracts\Cache\Repository` Contract 的 `put` 和 `forever` 方法和 `Illuminate\Contracts\Cache\Store` Contract 的 `putMany` 和 `forever` 方法的回傳值已從 `void` [改為](https://github.com/laravel/framework/pull/26726) `bool`。
 
 <a name="carbon-2.0"></a>
 ### Carbon 2.0
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Laravel now supports both Carbon 1 and Carbon 2; therefore, Composer will try to upgrade to Carbon 2.0 if no other compatibility issues with any other packages are detected. Please review the [migration guide for Carbon 2.0](https://carbon.nesbot.com/docs/#api-carbon-2).
+Laravel 現在同時支援 Carbon 1 與 Carbon 2。所以，Composer 會在沒有與其他任意套件有相容性問題的情況下嘗試升級到 Carbon 2.0。請詳閱[Carbon 2.0 升級指南](https://carbon.nesbot.com/docs/#api-carbon-2)。
 
 <a name="collections"></a>
-### Collections
+### 集合
 
-#### The `add` Method
+#### `add` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `add` method [has been moved](https://github.com/laravel/framework/pull/27082) from the Eloquent collection class to the base collection class. If you are extending `Illuminate\Support\Collection` and your extended class has an `add` method, make sure the method signature matches its parent:
+`add` 方法已從 Eloquent Collection 類別中[被移到](https://github.com/laravel/framework/pull/27082)基本的 Collection 類別。如果正在擴充 `Illuminate\Support\Collection` 且用到 `add` 方法，請確保該方法參數與它的上層相同：
 
     public function add($item);
 
-#### The `firstWhere` Method
+#### `firstWhere` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `firstWhere` method signature [has changed](https://github.com/laravel/framework/pull/26261) to match the `where` method's signature. If you are overriding this method, you should update the method signature to match its parent:
+`firstWhere` 方法參數[已改成](https://github.com/laravel/framework/pull/26261)與 `where` 方法的參數相同。如果你正在覆寫這個方法，請更新該方法參數與它的上層相同：
 
     /**
-     * Get the first item by the given key value pair.
+     * 依照給定的鍵值對來取得第一個項目。
      *
      * @param  string  $key
      * @param  mixed  $operator
@@ -209,60 +209,60 @@ The `firstWhere` method signature [has changed](https://github.com/laravel/frame
     public function firstWhere($key, $operator = null, $value = null);
 
 <a name="console"></a>
-### Console
+### 指令
 
-#### The `Kernel` Contract
+#### `Kernel` Contract
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `terminate` method [has been added to the `Illuminate\Contracts\Console\Kernel` contract](https://github.com/laravel/framework/pull/26393). If you are implementing this interface, you should add this method to your implementation.
+[`Illuminate\Contracts\Console\Kernel` contract](https://github.com/laravel/framework/pull/26393) 已加入 `terminate` 方法。如果你正在實作這個介面，請加入這個方法到你的實作中。
 
 <a name="container"></a>
-### Container
+### 容器
 
 <a name="container-generators"></a>
-#### Generators & Tagged Services
+#### 產生器與被標籤服務
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The container's `tagged` method now utilizes PHP generators to lazy-instantiate the services with a given tag. This provides a performance improvement if you are not utilizing every tagged service.
+容器的 `tagged` 方法現在使用 PHP 產生器來事後實例化給定標籤的服務。這會在你沒用到每個被標籤的服務時提高效能。
 
-Because of this change, the `tagged` method now returns an `iterable` instead of an `array`. If you are type-hinting the return value of this method, you should ensure that your type-hint is changed to `iterable`.
+因為這個變更，`tagged` 方法現在會回傳 `iterable` 來取代 `array`。如果型別提示這個方法的回傳值，請確保型別提示有被修改為 `iterable`。
 
-In addition, it is no longer possible to directly access a tagged service by its array offset value, such as `$container->tagged('foo')[0]`.
+還有，無法再透過陣列的位移值來直接存取被標籤的服務，像是 `$container->tagged('foo')[0]`。
 
-#### The `resolve` Method
+#### `resolve` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `resolve` method [now accepts](https://github.com/laravel/framework/pull/27066) a new boolean parameter which indicates whether events (resolving callbacks) should be raised/executed during the instantiation of an object. If you are overriding this method, you should update the method signature to match its parent.
+`resolve` 方法[現在可以接受](https://github.com/laravel/framework/pull/27066)新的布林值參數，該參數會指示物件在實例化期間是否執行或提升事件（解析回呼）。如果你正在覆寫這個方法，請更新該方法的參數來符合上一層的實作。
 
-#### The `addContextualBinding` Method
+#### `addContextualBinding` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `addContextualBinding` method [was added to the `Illuminate\Contracts\Container\Container` contract](https://github.com/laravel/framework/pull/26551). If you are implementing this interface, you should add this method to your implementation.
+[`Illuminate\Contracts\Container\Container` contract](https://github.com/laravel/framework/pull/26551) 已加入 `addContextualBinding` 方法。如果你正在實作這個介面，請加入這個方法到你的實作中。
 
-#### The `tagged` Method
+#### `tagged` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `tagged` method signature [has been changed](https://github.com/laravel/framework/pull/26953) and it now returns an `iterable` instead of an `array`. If you have type-hinted in your code some parameter which gets the return value of this method with `array`, you should modify the type-hint to `iterable`.
+`tagged` 方法參數[已有所變更](https://github.com/laravel/framework/pull/26953)，現在會回傳 `iterable` 而不是 `array`。如果你有在程式碼中取得這個方法的同個參數的回傳值使用 `array` 型別提示，請將型別提示修改為 `iterable`。 
 
-#### The `flush` Method
+#### `flush` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `flush` method [was added to the `Illuminate\Contracts\Container\Container` contract](https://github.com/laravel/framework/pull/26477). If you are implementing this interface, you should add this method to your implementation.
+[`Illuminate\Contracts\Container\Container` contract](https://github.com/laravel/framework/pull/26477) 已加入 `flush` 方法。如果你正在實作這個介面，請加入這個方法到你的實作中。
 
 <a name="database"></a>
-### Database
+### 資料庫
 
-#### Unquoted MySQL JSON Values
+#### MySQL JSON 值不會再多加引號
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The query builder will now return unquoted JSON values when using MySQL and MariaDB. This behavior is consistent with the other supported databases:
+現在使用 MySQL 和 MariaDB 時，查詢建構器會回傳未加引號的 JSON 值。這個用法與其他支援的資料庫一致：
 
     $value = DB::table('users')->value('options->language');
 
@@ -274,32 +274,32 @@ The query builder will now return unquoted JSON values when using MySQL and Mari
     // Laravel 5.8...
     'en'
 
-As a result, the `->>` operator is no longer supported or necessary.
+結果是不再支援或需要 `->>` 運算子。
 
 <a name="sqlite"></a>
 #### SQLite
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-As of Laravel 5.8 the [oldest supported SQLite version](https://github.com/laravel/framework/pull/25995) is SQLite 3.7.11. If you are using an older SQLite version, you should update it (SQLite 3.8.8+ is recommended).
+從 Laravel 5.8 起，[SQLite 支援最遠的版本]（https://github.com/laravel/framework/pull/25995）是 SQLite 3.7.11。如果你使用的是較舊的 SQLite 版本，請更新它（推薦使用 SQLite 3.8.8+）。
 
 #### Migrations & `bigIncrements`
 
-**Likelihood Of Impact: None**
+**影響程度：沒有**
 
-[As of Laravel 5.8](https://github.com/laravel/framework/pull/26472), migration stubs use the `bigIncrements` method on ID columns by default. Previously, ID columns were created using the `increments` method.
+[從 Laravel 5.8 開始](https://github.com/laravel/framework/pull/26472)，Migration 範本在預設的 ID 欄位上使用了 `bigIncrements` 方法。之前，ID 欄位是使用 `increments` 方法來建立。
 
-This will not affect any existing code in your project; however, be aware that foreign key columns must be of the same type. Therefore, a column created using the `increments` method can not reference a column created using the `bigIncrements` method.
+這不會影響專案中任何現有的程式碼。然而，請注意外鍵欄位必須為是相同型別。所以使用 `increments` 方法建立的欄位無法參照使用 `bigIncrements` 方法建立的欄位。
 
 <a name="eloquent"></a>
 ### Eloquent
 
 <a name="model-names-ending-with-irregular-plurals"></a>
-#### Model Names Ending With Irregular Plurals
+#### 模型名稱以不規則複數結尾
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-As of Laravel 5.8, multi-word model names ending in a word with an irregular plural [are now correctly pluralized](https://github.com/laravel/framework/pull/26421).
+從 Laravel 5.8 開始，多字的模型名稱結尾的不規則複數單字將能正確表達複數[將能正確表達複數](https://github.com/laravel/framework/pull/26421)。
 
     // Laravel 5.7...
     App\Feedback.php -> feedback (correctly pluralized)
@@ -309,106 +309,106 @@ As of Laravel 5.8, multi-word model names ending in a word with an irregular plu
     App\Feedback.php -> feedback (correctly pluralized)
     App\UserFeedback.php -> user_feedback (correctly pluralized)
 
-If you have a model that was incorrectly pluralized, you may continue using the old table name by defining a `$table` property on your model:
+如果你的模型剛好是錯誤的複數，可以透過定義在模型上的 `$table` 屬性來延用舊的資料表名稱：
 
     /**
-     * The table associated with the model.
+     * 模型對應的的資料表。
      *
      * @var string
      */
     protected $table = 'user_feedbacks';
 
 <a name="custom-pivot-models-with-incrementing-ids"></a>
-#### Custom Pivot Models With Incrementing IDs
+#### 自訂中介模型的遞增編號
 
-If you have defined a many-to-many relationship that uses a custom pivot model, and that pivot model has an auto-incrementing primary key, you should ensure your custom pivot model class defines an `incrementing` property that is set to `true`:
+如果你有已經定義了使用自訂中介模型的多對多關聯，且中介模型具備自動遞增的主鍵，請確保自訂中介模型類別有把 `incrementing` 屬性設定為 `true`：
 
     /**
-     * Indicates if the IDs are auto-incrementing.
+     * 設定編號是否要自動遞增。
      *
      * @var bool
      */
     public $incrementing = true;
 
-#### The `loadCount` Method
+#### `loadCount` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-A `loadCount` method has been added to the base `Illuminate\Database\Eloquent\Model` class. If your application also defines a `loadCount` method, it may conflict with Eloquent's definition.
+`Illuminate\Database\Eloquent\Model` 類別已加入了 `loadCount` 方法。如果你也有定義 `loadCount` 方法，那麼會與 Eloquent 的定義有衝突。
 
-#### The `originalIsEquivalent` Method
+#### `originalIsEquivalent` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `originalIsEquivalent` method of the `Illuminate\Database\Eloquent\Concerns\HasAttributes` trait [has been changed](https://github.com/laravel/framework/pull/26391) from `protected` to `public`.
+`Illuminate\Database\Eloquent\Concerns\HasAttributes` trait 的 `originalIsEquivalent` 方法已從 `protected` [改為](https://github.com/laravel/framework/pull/26391) `public`。
 
-#### Automatic Soft-Deleted Casting Of `deleted_at` Property
+#### 自行轉換軟刪除的 `deleted_at` 屬性
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `deleted_at` property [will now be automatically casted](https://github.com/laravel/framework/pull/26985) to a `Carbon` instance when your Eloquent model uses the `Illuminate\Database\Eloquent\SoftDeletes` trait. You can override this behavior by writing your custom accessor for that property or by manually adding it to the `casts` attribute:
+當你的 Eloquent 模型使用 `Illuminate\Database\Eloquent\SoftDeletes` trait 時候，`deleted_at` 屬性[將會自行轉換成](https://github.com/laravel/framework/pull/26985) `Carbon` 實例。你能撰寫自己自訂的存取器屬性或手動加入它到 `casts` 屬性來覆寫這個用法：
 
     protected $casts = ['deleted_at' => 'string'];
 
-#### BelongsTo `getForeignKey` & `getOwnerKey` Methods
+#### BelongsTo `getForeignKey` 與 `getOwnerKey` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `getForeignKey`, `getQualifiedForeignKey`, and `getOwnerKey` methods of the `BelongsTo` relationship have been renamed to `getForeignKeyName`, `getQualifiedForeignKeyName`, and `getOwnerKeyName` respectively, making the method names consistent with the other relationships offered by Laravel.
+`BelongsTo` 關聯的 `getForeignKey`、`getQualifiedForeignKey` 和 `getOwnerKey` 方法已個別重新命名為 `getForeignKeyName`、`getQualifiedForeignKeyName` 和 `getOwnerKeyName`。讓方法名稱與 Laravel 提供的其他關聯一致。
 
 <a name="environment-variable-parsing"></a>
-### Environment Variable Parsing
+### 解析環境變數
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-The [phpdotenv](https://github.com/vlucas/phpdotenv) package that is used to parse `.env` files has released a new major version, which may impact the results returned from the `env` helper. Specifically, the `#` character in an unquoted value will now be considered a comment instead of part of the value:
+被用來解析 `.env` 檔案的 [phpdotenv](https://github.com/vlucas/phpdotenv) 套件已發佈新的主要版本，這會影響從 `env` 輔助函式回傳的結果。更具體的說，現在未加引號的 `#` 字元會被當作是註解，而不是部分的值：
 
-Previous behavior:
+之前的用法：
 
     ENV_VALUE=foo#bar
 
     env('ENV_VALUE'); // foo#bar
 
-New behavior:
+新的用法：
 
     ENV_VALUE=foo#bar
     env('ENV_VALUE'); // foo
 
-To preserve the previous behavior, you may wrap the environment values in quotes:
+要延用過去的用法，請將環境值包在引號中：
 
     ENV_VALUE="foo#bar"
 
     env('ENV_VALUE'); // foo#bar
 
-For more information, please refer to the [phpdotenv upgrade guide](https://github.com/vlucas/phpdotenv/blob/master/UPGRADING.md).
+想知道更多資訊，請詳閱 [phpdotenv 升級指南](https://github.com/vlucas/phpdotenv/blob/master/UPGRADING.md)。
 
 <a name="events"></a>
-### Events
+### 事件
 
-#### The `fire` Method
+#### `fire` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `fire` method (which was deprecated in Laravel 5.4) of the `Illuminate\Events\Dispatcher` class [has been removed](https://github.com/laravel/framework/pull/26392).
-You should use the `dispatch` method instead.
+[已移除](https://github.com/laravel/framework/pull/26392) `Illuminate\Events\Dispatcher` 類別的 `fire` 方法（已在 Laravel 5.4 棄用）。
+請改用 `dispatch` 方法。
 
 <a name="exception-handling"></a>
-### Exception Handling
+### 異常處理
 
-#### The `ExceptionHandler` Contract
+#### `ExceptionHandler` Contract
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `shouldReport` method [has been added to the `Illuminate\Contracts\Debug\ExceptionHandler` contract](https://github.com/laravel/framework/pull/26193). If you are implementing this interface, you should add this method to your implementation.
+[`Illuminate\Contracts\Debug\ExceptionHandler` contract](https://github.com/laravel/framework/pull/26193) 已加入 `shouldReport` 方法。如果你正在實作這個介面，請加入這個方法到你的實作中。
 
-#### The `renderHttpException` Method
+#### `renderHttpException` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `renderHttpException` method signature of the `Illuminate\Foundation\Exceptions\Handler` class [has changed](https://github.com/laravel/framework/pull/25975). If you are overriding this method in your exception handler, you should update the method signature to match its parent:
+`Illuminate\Foundation\Exceptions\Handler` 類別的 `renderHttpException` 方法參數[已有變更](https://github.com/laravel/framework/pull/25975)。如果你正在覆寫異常處理器中的這個方法，請對照他的上層用法來更新方法參數：
 
     /**
-     * Render the given HttpException.
+     * 渲染給定的 HttpException。
      *
      * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
      * @return \Symfony\Component\HttpFoundation\Response
@@ -416,71 +416,71 @@ The `renderHttpException` method signature of the `Illuminate\Foundation\Excepti
     protected function renderHttpException(HttpExceptionInterface $e);
 
 <a name="mail"></a>
-### Mail
+### 郵件
 
 <a name="markdown-file-directory-change"></a>
 <a name="markdown-file-directory-change"></a>
-### Markdown File Directory Change
+### Markdown 檔案目錄變更
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-If you have published Laravel's Markdown mail components using the `vendor:publish` command, you should rename the `/resources/views/vendor/mail/markdown` directory to `/resources/views/vendor/mail/text`.
+如果你有使用 `vendor:publish` 指令來發布 Laravel 的 Markdown 信件模組，請將 `/resources/views/vendor/mail/markdown` 目錄重新命名為 `/resources/views/vendor/mail/text`。
 
-In addition, the `markdownComponentPaths` method [has been renamed](https://github.com/laravel/framework/pull/26938) to `textComponentPaths`. If you are overriding this method, you should update the method name to match its parent.
+還有，`markdownComponentPaths` 方法[已重新命名為](https://github.com/laravel/framework/pull/26938) `textComponentPaths`。如果你正在覆寫這個方法，請對照它的上層寫法來更新該方法名稱。
 
-#### Method Signature Changes In The `PendingMail` Class
+#### `PendingMail` 類別的方法參數變更
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `send`, `sendNow`, `queue`, `later` and `fill` methods of the `Illuminate\Mail\PendingMail` class [have been changed](https://github.com/laravel/framework/pull/26790) to accept an `Illuminate\Contracts\Mail\Mailable` instance instead of `Illuminate\Mail\Mailable`. If you are overriding some of these methods, you should update their signature to match its parent.
+`Illuminate\Mail\PendingMail` 類別的 `send`、`sendNow`、`queue`、`later` 和 `fill` 方法[已更改為](https://github.com/laravel/framework/pull/26790)允許 `Illuminate\Contracts\Mail\Mailable` 實例來取代 `Illuminate\Mail\Mailable`。如果你正在覆寫當中的某些方法，請對照它的上層寫法來更新他們的參數。
 
 <a name="queue"></a>
-### Queue
+### 隊列
 
 <a name="pheanstalk-4"></a>
 #### Pheanstalk 4.0
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Laravel 5.8 provides support for the `~4.0` release of the Pheanstalk queue library. If you are using Pheanstalk library in your application, please upgrade your library to the `~4.0` release via Composer.
+Laravel 5.8 提供支援 Pheanstalk 隊列函式庫的 `~4.0` 版本。如果你正在使用 Pheanstalk 函式庫，請透過 Composer 來升級函式庫到 `~4.0` 版本。
 
-#### The `Job` Contract
+#### `Job` Contract
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `isReleased`, `hasFailed` and `markAsFailed` methods [have been added to the `Illuminate\Contracts\Queue\Job` contract](https://github.com/laravel/framework/pull/26908). If you are implementing this interface, you should add these methods to your implementation.
+`isReleased`、`hasFailed` 和 `markAsFailed` 方法[已加到 `Illuminate\Contracts\Queue\Job` contract](https://github.com/laravel/framework/pull/26908)。如果正在實作這個介面，請加入加入這些方法到你的實作。
 
-#### The `Job::failed` & `FailingJob` Class
+#### `Job::failed` 與 `FailingJob` 類別
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-When a queued job failed in Laravel 5.7, the queue worker executed the `FailingJob::handle` method. In Laravel 5.8, the logic contained in the `FailingJob` class has been moved to a `fail` method directly on the job class itself. Because of this, a `fail` method has been added to the `Illuminate\Contracts\Queue\Job` contract.
+當隊列錯誤發生在 Laravel 5.7 時，隊列器會去執行 `FailingJob::handle` 方法。在 Laravel 5.8，`FailingJob` 類別所具備的邏輯已轉移至各自的任務類別上的 `fail` 方法。也因為如此，`fail` 方法已被加到 `Illuminate\Contracts\Queue\Job` Contract。
 
-The base `Illuminate\Queue\Jobs\Job` class contains the implementation of `fail` and no code changes should be required by typical application code. However, if you are building custom queue driver which utilizes a job class that **does not** extend the base job class offered by Laravel, you should implement the `fail` method manually in your custom job class. You may refer to Laravel's base job class as a reference implementation.
+`Illuminate\Queue\Jobs\Job` 類別包含了 `fail` 的實作且不需要更動原本的程式碼。然而，如果你正在採用任務類別來建構自訂隊列驅動，且該類別沒有繼承 Laravel 提供的基本任務類別，則需要在自訂任務類別中手動實作 `fail` 方法。可以參考 Laravel 的基本任務類別作為實作的依據。
 
-This change allows custom queue drivers to have more control over the job deletion process.
+這個改可以讓自訂隊列驅動更好的控制任務刪除線程。
 
-#### Redis Blocking Pop
+#### Redis 阻塞彈出
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-Using the "blocking pop" feature of the Redis queue driver is now safe. Previously, there was a small chance that a queued job could be lost if the Redis server or worker crashed at the same time the job was retrieved. In order to make blocking pops safe, a new Redis list with suffix `:notify` is created for each Laravel queue.
+現在能安全地使用 Redis 隊列驅動的「阻塞彈出」功能。在過去，Redis 伺服器或執行器如果在檢索資料同時崩潰時，隊列任務會有小機率的掉資料。為了要安全的阻塞彈出，會為每個 Laravel 隊列建立一組附有 `:notify` 後綴的新 Redis 列表。
 
 <a name="requests"></a>
-### Requests
+### 請求
 
-#### The `TransformsRequest` Middleware
+#### `TransformsRequest` 中介層
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `transform` method of the `Illuminate\Foundation\Http\Middleware\TransformsRequest` middleware now receives the "fully-qualified" request input key when the input is an array:
+`Illuminate\Foundation\Http\Middleware\TransformsRequest` 中介層的 `transform` 方法現在會在輸入是一組陣列時接收「全部」的請求輸入鍵：
 
     'employee' => [
         'name' => 'Taylor Otwell',
     ],
 
     /**
-     * Transform the given value.
+     * 轉換給定的值。
      *
      * @param  string  $key
      * @param  mixed  $value
@@ -493,55 +493,55 @@ The `transform` method of the `Illuminate\Foundation\Http\Middleware\TransformsR
     }
 
 <a name="routing"></a>
-### Routing
+### 路由
 
-#### The `UrlGenerator` Contract
+#### `UrlGenerator` Contract
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `previous` method [has been added to the `Illuminate\Contracts\Routing\UrlGenerator` contract](https://github.com/laravel/framework/pull/25616). If you are implementing this interface, you should add this method to your implementation.
+[`Illuminate\Contracts\Routing\UrlGenerator` contract](https://github.com/laravel/framework/pull/25616) 已加入 `previous` 方法。如果你正在實作這個介面，請加入這個方法到你的實作中。
 
-#### The `cachedSchema` Property Of `Illuminate\Routing\UrlGenerator`
+#### `Illuminate\Routing\UrlGenerator` 的 `cachedSchema` 屬性
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `$cachedSchema` property name (which has been deprecated in Laravel `5.7`) of `Illuminate\Routing\UrlGenerator` [has been changed to](https://github.com/laravel/framework/pull/26728) `$cachedScheme`.
+`Illuminate\Routing\UrlGenerator` 的 `$cachedSchema` 屬性名稱（已在 Laravel 5.7 棄用）[已改為](https://github.com/laravel/framework/pull/26728) `$cachedScheme`。
 
 <a name="sessions"></a>
 ### Sessions
 
-#### The `StartSession` Middleware
+#### `StartSession` 中介層
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The session persistence logic has been [moved from the `terminate()` method to the `handle()` method](https://github.com/laravel/framework/pull/26410). If you are overriding one or both of these methods, you should update them to reflect these changes.
+session 延續相關的邏輯已從 [`terminate()` 方法被移到 `handle()` 方法](https://github.com/laravel/framework/pull/26410)。如果你正在覆寫這些方法，請對照這些變更來更新它們。
 
 <a name="support"></a>
-### Support
+### 輔助函式
 
 <a name="string-and-array-helpers"></a>
-#### Prefer String And Array Classes Over Helpers
+#### 比起輔助函式，更傾向於字串與陣列的類別
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-All `array_*` and `str_*` global helpers [have been deprecated](https://github.com/laravel/framework/pull/26898). You should use the `Illuminate\Support\Arr` and `Illuminate\Support\Str` methods directly.
+所有 `array_*` 和 `str_*` 全域輔助函式[都已棄用](https://github.com/laravel/framework/pull/26898)。請直接使用 `Illuminate\Support\Arr` 和 `Illuminate\Support\Str` 方法。
 
-The impact of this change has been marked as `medium` since the helpers have been moved to the new [laravel/helpers](https://github.com/laravel/helpers) package which offers a backwards compatibility layer for all of the global array and string functions.
+由於輔助函式已搬到 [laravel/helpers](https://github.com/laravel/helpers) 套件，這個套件包含所有陣列與字串的全域輔助函式，所以這個變更的影響程度評估為「中度」。
 
 <a name="deferred-service-providers"></a>
-#### Deferred Service Providers
+#### 延長服務提供者
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `defer` boolean property on the service provider which is/was used to indicate if a provider is deferred [has been deprecated](https://github.com/laravel/framework/pull/27067). In order to mark the service provider as deferred it should implement the `Illuminate\Contracts\Support\DeferrableProvider` contract.
+[已不推薦](https://github.com/laravel/framework/pull/27067)在服務提供者上使用 `defer` 布林屬性來指示提供者是否被延長。為了要標記要被延長的服務提供者，請實作 `Illuminate\Contracts\Support\DeferrableProvider` Contract。
 
-#### Read-Only `env` Helper
+#### `env` 輔助函式只能讀取
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-Previously, the `env` helper could retrieve values from environment variables which were changed at runtime. In Laravel 5.8, the `env` helper treats environment variables as immutable. If you would like to change an environment variable at runtime, consider using a configuration value that can be retrieved using the `config` helper:
+在過去，`env` 輔助函式可以在執行時改變從環境變數中取得的值。在 Laravel 5.8 中，`env` 輔助函式會把環境變數視為不可變動的。如果想要在執行時改變環境變數，請考慮使用 `config` 輔助函式取得設定的值：
 
-Previous behavior:
+之前的用法：
 
     dump(env('APP_ENV')); // local
 
@@ -549,7 +549,7 @@ Previous behavior:
 
     dump(env('APP_ENV')); // staging
 
-New behavior:
+新的用法：
 
     dump(env('APP_ENV')); // local
 
@@ -558,88 +558,88 @@ New behavior:
     dump(env('APP_ENV')); // local
 
 <a name="testing"></a>
-### Testing
+### 測試
 
-#### The `setUp` & `tearDown` Methods
+#### `setUp` 與 `tearDown` 方法
 
-The `setUp` and `tearDown` methods now require a void return type:
+`setUp` 和 `tearDown` 方法現在需要 void 回傳類別。
 
     protected function setUp(): void
     protected function tearDown(): void
 
 #### PHPUnit 8
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-By default, Laravel 5.8 uses PHPUnit 7. However, you may optionally upgrade to PHPUnit 8, which requires PHP >= 7.2. In addition, please read through the entire list of changes in [the PHPUnit 8 release announcement](https://phpunit.de/announcements/phpunit-8.html).
+Laravel 5.8 預設是使用 PHPUnit 7。不過，你可以選擇升級到 PHPUnit 8，但這需要 PHP >= 7.2。另外，請詳閱[PHPUnit 8 發布的公告](https://phpunit.de/announcements/phpunit-8.html)的全部變更列表。
 
 <a name="validation"></a>
-### Validation
+### 驗證
 
-#### The `Validator` Contract
+#### `Validator` Contract
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `validated` method [was added to the `Illuminate\Contracts\Validation\Validator` contract](https://github.com/laravel/framework/pull/26419):
+[`Illuminate\Contracts\Validation\Validator` contract](https://github.com/laravel/framework/pull/26419) 已加入 `validated` 方法：
 
     /**
-     * Get the attributes and values that were validated.
+     * 取得以驗證的屬性與值。
      *
      * @return array
      */
     public function validated();
 
-If you are implementing this interface, you should add this method to your implementation.
+如果你正在實作這個介面，請加入這個方法到你的實作中。
 
-#### The `ValidatesAttributes` Trait
+#### `ValidatesAttributes` Trait
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `parseTable`, `getQueryColumn` and `requireParameterCount` methods of the `Illuminate\Validation\Concerns\ValidatesAttributes` trait have been changed from `protected` to `public`.
+`Illuminate\Validation\Concerns\ValidatesAttributes` trait 的 `parseTable`、`getQueryColumn` 和 `requireParameterCount` 方法已從 `protected` 改為 `public`。
 
-#### The `DatabasePresenceVerifier` Class
+#### `DatabasePresenceVerifier` 類別
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `table` method of the `Illuminate\Validation\DatabasePresenceVerifier` class has been changed from `protected` to `public`.
+`Illuminate\Validation\DatabasePresenceVerifier` 類別的 `table` 方法已從 `protected` 改為 `public`。
 
-#### The `Validator` Class
+#### `Validator` 類別
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `getPresenceVerifierFor` method of the `Illuminate\Validation\Validator` class [has been changed](https://github.com/laravel/framework/pull/26717) from `protected` to `public`.
+`Illuminate\Validation\Validator` 類別的 `getPresenceVerifierFor` 方法已從 `protected` [改為](https://github.com/laravel/framework/pull/26717) `public`。
 
-#### Email Validation
+#### Email 驗證
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The email validation rule now checks if the email is [RFC6530](https://tools.ietf.org/html/rfc6530) compliant, making the validation logic consistent with the logic used by SwiftMailer. In Laravel `5.7`, the `email` rule only verified that the email was [RFC822](https://tools.ietf.org/html/rfc822) compliant.
+現在 Email 驗證規則會檢查 Email 是否符合 [RFC6530](https://tools.ietf.org/html/rfc6530)，藉此讓驗證邏輯與 SwiftMailer 所用的邏輯一致。在 Laravel `5.7`，`email` 規則只驗證 Email 是否符合 [RFC822](https://tools.ietf.org/html/rfc822)。
 
-Therefore, when using Laravel 5.8, emails that were previously incorrectly considered invalid will now be considered valid (e.g `hej@bär.se`).  Generally, this should be considered a bug fix; however, it is listed as a breaking change out of caution. [Please let us know if you encounter any issues surrounding this change](https://github.com/laravel/framework/pull/26503).
+因此，當在使用 Laravel 5.8 時，過去被誤判為無效的 Email 現在都將會是有效的（例如：`hej@bär.se`）。理論上，這應該視為漏洞修復。然而，出於謹慎考量，將它列為重大變更。[如果你有遇到與此變更有關的任何問題，請通知我們](https://github.com/laravel/framework/pull/26503)。
 
 <a name="view"></a>
-### View
+### 視圖
 
-#### The `getData` Method
+#### `getData` 方法
 
-**Likelihood Of Impact: Very Low**
+**影響程度：非常低**
 
-The `getData` method [was added to the `Illuminate\Contracts\View\View` contract](https://github.com/laravel/framework/pull/26754). If you are implementing this interface, you should add this method to your implementation.
+ [`Illuminate\Contracts\View\View` contract](https://github.com/laravel/framework/pull/26754) 新增了 `getData` 方法。如果你正在實作這個介面，請新增這個方法到你的實作中。
 
 <a name="notifications"></a>
-### Notifications
+### 通知
 
 <a name="nexmo-slack-notification-channels"></a>
-#### Nexmo / Slack Notification Channels
+#### Nexmo / Slack 通知頻道
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-The Nexmo and Slack Notification channels have been extracted into first-party packages. To use these channels in your application, require the following packages:
+Nexmo 與 Slack 通知頻道已被移出首要套件。若要使用這些頻道，需要引入下列套件：
 
     composer require laravel/nexmo-notification-channel
     composer require laravel/slack-notification-channel
 
 <a name="miscellaneous"></a>
-### Miscellaneous
+### 其他
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/5.7...5.8) and choose which updates are important to you.
+我們也鼓勵你查看 `laravel/laravel` [GitHub 儲存庫](https://github.com/laravel/laravel)中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/5.7...5.8)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
