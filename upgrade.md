@@ -1,70 +1,70 @@
-# Upgrade Guide
+# 升級指南
 
-- [Upgrading To 6.0 From 5.8](#upgrade-6.0)
+- [從 5.8 升級到 6.0](#upgrade-6.0)
 
 <a name="high-impact-changes"></a>
-## High Impact Changes
+## 高度影響的變更
 
 <div class="content-list" markdown="1">
-- [Authorized Resources & `viewAny`](#authorized-resources)
-- [String & Array Helpers](#helpers)
+- [授權資源與 `viewAny`](#authorized-resources)
+- [字串與陣列的輔助函式](#helpers)
 </div>
 
 <a name="medium-impact-changes"></a>
-## Medium Impact Changes
+## 中度影響的變更
 
 <div class="content-list" markdown="1">
-- [Carbon 1.x No Longer Supported](#carbon-support)
-- [Redis Default Client](#redis-default-client)
-- [Database `Capsule::table` Method](#capsule-table)
-- [Eloquent Arrayable & `toArray`](#eloquent-to-array)
-- [Eloquent `BelongsTo::update` Method](#belongs-to-update)
-- [Eloquent Primary Key Types](#eloquent-primary-key-type)
-- [Localization `Lang::trans` and `Lang::transChoice` Methods](#trans-and-trans-choice)
-- [Localization `Lang::getFromJson` Method](#get-from-json)
-- [Queue Retry Limit](#queue-retry-limit)
-- [Resend Email Verification Route](#email-verification-route)
-- [Email Verification Route Change](#email-verification-route-change)
-- [The `Input` Facade](#the-input-facade)
+- [Carbon 1.x 將停止維護](#carbon-support)
+- [Redis 預設客戶端](#redis-default-client)
+- [資料庫的 `Capsule::table` 方法](#capsule-table)
+- [Eloquent 可陣列化與 `toArray`](#eloquent-to-array)
+- [Eloquent `BelongsTo::update` 方法](#belongs-to-update)
+- [Eloquent 主鍵類別](#eloquent-primary-key-type)
+- [本地化的 `Lang::trans` 與 `Lang::transChoice` 方法](#trans-and-trans-choice)
+- [本地化的 `Lang::getFromJson` 方法](#get-from-json)
+- [隊列重試次數](#queue-retry-limit)
+- [重寄 email 驗證路由](#email-verification-route)
+- [Email 認證路由變更](#email-verification-route-change)
+- [`Input` Facade](#the-input-facade)
 </div>
 
 <a name="upgrade-6.0"></a>
-## Upgrading To 6.0 From 5.8
+## 從 5.8 升級到 6.0
 
-#### Estimated Upgrade Time: One Hour
+#### 預估升級時間：一小時
 
-> {note} We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application.
+> {note} 我們嘗試記錄每個重大變更。由於有些重大的變更是在框架最隱密的地方，但實際上只有一小部分的變更會影響你的應用程式。
 
 ### PHP 7.2 Required
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-PHP 7.1 will no longer be actively maintained as of December 2019. Therefore, Laravel 6.0 requires PHP 7.2 or greater.
+PHP 7.1 將於 2019 年 12 月起停止維護。因此，Laravel 6.0 需要使用 PHP 7.2 或更高的版本。
 
 <a name="updating-dependencies"></a>
-### Updating Dependencies
+### 升級依賴項目
 
-Update your `laravel/framework` dependency to `^6.0` in your `composer.json` file.
+在 `composer.json` 檔升級你的 `laravel/framework` 依賴項目到 `^6.0`。
 
-Next, examine any 3rd party packages consumed by your application and verify you are using the proper version for Laravel 6 support.
+接著，請檢查你的應用程式所使用的第三方套件的版本是否能支援 Laravel 6。
 
-### Authorization
+### 授權
 
 <a name="authorized-resources"></a>
-#### Authorized Resources & `viewAny`
+#### 授權資源與 `viewAny`
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-Authorization policies attached to controllers using the `authorizeResource` method should now define a `viewAny` method, which will be called when a user accesses the controller's `index` method. Otherwise, calls to the `index` method of the controller will be rejected as unauthorized.
+使用 `authorizeResource` 方法來附加授權功能的控制器，現在需要定義 `viewAny` 方法來讓使用者存取控制器的 `index` 方法。不然，在呼叫控制器的 `index` 方法時會因未經授權而被拒絕。
 
-#### Authorization Responses
+#### 授權回應
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The constructor signature of the `Illuminate\Auth\Access\Response` class has changed. You should update your code accordingly. If you are not constructing authorization responses manually and are only using the `allow` and `deny` instance methods within your policies, no change is required:
+`Illuminate\Auth\Access\Response` 類別的建構子參數已有變更。請更新相對應的程式碼。如果你沒有手動建構授權回應且在原則中使用 `allow` 與 `deny` 實例方法，則不需要做修改：
 
     /**
-     * Create a new response.
+     * 建立新回應。
      *
      * @param  bool  $allowed
      * @param  string  $message
@@ -73,58 +73,59 @@ The constructor signature of the `Illuminate\Auth\Access\Response` class has cha
      */
     public function __construct($allowed, $message = '', $code = null)
 
-#### Returning "Deny" Responses
+#### 回傳「拒絕」的回應
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-In previous releases of Laravel, you did not need to return the value of the `deny` method from your policy methods since an exception was thrown immediately. However, in accordance with the Laravel documentation, you must now return the value of the `deny` method from your policies:
+在 Laravel 之前的版本，你不需要從原則方法中回傳 `deny` 方法的結果，因為這會拋出異常。然而，根據 Laravel 最新文件，你必須從原則中回傳 `deny` 方法的結果：
 
     public function update(User $user, Post $post)
     {
         if (! $user->role->isEditor()) {
-            return $this->deny("You must be an editor to edit this post.")
+            return $this->deny("你必須是編輯者才能編輯此文章。")
         }
 
         return $user->id === $post->user_id;
     }
 
 <a name="auth-access-gate-contract"></a>
-#### The `Illuminate\Contracts\Auth\Access\Gate` Contract
+#### `Illuminate\Contracts\Auth\Access\Gate` Contract
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `Illuminate\Contracts\Auth\Access\Gate` contract has received a new `inspect` method. If you are implementing this interface manually, you should add this method to your implementation.
+`Illuminate\Contracts\Auth\Access\Gate` Contract 可以接收新的 `inspect` 方法。如果你正在手動實作這個介面，請加入這個方法到實作中。
 
 ### Carbon
 
 <a name="carbon-support"></a>
-#### Carbon 1.x No Longer Supported
+#### Carbon 1.x 將停止維護
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Carbon 1.x [is no longer supported](https://github.com/laravel/framework/pull/28683) since it is nearing its maintenance end of life. Please upgrade your application to Carbon 2.0.
+Carbon 1.x [已停止維護](https://github.com/laravel/framework/pull/28683)，因為已經接近它的維護週期的期限。請升級到 Carbon 2.0。
 
-### Configuration
+### 設定
 
-#### The `AWS_REGION` Environment Variable
+#### `AWS_REGION` 環境變數
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-If you plan to utilize [Laravel Vapor](https://vapor.laravel.com), you should update all occurrences of `AWS_REGION` within your `config` directory to `AWS_DEFAULT_REGION`. In addition, you should update this environment variable's name in your `.env` file.
+如果你計畫使用 [Laravel Vapor](https://vapor.laravel.com)，請將 `config` 目錄所有出現過 `AWS_REGION` 改為 `AWS_DEFAULT_REGION`。還有，請更新 `.env` 檔的環境變數名稱。
 
 <a name="redis-default-client"></a>
-#### Redis Default Client
+#### Redis 預設客戶端
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
+預設的 Redis 客戶端已從 `predis` 改成 `phpredis`。
 The default Redis client has changed from `predis` to `phpredis`. In order to keep using `predis`, ensure the `redis.client` configuration option is set to `predis` in your `config/database.php` configuration file.
 
 <a name="dynamodb-cache-store"></a>
-#### DynamoDB Cache Store
+#### DynamoDB 快取儲存方式
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-If you plan to utilize [Laravel Vapor](https://vapor.laravel.com), you should update your `config/cache.php` file to include the `dynamodb` store.
+如果你計畫使用 [Laravel Vapor](https://vapor.laravel.com)，請加入 `dynamodb` 儲存方式到 `config/cache.php` 檔案。 
 
     <?php
     return [
@@ -144,11 +145,11 @@ If you plan to utilize [Laravel Vapor](https://vapor.laravel.com), you should up
     ];
 
 <a name="sqs-environment-variables"></a>
-#### SQS Environment Variables
+#### SQS 環境變數
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-If you plan to utilize [Laravel Vapor](https://vapor.laravel.com), you should update your `config/queue.php` file to include the updated `sqs` connection environment variables.
+如果你計畫使用 [Laravel Vapor](https://vapor.laravel.com)，請更新 `config/queue.php` 檔案的 `sqs` 連線方式的環境變數。 
 
     <?php
     return [
@@ -170,17 +171,16 @@ If you plan to utilize [Laravel Vapor](https://vapor.laravel.com), you should up
 ### Database
 
 <a name="capsule-table"></a>
-#### The Capsule `table` Method
+#### Capsule `table` 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-> {note} This change only applies to non-Laravel applications that are using `illuminate/database` as a dependency.
+> {note} 這個改變只應用在使用 `illuminate/database` 依賴項目但沒使用 Laravel 的應用程式。
 
-The signature of the `Illuminate\Database\Capsule\Manager` class' `table` method has
-updated to accept a table alias as its second argument. If you are using `illuminate/database` outside of a Laravel application, you should update any calls to this method accordingly:
+`Illuminate\Database\Capsule\Manager` 類別的 `table` 方法的參數已更新了第二個參數作為資料表別名。如果你正在 Laravel 之外的應用程式使用 `illuminate/database`，請更新任何呼叫過這個方法所對應的參數：
 
     /**
-     * Get a fluent query builder instance.
+     * 取得優雅的查詢建構器的實例。
      *
      * @param  \Closure|\Illuminate\Database\Query\Builder|string  $table
      * @param  string|null  $as
@@ -189,11 +189,11 @@ updated to accept a table alias as its second argument. If you are using `illumi
      */
     public static function table($table, $as = null, $connection = null)
 
-#### The `cursor` Method
+#### `cursor` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `cursor` method now returns an instance of `Illuminate\Support\LazyCollection` instead of a `Generator` The `LazyCollection` may be iterated just like a generator:
+`cursor` 方法現在會回傳 `Illuminate\Support\LazyCollection` 實例來取代 `Generator`。`LazyCollection` 可以像產生器一樣被疊代：
 
     $users = App\User::cursor();
 
@@ -205,180 +205,180 @@ The `cursor` method now returns an instance of `Illuminate\Support\LazyCollectio
 ### Eloquent
 
 <a name="belongs-to-update"></a>
-#### The `BelongsTo::update` Method
+#### `BelongsTo::update` 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-For consistency, the `update` method of the `BelongsTo` relationship now functions as an ad-hoc update query, meaning it does not provide mass assignment protection or fire Eloquent events. This makes the relationship consistent with the `update` methods on all other types of relationships.
+為了一致性，`BelongsTo` 關聯的 `update` 方法現在能被作為更新查詢，這意味著它不再提供批量執行保護或觸發 Eloquent 事件。這樣可以使所有關聯的 `update` 方法用法一致。
 
-If you would like to update a model attached via a `BelongsTo` relationship and receive mass assignment update protection and events, you should call the `update` method on the model itself:
+如果你想要透過 `BelongsTo` 關聯來更新附加的模型並接收批量執行更新保護與事件，請呼叫模型自身的 `update` 方法：
 
-    // Ad-hoc query... no mass assignment protection or events...
+    // 專用查詢... 沒有批量執行保護或事件...
     $post->user()->update(['foo' => 'bar']);
 
-    // Model update... provides mass assignment protection and events...
+    // 模型更新... 提供批量執行保護與事件...
     $post->user->update(['foo' => 'bar']);
 
 <a name="eloquent-to-array"></a>
-#### Arrayable & `toArray`
+#### 可陣列化與 `toArray`
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The Eloquent model's `toArray` method will now cast any attributes that implement `Illuminate\Contracts\Support\Arrayable` to an array.
+Eloquent 模型的 `toArray` 方法現在會實作 `Illuminate\Contracts\Support\Arrayable` 來轉換任何屬性成陣列。
 
 <a name="eloquent-primary-key-type"></a>
-#### Declaration Of Primary Key Type
+#### 主鍵類別的宣告
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-Laravel 6.0 has received [performance optimizations](https://github.com/laravel/framework/pull/28153) for integer key types. If you are using a string as your model's primary key, you should declare the key type using the `$keyType` property on your model:
+Laravel 6.0 已接受針對數值型別鍵的[性能優化](https://github.com/laravel/framework/pull/28153)。如果你正在使用字串作為模型的主鍵，請在模型上的 `$keyType` 屬性宣告主鍵的型別：
 
     /**
-     * The "type" of the primary key ID.
+     * 主鍵 ID 的「型別」。
      *
      * @var string
      */
     protected $keyType = 'string';
 
-### Email Verification
+### 信件驗證
 
 <a name="email-verification-route"></a>
-#### Resend Verification Route HTTP Method
+#### 重寄驗證路由 HTTP 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-To prevent possible CSRF attacks, the `email/resend` route registered by the router when using Laravel's built-in email verification has been updated from a `GET` route to a `POST` route. Therefore, you will need to update your frontend to send the proper request type to this route. For example, if you are using the built-in email verification template scaffolding:
+為了預防可能的 CSRF 攻擊，當使用 Laravel 內建的 email 驗證時，路由器註冊的 `email/resend` 路由已從 `GET` 路由更新為 `POST` 路由。因此，你會需要更新前端來發送正確的請求類型到這個路由。例如，如果正在使用內建的 email 驗證模板框架：
 
-    {{ __('Before proceeding, please check your email for a verification link.') }}
-    {{ __('If you did not receive the email') }},
+    {{ __('繼續之前，請檢查你的 email 的驗證連結。') }}
+    {{ __('若你沒收到 email。') }},
 
     <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
         @csrf
 
         <button type="submit" class="btn btn-link p-0 m-0 align-baseline">
-            {{ __('click here to request another') }}
+            {{ __('點擊這裡來請求其他服務') }}
         </button>.
     </form>
 
 <a name="mustverifyemail-contract"></a>
-#### The `MustVerifyEmail` Contract
+#### `MustVerifyEmail` Contract
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-A new `getEmailForVerification` method has been added to the `Illuminate\Contracts\Auth\MustVerifyEmail` contract. If you are manually implementing this contract, you should implement this method. This method should return the object's associated email address. If your `App\User` model is using the `Illuminate\Auth\MustVerifyEmail` trait, no changes are required, as this trait implements this method for you.
+`Illuminate\Contracts\Auth\MustVerifyEmail` Contract 加入了新方法 `getEmailForVerification`。如果你正好有手動實作這個 Contract，請記得實作這個方法。這個方法會回傳要被驗證的 email 位置。如果你的 `App\User` 模型有用到 `Illuminate\Auth\MustVerifyEmail` Trait，那麼無需做修改，因為這個 Trait 已經為你實作這個方法了。
 
 <a name="email-verification-route-change"></a>
-#### Email Verification Route Change
+#### Email 驗證路由變更
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The route path for verifying emails has changed from `/email/verify/{id}` to `/email/verify/{id}/{hash}`. Any email verification emails that were sent prior to upgrading to Laravel 6.x will not longer be valid and will display a 404 page. If you wish, you may define a route matching the old verification URL path and display an informative message for your users that asks them to re-verify their email address.
+用來驗證 email 的路由路徑已從 `/email/verify/{id}` 改成 `/email/verify/{id}/{hash}`。在升級到 Laravel 6.x 之前寄送的任何 email 驗證的信件會在升級後無效，並顯示 404 頁面。如果有需要，可以定義一組路由來承接舊的驗證路由路徑並為你的使用者顯示一則訊息來告知他們需要重新驗證他們的的 email 位置。
 
 <a name="helpers"></a>
-### Helpers
+### 輔助函式
 
-#### String & Array Helpers Package
+#### 陣列與字串的輔助函式套件包
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-All `str_` and `array_` helpers have been moved to the new `laravel/helpers` Composer package and removed from the framework. If desired, you may update all calls to these helpers to use the `Illuminate\Support\Str` and `Illuminate\Support\Arr` classes. Alternatively, you can add the new `laravel/helpers` package to your application to continue using these helpers:
+所有 `str_` 與 `array_` 輔助函式已被移到新的 `laravel/helpers` Composer 套件並從框架中移除。如果有需要，你可以將所有呼叫過這些輔助函式更新成使用 `Illuminate\Support\Str` 和 `Illuminate\Support\Arr` 類別。或者，你可以加入 `laravel/helpers` 新套件來繼續使用這些輔助函式：
 
     composer require laravel/helpers
 
-### Localization
+### 本地化
 
 <a name="trans-and-trans-choice"></a>
-#### The `Lang::trans` & `Lang::transChoice` Methods
+#### `Lang::trans` 與 `Lang::transChoice` 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `Lang::trans` and `Lang::transChoice` methods of the translator have been renamed to `Lang::get` and `Lang::choice`.
+翻譯器的 `Lang::trans` 和 `Lang::transChoice` 方法已重新命名為 `Lang::get` 和 `Lang::choice`。
 
-In addition, if you are manually implementing the `Illuminate\Contracts\Translation\Translator` contract, you should update your implementation's `trans` and `transChoice` methods to `get` and `choice`.
+還有，如果你是手動實作 `Illuminate\Contracts\Translation\Translator` contract，請將你的實作的 `trans` 和 `transChoice` 方法更新為 `get` 和 `choice`。
 
 <a name="get-from-json"></a>
-#### The `Lang::getFromJson` Method
+#### `Lang::getFromJson` 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `Lang::get` and `Lang::getFromJson` methods have been consolidated. Calls to the `Lang::getFromJson` method should be updated to call `Lang::get`.
+`Lang::get` 和 `Lang::getFromJson` 方法已被整併。呼叫 `Lang::getFromJson` 方法應改為呼叫 `Lang::get`。
 
-> {note} You should run the `php artisan view:clear` Artisan command to avoid Blade errors related to the removal of `Lang::transChoice`, `Lang::trans`, and `Lang::getFromJson`.
+> {note} 請執行 Artisan 的 `php artisan view:clear` 指令來避免 Blade 錯誤的關聯到被移除的 `Lang::transChoice`、`Lang::trans` 和 `Lang::getFromJson`。
 
-### Mail
+### 信件
 
-#### Mandrill & SparkPost Drivers Removed
+#### 正式移除 Mandrill 與 SparkPost 驅動
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `mandrill` and `sparkpost` mail drivers have been removed. If you would like to continue using either of these drivers, we encourage you to adopt a community maintained package of your choice that provides the driver.
+`mandrill` 與 `sparkpost` 郵件驅動已正式被移除了。如果你想要繼續使用這些驅動，我們建議你選擇採用社群維護的套件來提供這個驅動。
 
-### Notifications
+### 通知
 
-#### Nexmo Routing Removed
+#### 正式移除 Nexmo 路由
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-A lingering part of the Nexmo notification channel was removed from the core of the framework. If you're relying on routing Nexmo notifications you should manually implement the `routeNotificationForNexmo` method on your notifiable entity [as described in the documentation](/docs/{{version}}/notifications#routing-sms-notifications).
+Nexmo 通知頻道的剩餘部分已正式從框架核心中移除了。如果你需要透過 Nexmo 來通知，請遵循[文件的指示](/docs/{{version}}/notifications#routing-sms-notifications)手動將 `routeNotificationForNexmo` 方法時實作到可被通知的模型上。
 
-### Password Reset
+### 密碼重設
 
-#### Password Validation
+#### 密碼驗證
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `PasswordBroker` no longer restricts or validates passwords. Password validation was already being handled by the `ResetPasswordController` class, making the broker's validations redundant and impossible to customize. If you are manually using the `PasswordBroker` (or `Password` facade) outside of the built-in `ResetPasswordController`, you should validate all passwords before passing them to the broker.
+`PasswordBroker` 不再限制或驗證密碼。密碼驗證已由 `ResetPasswordController` 類別來處理，這會使中間驗證顯得多餘且無法客製化。如果你正在使用內建 `ResetPasswordController` 之外的 `PasswordBroker`（或 `Password` Facade），請在傳入密碼到 Broker 之前，驗證所有密碼。
 
-### Queues
+### 隊列
 
 <a name="queue-retry-limit"></a>
-#### Queue Retry Limit
+#### 隊列重試次數
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-In previous releases of Laravel, the `php artisan queue:work` command would retry jobs indefinitely. Beginning with Laravel 6.0, this command will now try a job one time by default. If you would like to force jobs to be tried indefinitely, you may pass `0` to the `--tries` option:
+在 Laravel 之前的版本，`php artisan queue:work` 指令會不停的重試任務。從 Laravel 6.0 起，這個指令預設只會重試一次任務。如果你想要強制不停重試任務，請將 `0` 傳到 `--tries` 選項：
 
     php artisan queue:work --tries=0
 
-In addition, please ensure your application's database contains a `failed_jobs` table. You can generate a migration for this table using the `queue:failed-table` Artisan command:
+還有，請確保資料庫有 `failed_jobs` 資料表。你能使用 Artisan 的 `queue:failed-table` 指令來產生這個資料表的遷移檔：
 
     php artisan queue:failed-table
 
-### Requests
+### 請求
 
 <a name="the-input-facade"></a>
-#### The `Input` Facade
+#### `Input` Facade
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `Input` facade, which was primarily a duplicate of the `Request` facade, has been removed. If you are using the `Input::get` method, you should now call the `Request::input` method. All other calls to the `Input` facade may simply be updated to use the `Request` facade.
+`Input` Facade，主要是 `Request` Facade 的副本，也正是被移除了。如果你正在使用 `Input::get` 方法，現在應該使用 `Request::input` 方法。所有呼叫 `Input` Facade 都可以簡單地更新為 `Request` Facade。
 
-### Scheduling
+### 排程
 
-#### The `between` Method
+#### `between` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-In previous releases of Laravel, the scheduler's `between` method exhibited confusing behavior across date boundaries. For example:
+在之前的 Laravel 版本中，排程器的 `between` 方法會有跨日期的混亂行為。像是：
 
     $schedule->command('list')->between('23:00', '4:00');
 
-For most users, the expected behavior of this method would be to run the `list` command every minute for all minutes between 23:00 and 4:00. However, in previous releases of Laravel, the scheduler ran the `list` command every minute between 4:00 and 23:00, essentially swapping the time thresholds. In Laravel 6.0, this behavior has been corrected.
+對大部分使用者來說，這個方法的預期行為是在 23:00 到 4:00 之間的每分鐘執行一次 `list` 指令。但是，在之前的 Laravel 版本中，排程器會在 4:00 到 23:00 之間每分鐘執行一次 `list` 指令。在 Laravel 6.0，這個行為已被修正。
 
 ### Storage
 
 <a name="rackspace-storage-driver"></a>
-#### Rackspace Storage Driver Removed
+#### Rackspace Storage 驅動已正式移除
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `rackspace` storage driver has been removed. If you would like to continue using Rackspace as a storage provider, we encourage you to adopt a community maintained package of your choice that provides this driver.
+`rackspace` 儲存驅動已正式移除。如果你想要繼續使用 Rackspace 作為儲存驅動來提供，我們建議你選擇採用社群維護的套件來提供這個驅動。
 
-### URL Generation
+### URL 產生器
 
-#### Route URL Generation & Extra Parameters
+#### 路由 URL 的產生及附加參數
 
-In previous releases of Laravel, passing associative array parameters to the `route` helper or `URL::route` method would occasionally use these parameters as URI values when generating URLs for routes, even if the parameter value had no matching key within the route path. Beginning in Laravel 6.0, these values will be attached to the query string instead. For example, consider the following route:
+在之前的 Laravel 版本中，為路由產生 URL 而傳入相關陣列參數到 `route` 輔助函式或 `URL::route` 方法時會將這些參數作為 URL 值，即使參數值在路由路徑中找不到對應的鍵。從 Laravel 6.0 起，這些值會被改做查詢字串來使用。
 
     Route::get('/profile/{location}', function ($location = null) {
         //
@@ -390,7 +390,7 @@ In previous releases of Laravel, passing associative array parameters to the `ro
     // Laravel 6.0: http://example.com/profile?status=active
     echo route('profile', ['status' => 'active']);
 
-The `action` helper and `URL::action` method are also affected by this change:
+這個變更也有影響到 `action` 輔助函式與 `URL::action` 方法：
 
     Route::get('/profile/{id}', 'ProfileController@show');
 
@@ -400,15 +400,15 @@ The `action` helper and `URL::action` method are also affected by this change:
     // Laravel 6.0: http://example.com/profile?profile=1
     echo action('ProfileController@show', ['profile' => 1]);
 
-### Validation
+### 驗證
 
-#### FormRequest `validationData` Method
+#### FormRequest `validationData` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The form request's `validationData` method was changed from `protected` to `public`. If you are overriding this method in your implementation, you should update the visibility to `public`.
+FormRequest 的 `validationData` 方法已從 `protected` 改成 `public`。如果你正要在實作中覆寫這個方法，請把能見度更新為 `public`。
 
 <a name="miscellaneous"></a>
-### Miscellaneous
+### 其他
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/5.8...6.x) and choose which updates are important to you.
+我們也鼓勵你查看 `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel) GitHub 儲存庫中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/5.8...6.x)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
