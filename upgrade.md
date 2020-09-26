@@ -1,59 +1,59 @@
-# Upgrade Guide
+# 升級指南
 
-- [Upgrading To 8.0 From 7.x](#upgrade-8.0)
+- [從 7.x 升級到 8.0](#upgrade-8.0)
 
 <a name="high-impact-changes"></a>
-## High Impact Changes
+## 高度影響的變更
 
 <div class="content-list" markdown="1">
-- [Model Factories](#model-factories)
-- [Queue `retryAfter` Method](#queue-retry-after-method)
-- [Queue `timeoutAt` Property](#queue-timeout-at-property)
-- [Queue `allOnQueue` and `allOnConnection`](#queue-allOnQueue-allOnConnection)
-- [Pagination Defaults](#pagination-defaults)
-- [Seeder & Factory Namespaces](#seeder-factory-namespaces)
+- [模型工廠](#model-factories)
+- [Queue `retryAfter` 方法](#queue-retry-after-method)
+- [Queue `timeoutAt` 屬性](#queue-timeout-at-property)
+- [Queue `allOnQueue` 與 `allOnConnection`](#queue-allOnQueue-allOnConnection)
+- [預設分頁](#pagination-defaults)
+- [Seeder 與 Factory 命名空間](#seeder-factory-namespaces)
 </div>
 
 <a name="medium-impact-changes"></a>
-## Medium Impact Changes
+## 中度影響的變更
 
 <div class="content-list" markdown="1">
-- [PHP 7.3.0 Required](#php-7.3.0-required)
-- [Failed Jobs Table Batch Support](#failed-jobs-table-batch-support)
-- [Maintenance Mode Updates](#maintenance-mode-updates)
-- [The `php artisan down --message` Option](#artisan-down-message)
-- [The `assertExactJson` Method](#assert-exact-json-method)
+- [需要 PHP 7.3.0](#php-7.3.0-required)
+- [失敗任務資料表的批次支援](#failed-jobs-table-batch-support)
+- [維護模式的更新]](#maintenance-mode-updates)
+- [`php artisan down --message` 選項](#artisan-down-message)
+- [`assertExactJson` 方法](#assert-exact-json-method)
 </div>
 
 <a name="upgrade-8.0"></a>
-## Upgrading To 8.0 From 7.x
+## 從 7.x 升級到 8.0
 
-#### Estimated Upgrade Time: 15 Minutes
+#### 預估升級時間：15 分鐘
 
-> {note} We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the framework only a portion of these changes may actually affect your application.
+> {note} 我們嘗試記錄每個重大變更。由於有些重大的變更是在框架最隱密的地方，但實際上只有一小部分的變更會影響你的應用程式。
 
 <a name="php-7.3.0-required"></a>
-### PHP 7.3.0 Required
+### 需要 PHP 7.3.0
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The new minimum PHP version is now 7.3.0.
+PHP 最低支援版本為 7.3.0。
 
 <a name="updating-dependencies"></a>
-### Updating Dependencies
+### 升級依賴項目
 
-Update the following dependencies in your `composer.json` file:
+在 `composer.json` 檔升級下列的依賴項目。
 
 <div class="content-list" markdown="1">
-- `guzzlehttp/guzzle` to `^7.0.1`
-- `facade/ignition` to `^2.3.6`
-- `laravel/framework` to `^8.0`
-- `laravel/ui` to `^3.0`
-- `nunomaduro/collision` to `^5.0`
-- `phpunit/phpunit` to `^9.0`
+- `guzzlehttp/guzzle` 更新為 `^7.0.1`
+- `facade/ignition` 更新為 `^2.3.6`
+- `laravel/framework` 更新為 `^8.0`
+- `laravel/ui` 更新為 `^3.0`
+- `nunomaduro/collision` 更新為 `^5.0`
+- `phpunit/phpunit` 更新為 `^9.0`
 </div>
 
-The following first-party packages have new major releases to support Laravel 8. If applicable, you should read their individual upgrade guides before upgrading:
+下列為官方套件有支援 Laravel 8 的主要版號。如果有使用到，請在升級之前詳讀各自的升級指南：
 
 <div class="content-list" markdown="1">
 - [Horizon v5.0](https://github.com/laravel/horizon/blob/master/UPGRADE.md)
@@ -62,17 +62,17 @@ The following first-party packages have new major releases to support Laravel 8.
 - [Telescope v4.0](https://github.com/laravel/telescope/releases)
 </div>
 
-In addition, the Laravel installer has been updated to support `composer create-project` and Laravel Jetstream. Any installer older than 4.0 will cease to work after October 2020. You should upgrade your global installer to `^4.0` as soon as possible.
+還有，已升級 Laravel 安裝器來支援 `composer create-project` 與 Laravel Jetstream。任何低於 4.0 的安裝器將於 2020 年十月停止服務。請盡快升級全域的安裝器到 `^4.0`。
 
-Finally, examine any other third-party packages consumed by your application and verify you are using the proper version for Laravel 8 support.
+最後，請檢查你的應用程式所使用的第三方套件的版本是否能支援 Laravel 8。
 
-### Collections
+### 集合
 
-#### The `isset` Method
+#### `isset` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-To be consistent with typical PHP behavior, the `offsetExists` method of `Illuminate\Support\Collection` has been updated to use `isset` instead of `array_key_exists`. This may present a change in behavior when dealing with collection items that have a value of `null`:
+為了與原生 PHP 行為一致，`Illuminate\Support\Collection` 的 `offsetExists` 方法已更新成使用 `isset`，而不是 `array_key_exists`。當被判斷的集合值為 `null` 時，原本的行為會有變更：
 
     $collection = collect([null]);
 
@@ -82,14 +82,14 @@ To be consistent with typical PHP behavior, the `offsetExists` method of `Illumi
     // Laravel 8.x - false
     isset($collection[0]);
 
-### Database
+### 資料庫
 
 <a name="seeder-factory-namespaces"></a>
-#### Seeder & Factory Namespaces
+#### Seeder 與 Factory 命名空間
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-Seeders and factories are now namespaced. To accommodate for these changes, add the `Database\Seeders` namespace to your seeder classes. In addition, the previous `database/seeds` directory should be renamed to `database/seeders`:
+Seeder 與 Factory 現在已有命名空間了。要相容這些變更，請加入 `Database\Seeders` 命名空間到你的 Seeder 類別。還有，之前的 `database/seeds` 目錄需要重新命名為 `database/seeders`：
 
     <?php
 
@@ -101,7 +101,7 @@ Seeders and factories are now namespaced. To accommodate for these changes, add 
     class DatabaseSeeder extends Seeder
     {
         /**
-         * Seed the application's database.
+         * 填充應用程式的資料庫。
          *
          * @return void
          */
@@ -111,9 +111,9 @@ Seeders and factories are now namespaced. To accommodate for these changes, add 
         }
     }
 
-If you are choosing to use the `laravel/legacy-factories` package, no changes to your factory classes are required. However, if you are upgrading your factories, you should add the `Database\Factories` namespace to those classes.
+如果你選擇使用 `laravel/legacy-factories` 套件，就不需要修改 Factory 類別。然而，如果是更新 Factory，請加入 `Database\Factories` 命名空間到那些類別。
 
-Next, in your `composer.json` file, remove `classmap` block from the `autoload` section and add the new namespaced class directory mappings:
+接著，請在 `composer.json` 檔案中把 `classmap` 區塊從 `autoload` 的部分中移除，並加入新的命名空間類別目錄的對照表：
 
     "autoload": {
         "psr-4": {
@@ -126,46 +126,46 @@ Next, in your `composer.json` file, remove `classmap` block from the `autoload` 
 ### Eloquent
 
 <a name="model-factories"></a>
-#### Model Factories
+#### 模型工廠
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-Laravel's [model factories](/docs/{{version}}/database-testing#creating-factories) feature has been totally rewritten to support classes and is not compatible with Laravel 7.x style factories. However, to ease the upgrade process, a new `laravel/legacy-factories` package has been created to continue using your existing factories with Laravel 8.x. You may install this package via Composer:
+Laravel 的[模型工廠](/docs/{{version}}/database-testing#creating-factories)功能已完全重寫來支援類別並不再向下相容 Laravel 7.x 之前的 Factory 寫法。不過，為了簡化升級過程，已建立了新的 `laravel/legacy-factories` 套件來繼續與 Laravel 8.x 使用之前的 Factory。請透過 Composer 安裝這個套件：
 
     composer require laravel/legacy-factories
 
-#### The `Castable` Interface
+#### `Castable` 介面
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `castUsing` method of the `Castable` interface has been updated to accept an array of arguments. If you are implementing this interface you should update your implementation accordingly:
+`Castable` 介面的 `castUsing` 方法已更新為接受一組陣列參數。如果你正在實作這個介面，請更新相對應的程式碼實作：
 
     public static function castUsing(array $arguments);
 
-#### Increment / Decrement Events
+#### Increment 與 Decrement 事件
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-Proper "update" and "save" related model events will now be dispatched when executing the `increment` or `decrement` methods on Eloquent model instances.
+在 Eloquent 模型實例上執行 `increment` 或 `decrement` 方法時，現在會正確觸發「update」與「save」關聯模型的事件。
 
-### Events
+### 事件
 
-#### The `Dispatcher` Contract
+#### `Dispatcher` Contract
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `listen` method of the `Illuminate\Contracts\Events\Dispatcher` contract has been updated to make the `$listener` property optional. This change was made to support automatic detection of handled event types via reflection. If you are manually implementing this interface, you should update your implementation accordingly:
+`Illuminate\Contracts\Events\Dispatcher` Contract 的 `listen` 方法已將 `$listener` 屬性更新為改為非必要。這個改變是為了透過反射來支援自動檢查要處理的事件類型，如果你是手動實作這個介面，請更新相對的程式碼實作：
 
     public function listen($events, $listener = null);
 
-### Framework
+### 框架
 
 <a name="maintenance-mode-updates"></a>
-#### Maintenance Mode Updates
+#### 維護模式的更新
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-The [maintenance mode](/docs/{{version}}/configuration#maintenance-mode) feature of Laravel has been improved in Laravel 8.x. Pre-rendering the maintenance mode template is now supported and eliminates the chances of end users encountering errors during maintenance mode. However, to support this, the following lines must be added to your `public/index.php` file. These lines should be placed directly under the existing `LARAVEL_START` constant definition:
+Laravel 的[維護模式](/docs/{{version}}/configuration#maintenance-mode)功能已從 Laravel 8.x 中得到改善。現在支援預渲染維護模式模板並除去了末端使用者在維護模式期間會遇到錯誤的機會。但是，要支援這個功能，必須將下列程式碼新增到 `public/index.php` 檔。這些程式碼需要直接放在現有的 `LARAVEL_START` 常數定義下方：
 
     define('LARAVEL_START', microtime(true));
 
@@ -174,67 +174,67 @@ The [maintenance mode](/docs/{{version}}/configuration#maintenance-mode) feature
     }
 
 <a name="artisan-down-message"></a>
-#### The `php artisan down --message` Option
+#### `php artisan down --message` 選項
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `--message` option of the `php artisan down` command has been removed. As an alternative, consider [pre-rendering your maintenance mode views](/docs/{{version}}/configuration#maintenance-mode) with the message of your choice.
+`php artisan down` 指令的 `--message` 選項已正式被移除。或者，請考慮固定訊息來[預渲染維護模式視圖](/docs/{{version}}/configuration#maintenance-mode)。
 
-#### Manager `$app` Property
+#### Manager `$app` 屬性
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The previously deprecated `$app` property of the `Illuminate\Support\Manager` class has been removed. If you were relying on this property, you should use the `$container` property instead.
+之前不推薦使用的 `Illuminate\Support\Manager` 類別的 `$app` 屬性已正式被移除了。如果你還在用這個屬性，請改用 `container` 屬性。
 
-#### The `elixir` Helper
+#### `elixir` 輔助函式
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The previously deprecated `elixir` helper has been removed. Applications still using this method are encouraged to upgrade to [Laravel Mix](https://github.com/JeffreyWay/laravel-mix).
+之前不推薦的 `elixir` 輔助函式已正式被移除了。鼓勵還在使用這個方法的應用程式升級到 [Laravel Mix](https://github.com/JeffreyWay/laravel-mix)。
 
-### Mail
+### 郵件
 
-#### The `sendNow` Method
+### `sendNow` 方法
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The previously deprecated `sendNow` method has been removed. Instead, please use the `send` method.
+先前不推薦使用的 `sendNow` 方法已正式被移除了。請改用 `send` 方法。
 
-### Pagination
+### 分頁
 
 <a name="pagination-defaults"></a>
-#### Pagination Defaults
+#### 預設分頁
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-The paginator now uses the [Tailwind CSS framework](https://tailwindcss.com) for its default styling. In order to keep using Bootstrap, you should add the following method call to the `boot` method of your application's `AppServiceProvider`:
+現在分頁器使用 [Tailwind CSS 框架](https://tailwindcss.com)作為它的預設樣式。若要繼續使用，請在 `AppServiceProvider` 的 `boot` 方法中新增下列方法：
 
     use Illuminate\Pagination\Paginator;
 
     Paginator::useBootstrap();
 
-### Queue
+### 隊列
 
 <a name="queue-retry-after-method"></a>
-#### The `retryAfter` Method
+#### `retryAfter` 方法
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-For consistency with other features of Laravel, the `retryAfter` method and `retryAfter` property of queued jobs, mailers, notifications, and listeners has been renamed to `backoff`. You should update the name of this method / property in the relevant classes in your application.
+為了與 Laravel 的其他功能有一致性，隊列任務、郵件、通知與監聽器的 `retryAfter` 方法與 `retryAfter` 屬性已重新命名為 `backoff`。請在應用程式的相關類別中更新這個方法與屬性的名稱。
 
 <a name="queue-timeout-at-property"></a>
-#### The `timeoutAt` Property
+#### `timeoutAt` 屬性
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-The `timeoutAt` property of queued jobs, notifications, and listeners has been renamed to `retryUntil`. You should update the name of this property in the relevant classes in your application.
+隊列任務、通知與監聽器的 `timeoutAt` 屬性已重新命名為 `retryUntil`，請在應用程式的相關類別中更新這個方法與屬性的名稱。
 
 <a name="queue-allOnQueue-allOnConnection"></a>
-#### The `allOnQueue()` / `allOnConnection()` Methods
+#### `allOnQueue()` / `allOnConnection()` 方法
 
-**Likelihood Of Impact: High**
+**影響程度：高**
 
-For consistency with other dispatching methods, the `allOnQueue()` and `allOnConnection()` methods used with job chaining have been removed. You may use the `onQueue()` and `onConnection()` methods instead. These methods should be called before calling the `dispatch` method:
+為了與其他觸發方法的方式一致，被用於串接任務的 `allOnQueue()` 和 `allOnConnection()` 方法已正式被移除了。請改用 `onQueue()` 和 `onConnection()` 方法。這些方法應該在呼叫 `dispatch` 方法之前被呼叫：
 
     ProcessPodcast::withChain([
         new OptimizePodcast,
@@ -242,11 +242,11 @@ For consistency with other dispatching methods, the `allOnQueue()` and `allOnCon
     ])->onConnection('redis')->onQueue('podcasts')->dispatch();
 
 <a name="failed-jobs-table-batch-support"></a>
-#### Failed Jobs Table Batch Support
+#### 失敗任務資料表的批次支援
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-If you plan to use the [job batching](/docs/{{version}}/queues#job-batching) features of Laravel 8.x, your `failed_jobs` database table will need to be updated. First, a new `uuid` column should be added to your table:
+如果你計畫使用 Laravel 8.x 的[任務批次](/docs/{{version}}/queues#job-batching)功能，將需要更新資料庫的 `failed_jobs` 資料表。首先，新增 `uuid` 欄位到資料表中：
 
     use Illuminate\Database\Schema\Blueprint;
     use Illuminate\Support\Facades\Schema;
@@ -255,52 +255,52 @@ If you plan to use the [job batching](/docs/{{version}}/queues#job-batching) fea
         $table->string('uuid')->after('id')->nullable()->unique();
     });
 
-Next, the `failed.driver` configuration option within your `queue` configuration file should be updated to `database-uuids`.
+接著，在你的 `queue` 設定檔中的 `failed.driver` 設定選項更新為 `database-uuids`。
 
-### Routing
+### 路由
 
-#### Automatic Controller Namespace Prefixing
+#### 控制器命名空間前綴的自動化
 
-**Likelihood Of Impact: Optional**
+**影響程度：非必要**
 
-In previous releases of Laravel, the `RouteServiceProvider` class contained a `$namespace` property with a value of `App\Http\Controllers`. This value of this property was used to automatically prefix controller route declarations and controller route URL generation such as when calling the `action` helper.
+之前的 Laravel 版本，`RouteServiceProvider` 有包含值為 `App\Http\Controllers` 的 `$namespace` 屬性。像是在呼叫 `action` 輔助函式的時候，這個屬性值被用來自動前綴控制器路由的宣告與控制器路由的 URL 產生。
 
-In Laravel 8, this property is set to `null` by default. This allows your controller route declarations to use the standard PHP callable syntax, which provides better support for jumping to the controller class in many IDEs:
+在 Laravel 8，這個屬性預設會是 `null`。這可使控制器路由使用標準的 PHP 呼叫語法來宣告，以便支援在許多 IDE 中提供更好的跳轉到控制器類別。
 
     use App\Http\Controllers\UserController;
 
-    // Using PHP callable syntax...
+    // 使用 PHP 呼叫語法...
     Route::get('/users', [UserController::class, 'index']);
 
-    // Using string syntax...
+    // 使用字串語法...
     Route::get('/users', 'App\Http\Controllers\UserController@index');
 
-In most cases this won't impact applications that are being upgraded because your `RouteServiceProvider` will still contain the `$namespace` property with its previous value. However, if you upgrade your application by creating a brand new Laravel project, you may encounter this as a breaking change.
+在大多數情況下，這並不會影響升級的應用程式，因為你的 `RouteServiceProvider` 還保有 `$namespace` 屬性與先前的值。然而，如果你是透過建立新的 Laravel 專案來升級應用程式，就有可能遇到重大變更。
 
-If you would like to continue using the original auto-prefixed controller routing, you can simply set the value of the `$namespace` property within your `RouteServiceProvider` and update the route registrations within the `boot` method to use the `$namespace` property:
+如果你想要繼續使用原生的自動前綴控制器路由，請在 `RouteServiceProvider` 中設定 `$namespace` 屬性的值，並在 `boot` 方法中更新路由註冊來使用 `$namespace` 屬性：
 
     class RouteServiceProvider extends ServiceProvider
     {
         /**
-         * The path to the "home" route for your application.
+         * 應用程式的「home」 路由的路徑。
          *
-         * This is used by Laravel authentication to redirect users after login.
+         * Laravel 認證會用它來重導剛登入的使用者。
          *
          * @var string
          */
         public const HOME = '/home';
 
         /**
-         * If specified, this namespace is automatically applied to your controller routes.
+         * 如果有指定，這個命名空間會自動應用到控制器路由。
          *
-         * In addition, it is set as the URL generator's root namespace.
+         * 還有，這是用來設定 URL 產生器的 root 命名空間。
          *
          * @var string
          */
         protected $namespace = 'App\Http\Controllers';
 
         /**
-         * Define your route model bindings, pattern filters, etc.
+         * 定義路由模型綁定、模式、過濾器等。
          *
          * @return void
          */
@@ -321,7 +321,7 @@ If you would like to continue using the original auto-prefixed controller routin
         }
 
         /**
-         * Configure the rate limiters for the application.
+         * 限制應用程式使用頻率。
          *
          * @return void
          */
@@ -333,24 +333,24 @@ If you would like to continue using the original auto-prefixed controller routin
         }
     }
 
-### Scheduling
+### 排程
 
-#### The `cron-expression` Library
+#### `cron-expression` 函式庫
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-Laravel's dependency on `dragonmantank/cron-expression` has been updated from `2.x` to `3.x`. This should not cause any breaking change in your application unless you are interacting with the `cron-expression` library directly. If you are interacting with this library directly, please review its [change log](https://github.com/dragonmantank/cron-expression/blob/master/CHANGELOG.md).
+Laravel 對 `dragonmantank/cron-expression` 的依賴項目已從 `2.x` 升級到 `3.x`。這不會對你的應用程式產生重大的影響，除非你有直接與 `cron-expression` 函式庫互動。如果你直接與這個函式庫互動，請詳讀它的[變更記錄]](https://github.com/dragonmantank/cron-expression/blob/master/CHANGELOG.md)。
 
 ### Session
 
-#### The `Session` Contract
+#### `Session` Contract
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `Illuminate\Contracts\Session\Session` contract has received a new `pull` method. If you are implementing this contract manually, you should update your implementation accordingly:
+`Illuminate\Contracts\Session\Session` Contract 已新增了 `pull` 方法。如果你正在手動實作這個 Contract，請更新相對應的實作：
 
     /**
-     * Get the value of a given key and then forget it.
+     * 取得給定鍵的值，然後捨棄它。
      *
      * @param  string  $key
      * @param  mixed  $default
@@ -358,24 +358,24 @@ The `Illuminate\Contracts\Session\Session` contract has received a new `pull` me
      */
     public function pull($key, $default = null);
 
-### Testing
+### 測試
 
 <a name="assert-exact-json-method"></a>
-#### The `assertExactJson` Method
+#### `assertExactJson` 方法
 
-**Likelihood Of Impact: Medium**
+**影響程度：中**
 
-The `assertExactJson` method now requires numeric keys of compared arrays to match and be in the same order. If you would like to compare JSON against an array without requiring numerically keyed arrays to have the same order, you may use the `assertSimilarJson` method instead.
+`assertExactJson` 方法現在會比較陣列的整數鍵是否有相同的順序。如果你想要比較 JSON 但又不要求陣列整數鍵要有相同的順序，請改用 `assertSimilarJson` 方法。
 
-### Validation
+### 驗證
 
-### Database Rule Connections
+### 資料庫規則連線
 
-**Likelihood Of Impact: Low**
+**影響程度：低**
 
-The `unique` and `exists` rules will now respect the specified connection name (accessed via the model's `getConnectionName` method) of Eloquent models when performing queries.
+`unique` 與 `exists` 方法現在會在執行查詢時遵循 Eloquent 模型特定的連線名稱（透過模型的 `getConnectionName` 方法來存取）。
 
 <a name="miscellaneous"></a>
-### Miscellaneous
+### 其他
 
-We also encourage you to view the changes in the `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel). While many of these changes are not required, you may wish to keep these files in sync with your application. Some of these changes will be covered in this upgrade guide, but others, such as changes to configuration files or comments, will not be. You can easily view the changes with the [GitHub comparison tool](https://github.com/laravel/laravel/compare/7.x...master) and choose which updates are important to you.
+我們也鼓勵你查看 `laravel/laravel` [GitHub repository](https://github.com/laravel/laravel) GitHub 儲存庫中的任何異動。儘管許多更改並不是必要的，但你可能希望保持這些文件與你的應用程序同步。其中一些更改將在本升級指南中介紹，但其他更改（例如更改設定檔案或註釋）將不會被介紹。你可以使用 [GitHub 比較工具](https://github.com/laravel/laravel/compare/7.x...master)來輕易的檢查更動的內容，並選擇哪些更新對你比較重要。
