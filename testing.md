@@ -68,4 +68,4 @@ Laravel 在建立時有考慮到測試這件事。事實上，內建已經支援
 
 `phpunit` 可以使用的參數，也可以在運行 Artisan `test` 指令時使用：
 
-    php artisan test --group=feature
+    php artisan test --group=feature --stop-on-failure
