@@ -22,7 +22,7 @@ Laravel 所有的 contracts 都放在 [各自的 GitHub 儲存庫](https://githu
 
 Laravel 的 [facades](/docs/{{version}}/facades) 和輔助方法提供一個簡單的方法來使用服務，而不需要使用型別提示和在服務容器之外解析 contracts。在大部分情況下，facade 有等價的 contract。
 
-facade 不需要在類別的建構子中注入，而 contract 提供你在類別的建構子中明確地注入依賴。有些開發者更喜歡這種明確地定義相依性的方式，而有些開發者希歡 facade 的便利性。
+facade 不需要在類別的建構子中注入，而 contract 提供你在類別的建構子中明確地注入依賴。有些開發者更喜歡這種明確地定義相依性的方式，而有些開發者喜歡 facade 的便利性。
 
 > {tip} 大部分的程式不介意你使用的是 facades 或 contracts。然而，如果你正在開發套件的話，強烈建議使用 contracts，它在你的套件中將更容易地被測試。
 
