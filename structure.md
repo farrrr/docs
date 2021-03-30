@@ -29,13 +29,13 @@
 <a name="introduction"></a>
 ## 介紹
 
-The default Laravel application structure is intended to provide a great starting point for both large and small applications. Of course, you are free to organize your application however you like. Laravel imposes almost no restrictions on where any given class is located - as long as Composer can autoload the class.
+Laravel 預設的應用程式結構主旨是為大型或小型應用程式提供一個好的起始點。當然，你可以自由的依據你的喜好來規劃應用程式。Laravel 幾乎不會去不限制任何給定類別的位置，前提是 Composer 要能夠自動載入這個類別。
 
-#### Where Is The Models Directory?
+#### 模型目錄在哪裡？
 
-When getting started with Laravel, many developers are confused by the lack of a `models` directory. However, the lack of such a directory is intentional. We find the word "models" ambiguous since it means many different things to many different people. Some developers refer to an application's "model" as the totality of all of its business logic, while others refer to "models" as classes that interact with a relational database.
+許多開發者在剛開始接觸 Laravel 時會對於沒有 `models` 目錄感到疑惑。然而，這是刻意要廢除這個目錄的。我們發現「模型」的文字定位非常模糊，因為對於許多不同的人眼裡會是許多不同的事物。有些開發者會把應用程式的「模型」當作商業邏輯的總和，而其他則把「模型」作為與關聯資料庫交換資料的類別。
 
-For this reason, we choose to place Eloquent models in the `app` directory by default, and allow the developer to place them somewhere else if they choose.
+出於這個原因，我們選擇將 Eloquent 模型預設放在 `app` 目錄中，並可以讓開發者將它們放到其他地方。
 
 <a name="the-root-directory"></a>
 ## 根目錄
@@ -43,32 +43,32 @@ For this reason, we choose to place Eloquent models in the `app` directory by de
 <a name="the-root-app-directory"></a>
 #### App 目錄
 
-The `app` directory, as you might expect, contains the core code of your application. We'll explore this directory in more detail soon; however, almost all of the classes in your application will be in this directory.
+`app` 目錄，正如你預期的那樣，放置應用程式的核心程式碼。我們會深入探討這個目錄。然而，幾乎所有應用程式中的類別都會放在這個目錄。
 
 <a name="the-bootstrap-directory"></a>
 #### Bootstrap 目錄
 
-The `bootstrap` directory contains the `app.php` file which bootstraps the framework. This directory also houses a `cache` directory which contains framework generated files for performance optimization such as the route and services cache files.
+`bootstrap` 目錄放置啟動框架的 `app.php` 檔案。這個目錄也放置一個 `cache` 目錄，其中包含框架為效能最佳化所產生的檔案，像是路由和服務快取的檔案。
 
 <a name="the-config-directory"></a>
 #### Config 目錄
 
-The `config` directory, as the name implies, contains all of your application's configuration files. It's a great idea to read through all of these files and familiarize yourself with all of the options available to you.
+`config` 目錄，顧名思義的就是放置所有應用程式的設定檔。閱讀所有文件並熟悉所有可用的選項會是個好主意。
 
 <a name="the-database-directory"></a>
 #### Database 目錄
 
-The `database` directory contains your database migrations, model factories, and seeds. If you wish, you may also use this directory to hold an SQLite database.
+`database` 目錄放置用來資料庫遷移和資料填充的檔案。如果你希望，你也可以使用目錄來存放 SQLite 資料庫。
 
 <a name="the-public-directory"></a>
 #### Public 目錄
 
-The `public` directory contains the `index.php` file, which is the entry point for all requests entering your application and configures autoloading. This directory also houses your assets such as images, JavaScript, and CSS.
+`public` 目錄放置 `index.php` 檔案，這是進入應用程式並自動載入設定的所有請求的入口。這個目錄也放置你的前端資源，像是圖片、JavaScript 和 CSS。
 
 <a name="the-resources-directory"></a>
 #### Resources 目錄
 
-The `resources` directory contains your views as well as your raw, un-compiled assets such as LESS, SASS, or JavaScript. This directory also houses all of your language files.
+`resources` 目錄放置你的視圖以及原生、尚未編譯過的資源，像是 LESS、SASS 或 JavaScript。這個目錄也放置你所有的語系檔案。
 
 <a name="the-routes-directory"></a>
 #### Routes 目錄
