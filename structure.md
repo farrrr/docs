@@ -114,7 +114,7 @@ Laravel 預設的應用程式結構主旨是為大型或小型應用程式提供
 <a name="the-broadcasting-directory"></a>
 #### Broadcasting 目錄
 
-`Broadcasting` 目錄 contains all of the broadcast channel classes for your application. These classes are generated using the `make:channel` command. This directory does not exist by default, but will be created for you when you create your first channel. To learn more about channels, check out the documentation on [event broadcasting](/docs/{{version}}/broadcasting).
+`Broadcasting` 目錄包含應用程式所有的廣播頻道類別。這些類別可以使用 `make:channel` 指令產生。這個目錄預設不存在，但會在你建立第一個頻道時同時建立。更多詳情，請檢視[事件廣播](/docs/{{version}}/broadcasting)。
 
 <a name="the-console-directory"></a>
 #### Console 目錄
