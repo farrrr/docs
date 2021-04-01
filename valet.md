@@ -29,7 +29,7 @@ Valet 預設就支援以下這些內容，當然，實際支援的內容還有�
 - [Lumen](https://lumen.laravel.com)
 - [Bedrock](https://roots.io/bedrock/)
 - [CakePHP 3](https://cakephp.org)
-- [Concrete5](http://www.concrete5.org/)
+- [Concrete5](https://www.concrete5.org/)
 - [Contao](https://contao.org/en/)
 - [Craft](https://craftcms.com)
 - [Drupal](https://www.drupal.org/)
