@@ -1,7 +1,7 @@
 # Laravel Valet
 
 - [介紹](#introduction)
-    - [Valet 與 Homestead](#valet-or-homestead)
+    - [選擇 Valet 或 Homestead](#valet-or-homestead)
 - [安裝](#installation)
     - [升級](#upgrading)
 - [啟動專案](#serving-sites)
@@ -16,9 +16,9 @@
 <a name="introduction"></a>
 ## 介紹
 
-Valet 是專屬於 MacOS 的 Laravel 開發環境。既不用 Vagrant，也不用 `/etc/hosts` 檔案，就能夠使用本機終端機來公開並共享你的網站。_沒錯！我們也很喜歡。_
+Valet 是專屬於 Mac 的 Laravel 開發環境。既不用 Vagrant，也不用 `/etc/hosts` 檔案，就能夠使用本機終端機來公開並共享你的網站。_沒錯！我們也很喜歡。_
 
-Laravel Valet 設定 MacOS 在啟動伺服器時會在背景執行 [Nginx](https://www.nginx.com/)。然後，使用 [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq)，Valet 會將所有本機伺服器上安裝的專案全都代理到 `*.test` 網域上。
+Laravel Valet 設定 Mac 在啟動伺服器時會在背景執行 [Nginx](https://www.nginx.com/)。然後，使用 [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq)，Valet 會將所有本機伺服器上安裝的專案全都代理到 `*.test` 網域上。
 
 換句話說，這個極快的 Laravel 開發環境只會用到 7 MB 的記憶體。Valet 並非能完全取代 Vagrant 或 Homestead，但如果你想要靈活、極快、或更輕盈的開發環境，這會是一個很好的選擇。
 
@@ -48,14 +48,14 @@ Valet 預設就支援以下這些內容，當然，實際支援的內容還有�
 - [Zend](https://framework.zend.com)
 </div>
 
-對了，你可以使用[自訂驅動](#custom-valet-drivers)來擴展 Valet。
+對了，你可以使用[自訂驅動](#custom-valet-drivers)來擴充 Valet。
 
 <a name="valet-or-homestead"></a>
 ### Valet 與 Homestead
 
 就如你所知的那樣，Laravel 提供了另一個開發環境，也就是 [Homestead](/docs/{{version}}/homestead)。Homestead 和 Valet 不同的地方在於他們主要客群想使用什麼方式來建立開發環境。Homestead 提供一個完整的 Ubuntu 虛擬機，並自動化 Nginx 設定。如果你想要完全虛擬化的 Linux  開發環境或者在 Windows / Linux 系統環境上開發，Homestead 會是一個很好的選擇。
 
-Valet 只支援 MacOS，並且會要求你在本機環境上直接安裝 PHP 和資料庫伺服器。你可以使用 [Homebrew](http://brew.sh/) 的 `brew install php` 和 `brew install mysql` 指令來輕鬆的安裝。Valet 提供了一個極快的本機開發環境，且只會佔用到極小的資源，所以這對於只會用到 PHP 和 MySQL 而不需要完整的虛擬開發環境的開發者而言真的很好！
+Valet 只支援 Mac，並且會要求你在本機環境上直接安裝 PHP 和資料庫伺服器。你可以使用 [Homebrew](http://brew.sh/) 的 `brew install php` 和 `brew install mysql` 指令來輕鬆的安裝。Valet 提供了一個極快的本機開發環境，且只會佔用到極小的資源，所以這對於只會用到 PHP 和 MySQL 而不需要完整的虛擬開發環境的開發者而言真的很好！
 
 不論是 Valet 還是 Homestead 都是設定 Laravel 開發環境的最佳選項。請根據你與團隊的喜好與需求來做選擇。
 
@@ -68,12 +68,12 @@ Valet 只支援 MacOS，並且會要求你在本機環境上直接安裝 PHP 和
 - 使用 `brew update` 來安裝或更新 [Homebrew](http://brew.sh/) 的最新的版本。
 - 使用 Homebrew 的 `brew install php@7.2` 指令來安裝 PHP 7.2。
 - 使用 Composer 的 `composer global require laravel/valet` 指令來安裝 Valet。並確認 `~/.composer/vendor/bin` 目錄有在你系統的 「PATH」。
-- 執行 `valet install` 指令。這指令會為你設定並安裝 Valet 和 DnsMasq，並於系統啟動時自動註冊守護行程。
+- 執行 `valet install` 指令。這指令會為你設定並安裝 Valet 和 DnsMasq，並於系統啟動時自動註冊 daemon。
 </div>
 
 Valet 一旦安裝好了，就可以在終端機上使用像是 `ping foobar.test` 指令來測試任何 `*.test` 網域的連線狀態。如果有成功安裝 Valet ，你應該會看到這個網域回應 `127.0.0.1`。
 
-Valet 會在每次被啟動時自動開啟他的守護行程。一旦完成了第一次的 Valet 安裝，就不需要再執行 `valet start` 或 `valet install` 指令了。
+Valet 會在每次被啟動時自動開啟 daemon。一旦完成了第一次的 Valet 安裝，就不需要再執行 `valet start` 或 `valet install` 指令了。
 
 #### 使用其它的網域
 
@@ -92,7 +92,7 @@ Valet 會在每次被啟動時自動開啟他的守護行程。一旦完成了�
 
 #### 升級到 Valet 2.0
 
-Valet 2.0 將 Valet 的底層網頁伺服器從 Caddy 移植到 Nginx。在升級到這個版本前，你應該執行下列指令來停止並移除現有的 Caddy 守護行程：
+Valet 2.0 將 Valet 的底層網頁伺服器從 Caddy 移植到 Nginx。在升級到這個版本前，你應該執行下列指令來停止並移除現有的 Caddy daemon：
 
     valet stop
     valet uninstall
@@ -136,7 +136,7 @@ Valet 一旦安裝好了，你可以開始準備啟動專案。Valet 提供兩�
 
 若要查詢所有已連結目錄的清單，請執行 `valet links` 指令。你可以使用 `valet unlink app-name` 指令來取消某個連結符號。
 
-> {tip} 你能從多個（子）網域中使用 `valet link` 來啟動想同的專案。若要將子網域或另一個網域新增到專案中，請從專案資料夾中執行 `valet link subdomain.app-name` 指令。
+> {tip} 你能從多個（子）網域中使用 `valet link` 來啟動相同的專案。若要將子網域或另一個網域新增到專案中，請從專案資料夾中執行 `valet link subdomain.app-name` 指令。
 
 <a name="securing-sites"></a>
 **使用 TLS 保護**
@@ -152,9 +152,9 @@ Valet 一旦安裝好了，你可以開始準備啟動專案。Valet 提供兩�
 <a name="sharing-sites"></a>
 ## 共享專案
 
-Valet 甚至包括與世界分享你的本機網站的指令。一旦安裝了 Valet，就不需要安裝額外的軟體。
+Valet 甚至包括與全世界分享你的本機網站的指令。一旦安裝了 Valet，就不需要安裝額外的軟體。
 
-若要共享專案，請導航到終端機中的專案目錄，並執行 `valet share` 指令。會將可被公開存取的 URL 放入剪貼簿中，並準備貼到瀏覽器。就這樣。
+若要共享專案，請在終端機裡切換到專案目錄，並執行 `valet share` 指令。會將可被公開存取的 URL 放入剪貼簿中，並準備貼到瀏覽器。就這樣。
 
 若要停止共享專案，請點擊 `Control + C` 來終止共享。
 
@@ -271,7 +271,7 @@ Valet 甚至包括與世界分享你的本機網站的指令。一旦安裝了 V
 ------------- | -------------
 `valet forget` | 從被「Park」標記的目錄中執行這個指令，可以移除對它的標記。
 `valet paths` | 查看所有被「Park」標記的路徑。
-`valet restart` | 重新啟動 Valet 的守護行程。
-`valet start` | 啟動 Valet 的守護行程。
-`valet stop` | 暫停 Valet 的守護行程。
-`valet uninstall` | 完整的移除 Valet 守護行程。
+`valet restart` | 重新啟動 Valet 的 daemon。
+`valet start` | 啟動 Valet 的 daemon。
+`valet stop` | 暫停 Valet 的 daemon。
+`valet uninstall` | 完整移除 Valet daemon。
