@@ -37,7 +37,7 @@
 <a name="generating-tokens"></a>
 ## 產生 Tokens
 
-將 `api_token` 欄位新增到你的 `users` 資料表後，你就可以將隨機的 API tokens 分配給每一個註冊你的應用程式的使用者了。你應該在註冊期間 `User` 模型被建立時分配這些 tokens。當使用 `laravel/ui` Composer 套件提供的 [認證框架](/docs/{{version}}/authentication#authentication-quickstart)，可以在 `RegisterController` 中的 `create` 方法中完成此操作：
+將 `api_token` 欄位新增到你的 `users` 資料表後，你就可以將隨機的 API tokens 分配給每一個註冊你的應用程式的使用者了。你應該在註冊期間 `User` 模型被建立時分配這些 tokens。當使用 `laravel/ui` Composer 套件提供的[認證框架](/docs/{{version}}/authentication#authentication-quickstart)時，可以在 `RegisterController` 中的 `create` 方法中完成此操作：
 
     use Illuminate\Support\Facades\Hash;
     use Illuminate\Support\Str;
