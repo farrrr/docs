@@ -11,7 +11,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-預設情況下，Laravel 為 API 認證提供一種簡單的解決方案，透過分配一個隨機 token 給你的應用程式中的使用者。在你的 `config/auth.php` 設定檔中，已經定義了一個 `api` guard 並且使用 `token` 驅動。這個驅動負責檢查傳入請求的 API token 並驗證它是否符合資料庫中分配給使用者的 Token。
+預設情況下，Laravel 為 API 認證提供一種簡單的解決方案──透過分配一個隨機 token 給你的應用程式中的使用者。在你的 `config/auth.php` 設定檔中，已經定義了一個 `api` guard 並且使用 `token` 驅動。這個驅動負責檢查傳入請求的 API token 並驗證它是否符合資料庫中分配給使用者的 Token。
 
 > **注意：** 儘管 Laravel 提供了簡單的、基於 token 的驗證保護，我們仍強烈建議你考慮以 [Laravel Passport](/docs/{{version}}/passport) 來實現一個提供 API 認證的健全的、可用於生產的應用程式。
 
