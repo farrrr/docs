@@ -11,7 +11,7 @@
 <a name="introduction"></a>
 ## 介紹
 
-預設情況下，Laravel 為 API 認證提供一種簡單的解決方案──透過分配一個隨機 token 給你的應用程式中的使用者。在你的 `config/auth.php` 設定檔中，已經定義了一個 `api` guard 並且使用 `token` 驅動。這個驅動負責檢查傳入請求的 API token 並驗證它是否符合資料庫中分配給使用者的 Token。
+預設情況下，Laravel 為 API 認證提供一種簡單的解決方案──透過分配一個隨機 token 給你的應用程式中的使用者。在你的 `config/auth.php` 設定檔中，已經定義了一個 `api` guard 並且使用 `token` 驅動。這個驅動負責檢查傳入請求的 API token 並驗證它是否符合資料庫中分配給使用者的 token。
 
 > **注意：** 儘管 Laravel 提供了簡單的、基於 token 的驗證保護，我們仍強烈建議你考慮以 [Laravel Passport](/docs/{{version}}/passport) 來實現一個提供 API 認證的健全的、可用於生產的應用程式。
 
@@ -102,7 +102,7 @@
         }
     }
 
-> {tip} 由於上面範例中的 API tokens 具有足夠的熵(entropy)，創建「彩虹表」查找 hashed token 原始值是不切實際的，所以並不需要如 `bcrypt` 的 slow hashing 方法。
+> {tip} 由於上面範例中的 API tokens 具有足夠的熵(entropy，最初起源於物理學，用於度量一個熱力學系統的無序程度。後被延伸至資訊與密碼領域，熵越高代表攜帶的資訊量越多，意味著更難以被預測)，創建「彩虹表」查找 hashed token 原始值是不切實際的，所以並不需要如 `bcrypt` 的 slow hashing 方法。
 
 <a name="protecting-routes"></a>
 ## 路由保護
@@ -126,7 +126,7 @@ Laravel 包含一個[認證保護](/docs/{{version}}/authentication#adding-custo
 
     $response = $client->request('GET', '/api/user?api_token='.$token);
 
-#### 請求負載
+#### 請求內容
 
 你的應用程式的 API 使用者可以將其 API token 做為 `api_token` 包含在請求的表單參數中：
 
