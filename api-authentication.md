@@ -1,27 +1,27 @@
 # API Authentication
 
-- [Introduction](#introduction)
-- [Configuration](#configuration)
-    - [Database Preparation](#database-preparation)
-- [Generating Tokens](#generating-tokens)
+- [介紹](#introduction)
+- [設定](#configuration)
+    - [資料庫準備](#database-preparation)
+- [產生 Tokens](#generating-tokens)
     - [Hashing Tokens](#hashing-tokens)
-- [Protecting Routes](#protecting-routes)
-- [Passing Tokens In Requests](#passing-tokens-in-requests)
+- [路由保護](#protecting-routes)
+- [請求中傳送 Tokens](#passing-tokens-in-requests)
 
 <a name="introduction"></a>
-## Introduction
+## 介紹
 
-By default, Laravel ships with a simple solution to API authentication via a random token assigned to each user of your application. In your `config/auth.php` configuration file, an `api` guard is already defined and utilizes a `token` driver. This driver is responsible for inspecting the API token on the incoming request and verifying that it matches the user's assigned token in the database.
+預設情況下，Laravel 為 API 認證提供一種簡單的解決方案──透過分配一個隨機 token 給你的應用程式中的使用者。在你的 `config/auth.php` 設定檔中，已經定義了一個 `api` guard 並且使用 `token` 驅動。這個驅動負責檢查傳入請求的 API token 並驗證它是否符合資料庫中分配給使用者的 token。
 
-> **Note:** While Laravel ships with a simple, token based authentication guard, we strongly recommend you consider using [Laravel Passport](/docs/{{version}}/passport) for robust, production applications that offer API authentication.
+> **注意：** 儘管 Laravel 提供了簡單的、基於 token 的驗證保護，我們仍強烈建議你考慮以 [Laravel Passport](/docs/{{version}}/passport) 來實現一個提供 API 認證的健全的、可用於生產的應用程式。
 
 <a name="configuration"></a>
-## Configuration
+## 設定
 
 <a name="database-preparation"></a>
-### Database Preparation
+### 資料庫準備
 
-Before using the `token` driver, you will need to [create a migration](/docs/{{version}}/migrations) which adds an `api_token` column to your `users` table:
+在使用 `token` 驅動之前，你需要先[創建一個遷移檔](/docs/{{version}}/migrations)，這個遷移檔在你的 `users` 資料表中新增一個 `api_token` 欄位。
 
     Schema::table('users', function ($table) {
         $table->string('api_token', 80)->after('password')
@@ -30,14 +30,14 @@ Before using the `token` driver, you will need to [create a migration](/docs/{{v
                             ->default(null);
     });
 
-Once the migration has been created, run the `migrate` Artisan command.
+創建遷移檔之後，執行 `migrate` Artisan 指令。
 
-> {tip} If you choose to use a different column name, be sure to update your API's `storage_key` configuration option within the `config/auth.php` configuration file.
+> {tip} 如果你選擇使用不同的欄位名稱，請確保在 `config/auth.php` 設定檔中更新 API 的 `storage_key` 設定選項。
 
 <a name="generating-tokens"></a>
-## Generating Tokens
+## 產生 Tokens
 
-Once the `api_token` column has been added to your `users` table, you are ready to assign random API tokens to each user that registers with your application. You should assign these tokens when a `User` model is created for the user during registration. When using the [authentication scaffolding](/docs/{{version}}/authentication#authentication-quickstart) provided by the `laravel/ui` Composer package, this may be done in the `create` method of the `RegisterController`:
+將 `api_token` 欄位新增到你的 `users` 資料表後，你就可以將隨機的 API tokens 分配給每一個註冊你的應用程式的使用者了。你應該在註冊期間 `User` 模型被建立時分配這些 tokens。當使用 `laravel/ui` Composer 套件提供的[認證框架](/docs/{{version}}/authentication#authentication-quickstart)時，可以在 `RegisterController` 中的 `create` 方法中完成此操作：
 
     use Illuminate\Support\Facades\Hash;
     use Illuminate\Support\Str;
@@ -61,7 +61,7 @@ Once the `api_token` column has been added to your `users` table, you are ready 
 <a name="hashing-tokens"></a>
 ### Hashing Tokens
 
-In the examples above, API tokens are stored in your database as plain-text. If you would like to hash your API tokens using SHA-256 hashing, you may set the `hash` option of your `api` guard configuration to `true`. The `api` guard is defined in your `config/auth.php` configuration file:
+在上面的範例中，API tokens 以純文字的方式被儲存在你的資料庫中。如果你想要用 SHA-256 雜湊演算法來 hash 你的 API tokens，可以將你的 `api` guard 設定中的 `hash` 選項設為 `true`。`api` guard 被定義在你的 `config/auth.php` 設定檔：
 
     'api' => [
         'driver' => 'token',
@@ -69,11 +69,11 @@ In the examples above, API tokens are stored in your database as plain-text. If 
         'hash' => true,
     ],
 
-#### Generating Hashed Tokens
+#### 產生 Hashed Tokens
 
-When using hashed API tokens, you should not generate your API tokens during user registration. Instead, you will need to implement your own API token management page within your application. This page should allow users to initialize and refresh their API token. When a user makes a request to initialize or refresh their token, you should store a hashed copy of the token in the database, and return the plain-text copy of token to the view / frontend client for one-time display.
+當使用 hashed API tokens 時，你不應該在使用者註冊階段產生API tokens。作為替代，你需要在你的應用程式中實做自己的 API token 管理頁面。這個頁面應該要允許使用者初始化和刷新他們的 API token。當使用者發出初始化或刷新 token 的請求時，你應該要將一份 token 的 hash 副本存在資料庫中，並且返回純文字的 token 副本給 view / 前端客戶端進行一次性的顯示。
 
-For example, a controller method that initializes / refreshes the token for a given user and returns the plain-text token as a JSON response might look like the following:
+舉個例子，一個用於初始化/刷新給定用戶的 token 並以 JSON 回應的格式返回純文字 token 的控制器方法可能類似以下內容：
 
     <?php
 
@@ -102,12 +102,12 @@ For example, a controller method that initializes / refreshes the token for a gi
         }
     }
 
-> {tip} Since the API tokens in the example above have sufficient entropy, it is impractical to create "rainbow tables" to lookup the original value of the hashed token. Therefore, slow hashing methods such as `bcrypt` are unnecessary.
+> {tip} 由於上面範例中的 API tokens 具有足夠的熵(entropy，最初起源於物理學，用於度量一個熱力學系統的無序程度。後被延伸至資訊與密碼領域，熵越高代表攜帶的資訊量越多，意味著更難以被預測)，創建「彩虹表」查找 hashed token 原始值是不切實際的，所以並不需要如 `bcrypt` 的 slow hashing 方法。
 
 <a name="protecting-routes"></a>
-## Protecting Routes
+## 路由保護
 
-Laravel includes an [authentication guard](/docs/{{version}}/authentication#adding-custom-guards) that will automatically validate API tokens on incoming requests. You only need to specify the `auth:api` middleware on any route that requires a valid access token:
+Laravel 包含一個[認證保護](/docs/{{version}}/authentication#adding-custom-guards)，它將自動驗證傳入請求的 API tokens。你只需要在任何要求有效的訪問 token 的路由上指定 `auth:api` 中介層：
 
     use Illuminate\Http\Request;
 
@@ -116,19 +116,19 @@ Laravel includes an [authentication guard](/docs/{{version}}/authentication#addi
     });
 
 <a name="passing-tokens-in-requests"></a>
-## Passing Tokens In Requests
+## 請求中傳送 Tokens
 
-There are several ways of passing the API token to your application. We'll discuss each of these approaches while using the Guzzle HTTP library to demonstrate their usage. You may choose any of these approaches based on the needs of your application.
+有幾個方法可以傳送 API token 到你的應用程式。我們將在使用 Guzzle HTTP 函式庫展示他們的用法時去討論這些方法，你可以根據應用程式的需求選擇其中任何一種。
 
-#### Query String
+#### 請求參數
 
-Your application's API consumers may specify their token as an `api_token` query string value:
+你的應用程式的 API 使用者可以將其 token 指定為 `api_token` 查詢字串：
 
     $response = $client->request('GET', '/api/user?api_token='.$token);
 
-#### Request Payload
+#### 請求內容
 
-Your application's API consumers may include their API token in the request's form parameters as an `api_token`:
+你的應用程式的 API 使用者可以將其 API token 做為 `api_token` 包含在請求的表單參數中：
 
     $response = $client->request('POST', '/api/user', [
         'headers' => [
@@ -141,7 +141,7 @@ Your application's API consumers may include their API token in the request's fo
 
 #### Bearer Token
 
-Your application's API consumers may provide their API token as a `Bearer` token in the `Authorization` header of the request:
+你的應用程式的 API 使用者可以在請求的 `Authorization` 標頭中提供其 API token 做為 `Bearer` token：
 
     $response = $client->request('POST', '/api/user', [
         'headers' => [
